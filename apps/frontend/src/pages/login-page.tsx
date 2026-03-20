@@ -7,16 +7,21 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { PublicFooter } from '@/components/layout/public-footer';
+import { useAuthenticatePasskey } from '@/api/hooks/usePasskey';
+import { TOKEN_KEY } from '@/context/auth-context';
+import { KeyRound } from 'lucide-react';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [passkeyError, setPasskeyError] = useState('');
   const { t } = useTranslation('auth');
 
   const navigate = useNavigate();
   const location = useLocation();
   const { login, isLoggedIn } = useAuth();
+  const authenticatePasskey = useAuthenticatePasskey();
 
   // Get the redirect path from location state, default to '/'
   const from = location.state?.from?.pathname || '/';
@@ -32,6 +37,21 @@ const LoginPage = () => {
     } catch (err) {
       console.error('Login error:', err);
       setError(t('login.invalidCredentials'));
+    }
+  };
+
+  const handlePasskeyLogin = async () => {
+    setPasskeyError('');
+    try {
+      const data = await authenticatePasskey.mutateAsync(username || undefined);
+      if (data?.access_token) {
+        localStorage.setItem(TOKEN_KEY, data.access_token);
+        window.location.href = from;
+      }
+    } catch (err: unknown) {
+      // User cancelled the browser prompt — don't show an error
+      if (err instanceof Error && err.name === 'NotAllowedError') return;
+      setPasskeyError('Passkey sign-in failed. Please try again or use your password.');
     }
   };
 
@@ -124,6 +144,32 @@ const LoginPage = () => {
               </Button>
             </div>
           </form>
+
+          {/* Passkey sign-in */}
+          <div className="mt-4">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-white/20" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-transparent px-2 text-white/50">or</span>
+              </div>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              className="mt-3 w-full bg-white/10 border-white/30 text-white hover:bg-white/20 gap-2"
+              onClick={handlePasskeyLogin}
+              disabled={authenticatePasskey.isPending}
+              data-umami-event="Login with Passkey"
+            >
+              <KeyRound className="h-4 w-4" />
+              {authenticatePasskey.isPending ? 'Checking passkey…' : 'Sign in with a passkey'}
+            </Button>
+            {passkeyError && (
+              <p className="mt-2 text-red-300 text-xs text-center">{passkeyError}</p>
+            )}
+          </div>
 
           <div className="mt-6 text-center">
             <p className="text-white/80">

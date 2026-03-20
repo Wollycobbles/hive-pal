@@ -19,19 +19,24 @@ import {
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { useNavigate } from 'react-router-dom';
-import { Globe, Bell, Palette, User, Save, Loader2 } from 'lucide-react';
+import { Globe, Bell, Palette, User, Save, Loader2, KeyRound, Trash2, ShieldCheck, Cloud } from 'lucide-react';
 import { toast } from 'sonner';
 import { usePreferences } from '@/api/hooks/useUserPreferences';
 import { useTheme } from '@/context/use-theme';
 import { UserPreferences } from 'shared-schemas';
 import { normalizeLanguageCode } from '@/utils/language-utils';
 import { LanguageSwitcher } from '@/components/language-switcher';
+import { useListPasskeys, useRegisterPasskey, useDeletePasskey } from '@/api/hooks/usePasskey';
 
 export const UserSettingsPage = () => {
   const { t, i18n } = useTranslation('common');
   const navigate = useNavigate();
   const { preferences, updatePreferences } = usePreferences();
   const { theme, setTheme } = useTheme();
+  const { data: passkeys, isLoading: passkeysLoading } = useListPasskeys();
+  const registerPasskey = useRegisterPasskey();
+  const deletePasskey = useDeletePasskey();
+  const [newPasskeyName, setNewPasskeyName] = useState('');
 
   const [settings, setSettings] = useState<Omit<UserPreferences, 'theme'>>({
     language: normalizeLanguageCode(i18n.language || 'en'),
@@ -59,6 +64,26 @@ export const UserSettingsPage = () => {
       });
     }
   }, [preferences.data, i18n.language]);
+
+  const handleAddPasskey = async () => {
+    try {
+      await registerPasskey.mutateAsync(newPasskeyName || undefined);
+      setNewPasskeyName('');
+      toast.success('Passkey added', { description: 'You can now sign in with this passkey.' });
+    } catch (err: unknown) {
+      if (err instanceof Error && err.name === 'NotAllowedError') return;
+      toast.error('Failed to add passkey', { description: 'Please try again.' });
+    }
+  };
+
+  const handleDeletePasskey = async (id: string, name: string | null) => {
+    try {
+      await deletePasskey.mutateAsync(id);
+      toast.success('Passkey removed', { description: `"${name ?? 'Passkey'}" has been deleted.` });
+    } catch {
+      toast.error('Failed to remove passkey');
+    }
+  };
 
   const handleSaveSettings = async () => {
     try {
@@ -287,6 +312,92 @@ export const UserSettingsPage = () => {
                   setSettings({ ...settings, harvestReminders: checked })
                 }
               />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Passkey / Security Settings */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <ShieldCheck className="h-5 w-5" />
+              Passkeys
+            </CardTitle>
+            <CardDescription>
+              Sign in securely with Face ID, Touch ID, or a hardware key — no password required.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {passkeysLoading ? (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" /> Loading passkeys…
+              </div>
+            ) : passkeys && passkeys.length > 0 ? (
+              <div className="space-y-2">
+                {passkeys.map(pk => (
+                  <div
+                    key={pk.id}
+                    className="flex items-center justify-between rounded-lg border p-3"
+                  >
+                    <div className="flex items-center gap-3">
+                      <KeyRound className="h-4 w-4 text-muted-foreground" />
+                      <div>
+                        <p className="text-sm font-medium">{pk.name ?? 'Passkey'}</p>
+                        <p className="text-xs text-muted-foreground">
+                          Added {new Date(pk.createdAt).toLocaleDateString()}
+                          {pk.lastUsedAt && ` · Last used ${new Date(pk.lastUsedAt).toLocaleDateString()}`}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {pk.backedUp && (
+                        <span className="flex items-center gap-1 rounded-full bg-blue-100 px-2 py-0.5 text-xs text-blue-700 dark:bg-blue-900 dark:text-blue-300">
+                          <Cloud className="h-3 w-3" /> Synced
+                        </span>
+                      )}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleDeletePasskey(pk.id, pk.name)}
+                        disabled={deletePasskey.isPending}
+                        aria-label={`Remove passkey ${pk.name ?? ''}`}
+                      >
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">No passkeys registered yet.</p>
+            )}
+
+            <Separator />
+
+            <div className="flex items-end gap-2">
+              <div className="flex-1 space-y-1">
+                <Label htmlFor="passkey-name">New passkey name (optional)</Label>
+                <input
+                  id="passkey-name"
+                  type="text"
+                  value={newPasskeyName}
+                  onChange={e => setNewPasskeyName(e.target.value)}
+                  placeholder="e.g. MacBook Touch ID"
+                  className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                />
+              </div>
+              <Button
+                onClick={handleAddPasskey}
+                disabled={registerPasskey.isPending}
+                className="gap-2 whitespace-nowrap"
+              >
+                {registerPasskey.isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <KeyRound className="h-4 w-4" />
+                )}
+                Add passkey
+              </Button>
             </div>
           </CardContent>
         </Card>

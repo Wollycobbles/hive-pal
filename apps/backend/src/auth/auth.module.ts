@@ -11,6 +11,7 @@ import { jwtConstants } from './constants';
 import { PrismaService } from '../prisma/prisma.service';
 import { LoggerModule } from '../logger/logger.module';
 import { MailModule } from '../mail/mail.module';
+import { PasskeyModule } from './passkey/passkey.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { MailModule } from '../mail/mail.module';
     }),
     LoggerModule,
     MailModule,
+    PasskeyModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy, PrismaService],

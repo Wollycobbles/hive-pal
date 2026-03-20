@@ -13,7 +13,7 @@ datasource db {
 model User {
   id                     String                 @id @default(uuid())
   email                  String                 @unique
-  password               String
+  password               String?
   name                   String?
   createdAt              DateTime               @default(now())
   updatedAt              DateTime               @updatedAt
@@ -38,6 +38,8 @@ model User {
   privacyConsentTimestamp DateTime?
   newsletterConsent      Boolean                @default(false)
   newsletterConsentTimestamp DateTime?
+
+  passkeys               Passkey[]
 }
 
 enum Role {
@@ -838,4 +840,34 @@ model PlatformMetricsSnapshot {
   createdAt           DateTime @default(now())
 
   @@index([date])
+}
+
+// FIDO2 / WebAuthn passkey credential
+model Passkey {
+  id                  String    @id @default(uuid())
+  userId              String
+  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  credentialId        String    @unique   // base64url-encoded credential ID
+  credentialPublicKey Bytes               // COSE-encoded public key
+  counter             BigInt              // signature counter for replay-attack prevention
+  deviceType          String              // 'singleDevice' | 'multiDevice'
+  backedUp            Boolean             // true = synced across devices (cloud passkey)
+  transports          String[]            // ['internal', 'hybrid', 'usb', ...]
+  name                String?             // user-friendly label
+  createdAt           DateTime  @default(now())
+  lastUsedAt          DateTime?
+
+  @@index([userId])
+}
+
+// Short-lived WebAuthn ceremony challenge store (5 min TTL)
+model WebAuthnChallenge {
+  id        String   @id @default(uuid())
+  userId    String?
+  challenge String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
 }
