@@ -143,6 +143,33 @@ export function NavAdmin({ collapsed = false }: NavAdminProps) {
           </svg>
           {!collapsed && <span>{t('navigation.metrics')}</span>}
         </Link>
+        <Link
+          to="/admin/ssl"
+          className={cn(
+            'flex items-center justify-start w-full rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors',
+            {
+              'justify-center': collapsed,
+              'bg-accent': isActive('/admin/ssl'),
+            },
+          )}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={cn('h-4 w-4', {
+              'mr-2': !collapsed,
+            })}
+          >
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
+          {!collapsed && <span>SSL Certificate</span>}
+        </Link>
       </div>
     </div>
   );

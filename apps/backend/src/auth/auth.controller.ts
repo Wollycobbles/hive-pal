@@ -8,6 +8,7 @@ import {
   Request,
 } from '@nestjs/common';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
+import { Throttle, SkipThrottle } from '@nestjs/throttler';
 import {
   Register,
   AuthResponse,
@@ -33,6 +34,7 @@ export class AuthController {
   }
 
   @Post('register')
+  @Throttle({ auth: {} })
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiResponse({ status: 409, description: 'Email already in use' })
   async register(@Body() registerDto: Register) {
@@ -48,6 +50,7 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
+  @Throttle({ auth: {} })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async login(@Request() req: RequestWithUser): Promise<AuthResponse> {
     this.logger.log(`User ${req.user.email} (ID: ${req.user.id}) logged in`);
@@ -55,6 +58,7 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @SkipThrottle()
   @Get('me')
   async getProfile(@Request() req: RequestWithUser): Promise<User> {
     this.logger.log(`Getting profile for user ID: ${req.user.id}`);
@@ -62,6 +66,7 @@ export class AuthController {
   }
 
   @Post('forgot-password')
+  @Throttle({ auth: {} })
   @ApiResponse({
     status: 200,
     description: 'Password reset email sent if user exists',
@@ -77,6 +82,7 @@ export class AuthController {
   }
 
   @Post('reset-password')
+  @Throttle({ auth: {} })
   @ApiResponse({ status: 200, description: 'Password reset successfully' })
   @ApiResponse({ status: 400, description: 'Invalid or expired token' })
   async resetPassword(

@@ -15,12 +15,17 @@ services:
       # Redirect HTTP to HTTPS
       - '--entrypoints.web.http.redirections.entrypoint.to=websecure'
       - '--entrypoints.web.http.redirections.entrypoint.scheme=https'
+      # File provider for custom uploaded SSL certificates (hot-reload, no restart needed)
+      - '--providers.file.directory=/traefik-dynamic'
+      - '--providers.file.watch=true'
     ports:
       - '80:80'
       - '443:443'
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock:ro'
       - '/data/hive-pal-data/letsencrypt:/letsencrypt'
+      - '/data/hive-pal-data/traefik-dynamic:/traefik-dynamic:ro'
+      - '/data/hive-pal-data/certs:/certs:ro'
     labels:
       - 'traefik.enable=true'
       # Dashboard (optional - remove in production or secure properly)
@@ -38,6 +43,13 @@ services:
       ADMIN_EMAIL: '${ADMIN_EMAIL:-admin@example.com}'
       ADMIN_PASSWORD: '${ADMIN_PASSWORD:-password}'
       DATABASE_URL: '${DATABASE_URL:-postgres://postgres:postgres@postgres:5432/beekeeper}'
+      WEBAUTHN_RP_ID: '${WEBAUTHN_RP_ID:-localhost}'
+      WEBAUTHN_RP_NAME: '${WEBAUTHN_RP_NAME:-Hive Pal}'
+      WEBAUTHN_ORIGIN: '${WEBAUTHN_ORIGIN:-http://localhost:5173}'
+      ALLOWED_ORIGINS: '${ALLOWED_ORIGINS:-http://localhost:5173}'
+      # SSL cert storage paths (must match volume mounts below)
+      SSL_CERTS_PATH: '/data/certs'
+      SSL_TRAEFIK_DYNAMIC_PATH: '/data/traefik-dynamic'
       SENTRY_DSN: '${SENTRY_DNS}'
       SENTRY_ENVIRONMENT: '${SENTRY_ENVIRONMENT}'
       VITE_SENTRY_DSN: '${VITE_SENTRY_DSN}'
@@ -53,6 +65,9 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    volumes:
+      - '/data/hive-pal-data/certs:/data/certs'
+      - '/data/hive-pal-data/traefik-dynamic:/data/traefik-dynamic'
     healthcheck:
       test:
         - CMD

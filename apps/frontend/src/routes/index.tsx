@@ -52,6 +52,11 @@ const PlatformMetricsPage = lazyWithRetry(
 const FrameSizeReviewPage = lazyWithRetry(
   () => import('@/pages/admin/frame-sizes/frame-size-review-page'),
 );
+const SslManagementPage = lazyWithRetry(() =>
+  import('@/pages/admin/ssl/ssl-page').then(m => ({
+    default: m.SslManagementPage,
+  })),
+);
 
 // Heavy feature pages (named exports)
 const ReportsPage = lazyWithRetry(() =>
@@ -421,6 +426,16 @@ const router = createBrowserRouter([
           <AdminProtectedRoute>
             <LazyPage>
               <PlatformMetricsPage />
+            </LazyPage>
+          </AdminProtectedRoute>
+        ),
+      },
+      {
+        path: '/admin/ssl',
+        element: (
+          <AdminProtectedRoute>
+            <LazyPage>
+              <SslManagementPage />
             </LazyPage>
           </AdminProtectedRoute>
         ),

@@ -9,6 +9,7 @@ import {
   UseGuards,
   UnauthorizedException,
   NotFoundException,
+  BadRequestException,
   Req,
 } from '@nestjs/common';
 import {
@@ -135,6 +136,11 @@ export class UsersController {
     }
 
     // Verify current password
+    if (!user.password) {
+      throw new BadRequestException(
+        'This account uses passkey authentication and has no password. Use a passkey to sign in.',
+      );
+    }
     const isPasswordValid = await bcrypt.compare(
       changePasswordDto.currentPassword,
       user.password,

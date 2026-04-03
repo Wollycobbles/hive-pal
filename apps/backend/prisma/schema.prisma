@@ -42,6 +42,14 @@ model User {
   passkeys               Passkey[]
 }
 
+// Runtime key-value store for admin-configured settings (e.g. WebAuthn, SSL)
+model SystemConfig {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
 enum Role {
   USER
   ADMIN

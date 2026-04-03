@@ -9,6 +9,7 @@ import {
   Request,
 } from '@nestjs/common';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
+import { Throttle, SkipThrottle } from '@nestjs/throttler';
 import type {
   PasskeyRegisterVerify,
   PasskeyAuthOptions,
@@ -35,6 +36,7 @@ export class PasskeyController {
   // ─── Registration ────────────────────────────────────────────────────────────
 
   @UseGuards(JwtAuthGuard)
+  @SkipThrottle()
   @Post('register/options')
   @ApiResponse({ status: 200, description: 'Registration options generated' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
@@ -44,6 +46,7 @@ export class PasskeyController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @SkipThrottle()
   @Post('register/verify')
   @ApiResponse({ status: 201, description: 'Passkey registered successfully' })
   @ApiResponse({ status: 400, description: 'Verification failed' })
@@ -63,6 +66,7 @@ export class PasskeyController {
   // ─── Authentication ──────────────────────────────────────────────────────────
 
   @Post('authenticate/options')
+  @Throttle({ auth: {} })
   @ApiResponse({ status: 200, description: 'Authentication options generated' })
   async authenticationOptions(
     @Body() body: PasskeyAuthOptions,
@@ -72,6 +76,7 @@ export class PasskeyController {
   }
 
   @Post('authenticate/verify')
+  @Throttle({ auth: {} })
   @ApiResponse({ status: 200, description: 'Authentication successful' })
   @ApiResponse({ status: 401, description: 'Authentication failed' })
   async authenticationVerify(

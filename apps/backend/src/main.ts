@@ -7,12 +7,14 @@ import { CustomLoggerService } from './logger/logger.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  if (process.env.NODE_ENV !== 'production') {
-    app.enableCors({
-      origin: ['http://localhost:5173'],
-      credentials: true,
-    });
-  }
+
+  const allowedOrigins = process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
+    : ['http://localhost:5173'];
+  app.enableCors({
+    origin: allowedOrigins,
+    credentials: true,
+  });
   app.setGlobalPrefix('api', {
     exclude: ['env.js'],
   });

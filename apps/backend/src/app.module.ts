@@ -14,7 +14,7 @@ import { QueensModule } from './queens/queens.module';
 import { MetricsService } from './metrics/metrics.service';
 import { UsersModule } from './users/users.module';
 import { ApiariesModule } from './apiaries/apiaries.module';
-import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptor } from './interceptors/logging.interceptor';
 import { GlobalExceptionFilter } from './global-exception.filter';
 import { LoggerModule } from './logger/logger.module';
@@ -39,6 +39,9 @@ import { SharesModule } from './shares/shares.module';
 import { PhotosModule } from './photos/photos.module';
 import { DocumentsModule } from './documents/documents.module';
 import { ApiarySharingModule } from './apiary-sharing/apiary-sharing.module';
+import { SystemConfigModule } from './system-config/system-config.module';
+import { SslModule } from './ssl/ssl.module';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -50,6 +53,15 @@ import { ApiarySharingModule } from './apiary-sharing/apiary-sharing.module';
       exclude: ['/api{/*path}'],
       renderPath: /^(?!\/assets\/)/,
     }),
+    ThrottlerModule.forRoot([
+      {
+        // 100 requests per minute for all routes
+        name: 'default',
+        ttl: 60_000,
+        limit: 100,
+      },
+    ]),
+    SystemConfigModule,
     StorageModule,
     AuthModule,
     HiveModule,
@@ -77,6 +89,7 @@ import { ApiarySharingModule } from './apiary-sharing/apiary-sharing.module';
     PhotosModule,
     DocumentsModule,
     ApiarySharingModule,
+    SslModule,
   ],
   controllers: [AppController, EnvController],
   providers: [
@@ -85,6 +98,11 @@ import { ApiarySharingModule } from './apiary-sharing/apiary-sharing.module';
     {
       provide: APP_FILTER,
       useClass: GlobalExceptionFilter,
+    },
+    {
+      // Apply ThrottlerGuard globally; endpoints opt-in to stricter limits via @Throttle()
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
     },
     {
       provide: APP_INTERCEPTOR,

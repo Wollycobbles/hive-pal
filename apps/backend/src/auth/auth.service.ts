@@ -6,6 +6,8 @@ import {
   Inject,
   forwardRef,
   BadRequestException,
+  OnModuleInit,
+  Logger,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -19,7 +21,9 @@ import { User as PrismaUser } from '@/prisma/client';
 import { AuthResponse, User, SuccessResponse } from 'shared-schemas';
 
 @Injectable()
-export class AuthService {
+export class AuthService implements OnModuleInit {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private prisma: PrismaService,
     @Inject(forwardRef(() => UsersService))
@@ -28,6 +32,27 @@ export class AuthService {
     private mailService: MailService,
     private eventEmitter: EventEmitter2,
   ) {}
+
+  onModuleInit(): void {
+    if (process.env.NODE_ENV === 'test') return;
+
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    if (!adminPassword) {
+      throw new Error(
+        '[AuthService] ADMIN_PASSWORD is not set. ' +
+          'Set ADMIN_PASSWORD to a bcrypt hash of the admin password. ' +
+          "Generate one with: node -e \"require('bcrypt').hash('yourpassword', 10).then(console.log)\"",
+      );
+    }
+    // bcrypt hashes start with $2a$ or $2b$ followed by cost + 53-char hash
+    if (!/^\$2[ab]\$\d{2}\$/.test(adminPassword)) {
+      throw new Error(
+        '[AuthService] ADMIN_PASSWORD does not appear to be a valid bcrypt hash. ' +
+          'It must start with $2a$ or $2b$. ' +
+          "Generate one with: node -e \"require('bcrypt').hash('yourpassword', 10).then(console.log)\"",
+      );
+    }
+  }
 
   async validateUser(
     email: string,

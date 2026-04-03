@@ -19,6 +19,7 @@ import type {
   PublicKeyCredentialRequestOptionsJSON,
 } from '@simplewebauthn/server';
 import { PrismaService } from '../../prisma/prisma.service.js';
+import { SystemConfigService } from '../../system-config/system-config.service.js';
 import type { AuthResponse, PasskeyResponse, SuccessResponse } from 'shared-schemas';
 
 const CHALLENGE_TTL_MS = 5 * 60 * 1000; // 5 minutes
@@ -28,18 +29,31 @@ export class PasskeyService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
+    private readonly systemConfig: SystemConfigService,
   ) {}
 
-  private get rpId(): string {
-    return process.env.WEBAUTHN_RP_ID ?? 'localhost';
+  // DB config takes precedence over env vars — allows runtime updates via SSL cert upload
+  private async getRpId(): Promise<string> {
+    return (
+      (await this.systemConfig.get('WEBAUTHN_RP_ID')) ??
+      process.env.WEBAUTHN_RP_ID ??
+      'localhost'
+    );
   }
 
-  private get rpName(): string {
+  private async getRpName(): Promise<string> {
     return process.env.WEBAUTHN_RP_NAME ?? 'Hive Pal';
   }
 
-  private get origin(): string {
-    return process.env.WEBAUTHN_ORIGIN ?? 'http://localhost:5173';
+  // Returns all valid origins. The DB value (set from cert upload) uses the
+  // bare domain; the env var may include a port for dev. Providing both lets
+  // verifyRegistrationResponse / verifyAuthenticationResponse accept either.
+  private async getOrigin(): Promise<string[]> {
+    const envOrigin = process.env.WEBAUTHN_ORIGIN ?? 'http://localhost:5173';
+    const dbOrigin = await this.systemConfig.get('WEBAUTHN_ORIGIN');
+    const origins = [envOrigin];
+    if (dbOrigin && dbOrigin !== envOrigin) origins.push(dbOrigin);
+    return origins;
   }
 
   // ─── Registration ceremony ──────────────────────────────────────────────────
@@ -53,22 +67,21 @@ export class PasskeyService {
     });
     if (!user) throw new NotFoundException('User not found');
 
-    // Exclude credentials already registered on this account
     const excludeCredentials = user.passkeys.map(p => ({
       id: p.credentialId,
       transports: p.transports as AuthenticatorTransportFuture[],
     }));
 
+    const [rpId, rpName] = await Promise.all([this.getRpId(), this.getRpName()]);
+
     const options = await generateRegistrationOptions({
-      rpName: this.rpName,
-      rpID: this.rpId,
+      rpName,
+      rpID: rpId,
       userName: user.email,
       userDisplayName: user.name ?? user.email,
-      // attestation omitted — defaults to 'none' (no attestation for consumer passkeys)
       authenticatorSelection: {
-        residentKey: 'required', // discoverable credential = passkey
+        residentKey: 'required',
         userVerification: 'preferred',
-        // authenticatorAttachment omitted → allows platform (Touch/Face ID) and roaming (hardware key)
       },
       excludeCredentials,
     });
@@ -90,10 +103,14 @@ export class PasskeyService {
     response: RegistrationResponseJSON,
     name?: string,
   ): Promise<PasskeyResponse> {
-    const challenge = await this.prisma.webAuthnChallenge.findFirst({
-      where: { userId, expiresAt: { gt: new Date() } },
-      orderBy: { createdAt: 'desc' },
-    });
+    const [challenge, rpId, origin] = await Promise.all([
+      this.prisma.webAuthnChallenge.findFirst({
+        where: { userId, expiresAt: { gt: new Date() } },
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.getRpId(),
+      this.getOrigin(),
+    ]);
     if (!challenge) {
       throw new BadRequestException(
         'No valid registration challenge found. Please start registration again.',
@@ -103,8 +120,8 @@ export class PasskeyService {
     const verification = await verifyRegistrationResponse({
       response,
       expectedChallenge: challenge.challenge,
-      expectedOrigin: this.origin,
-      expectedRPID: this.rpId,
+      expectedOrigin: origin,
+      expectedRPID: rpId,
     });
 
     if (!verification.verified || !verification.registrationInfo) {
@@ -157,8 +174,10 @@ export class PasskeyService {
       }
     }
 
+    const rpId = await this.getRpId();
+
     const options = await generateAuthenticationOptions({
-      rpID: this.rpId,
+      rpID: rpId,
       userVerification: 'preferred',
       allowCredentials,
     });
@@ -186,22 +205,34 @@ export class PasskeyService {
       throw new UnauthorizedException('Passkey not recognised');
     }
 
-    // Find most recent unexpired challenge
-    const challenge = await this.prisma.webAuthnChallenge.findFirst({
-      where: { expiresAt: { gt: new Date() } },
-      orderBy: { createdAt: 'desc' },
-    });
+    const [challenge, rpId, origin] = await Promise.all([
+      // Bind challenge to the credential owner; also accept null-userId challenges
+      // from usernameless/discoverable flows, but never accept another user's challenge.
+      this.prisma.webAuthnChallenge.findFirst({
+        where: {
+          expiresAt: { gt: new Date() },
+          OR: [{ userId: passkey.userId }, { userId: null }],
+        },
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.getRpId(),
+      this.getOrigin(),
+    ]);
     if (!challenge) {
       throw new UnauthorizedException(
         'No valid authentication challenge found. Please try again.',
       );
     }
+    // Reject if the challenge was explicitly issued for a different user
+    if (challenge.userId !== null && challenge.userId !== passkey.userId) {
+      throw new UnauthorizedException('Challenge does not belong to this user');
+    }
 
     const verification = await verifyAuthenticationResponse({
       response,
       expectedChallenge: challenge.challenge,
-      expectedOrigin: this.origin,
-      expectedRPID: this.rpId,
+      expectedOrigin: origin,
+      expectedRPID: rpId,
       credential: {
         id: passkey.credentialId,
         publicKey: new Uint8Array(passkey.credentialPublicKey),

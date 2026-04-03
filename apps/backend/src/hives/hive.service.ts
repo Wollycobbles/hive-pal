@@ -189,6 +189,7 @@ export class HiveService {
       featurePhoto: { select: { id: true, storageKey: true } },
     };
 
+    const statusFilter = this.resolveStatusFilter(filter);
     const hives = await this.prisma.hive.findMany({
       where: {
         apiary: {
@@ -206,7 +207,7 @@ export class HiveService {
                 ],
               }),
         },
-        status: this.resolveStatusFilter(filter),
+        ...(statusFilter !== undefined ? { status: statusFilter } : {}),
       },
       include: includeConfig,
     });
