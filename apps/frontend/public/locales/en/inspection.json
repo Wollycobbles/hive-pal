@@ -96,7 +96,17 @@
       "requires_treatment": "Requires Treatment",
       "low_stores": "Low Stores",
       "prepare_for_winter": "Prepare for Winter"
-    }
+    },
+    "frameCounts": {
+      "title": "Frame Counts",
+      "totalFrames": "{{count}} frames total",
+      "framesOf": "/ {{total}} frames"
+    },
+    "eggsFrames": "Eggs",
+    "uncappedBroodFrames": "Uncapped Brood",
+    "cappedBroodFrames": "Capped Brood",
+    "pollenFrames": "Pollen",
+    "honeyFrames": "Honey"
   },
   "actions": {
     "details": "Details",

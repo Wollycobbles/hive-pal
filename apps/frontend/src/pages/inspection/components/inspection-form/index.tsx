@@ -48,6 +48,7 @@ import { PhotosSection, PendingPhoto } from './photos-section';
 import { uploadPendingPhotos } from './upload-pending-photos';
 import { uploadPendingRecordings } from './upload-pending-recordings';
 import { ScorePreviewSection } from './score-preview';
+import { FrameCountSection } from './frame-counts';
 import { InspectionDateTimePicker } from '@/components/inspection-date-time-picker';
 
 interface PendingRecording {
@@ -143,6 +144,12 @@ export const InspectionForm: React.FC<InspectionFormProps> = ({
   const { data: selectedHive } = useHive(selectedHiveId || '', {
     enabled: !!selectedHiveId,
   });
+
+  // Calculate total frames from hive box configuration
+  const totalFrames = selectedHive?.boxes?.reduce(
+    (sum, box) => sum + box.frameCount,
+    0,
+  ) ?? null;
 
   // Format date for API call
   const dateString = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '';
@@ -339,6 +346,8 @@ export const InspectionForm: React.FC<InspectionFormProps> = ({
 
               <hr className={'border-t border-border'} />
               <ObservationsSection />
+              <hr className={'border-t border-border'} />
+              <FrameCountSection totalFrames={totalFrames} />
               <hr className={'border-t border-border'} />
               <ScorePreviewSection />
               <hr className={'border-t border-border'} />

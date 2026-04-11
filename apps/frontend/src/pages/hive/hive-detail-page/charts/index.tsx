@@ -3,6 +3,7 @@ import { HiveScore } from 'shared-schemas';
 import { InspectionCharts } from './inspection-charts';
 import { FeedingChart } from './feeding-chart';
 import { HealthScoreChart } from './health-score-chart';
+import { FrameBreakdownChart } from './frame-breakdown-chart';
 import {
   Select,
   SelectContent,
@@ -49,6 +50,7 @@ export const HiveCharts: React.FC<HiveChartsProps> = ({
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <FrameBreakdownChart hiveId={hiveId} period={period} />
         <InspectionCharts hiveId={hiveId} period={period} />
         <HealthScoreChart hiveScore={hiveScore} />
         <FeedingChart hiveId={hiveId} period={period} />
@@ -60,3 +62,4 @@ export const HiveCharts: React.FC<HiveChartsProps> = ({
 export { InspectionCharts } from './inspection-charts';
 export { FeedingChart } from './feeding-chart';
 export { HealthScoreChart } from './health-score-chart';
+export { FrameBreakdownChart } from './frame-breakdown-chart';

@@ -170,6 +170,20 @@ export class InspectionsService {
                 },
                 { type: 'queen_seen', booleanValue: observations?.queenSeen },
 
+                // Frame count observations
+                { type: 'total_frames', numericValue: observations?.totalFrames },
+                { type: 'eggs_frames', numericValue: observations?.eggsFrames },
+                {
+                  type: 'uncapped_brood_frames',
+                  numericValue: observations?.uncappedBroodFrames,
+                },
+                {
+                  type: 'capped_brood_frames',
+                  numericValue: observations?.cappedBroodFrames,
+                },
+                { type: 'pollen_frames', numericValue: observations?.pollenFrames },
+                { type: 'honey_frames', numericValue: observations?.honeyFrames },
+
                 // New observation types
                 {
                   type: 'brood_pattern',
@@ -508,6 +522,20 @@ export class InspectionsService {
               },
               { type: 'queen_seen', booleanValue: observations?.queenSeen },
 
+              // Frame count observations
+              { type: 'total_frames', numericValue: observations?.totalFrames },
+              { type: 'eggs_frames', numericValue: observations?.eggsFrames },
+              {
+                type: 'uncapped_brood_frames',
+                numericValue: observations?.uncappedBroodFrames,
+              },
+              {
+                type: 'capped_brood_frames',
+                numericValue: observations?.cappedBroodFrames,
+              },
+              { type: 'pollen_frames', numericValue: observations?.pollenFrames },
+              { type: 'honey_frames', numericValue: observations?.honeyFrames },
+
               // New observation types
               { type: 'brood_pattern', textValue: observations?.broodPattern },
 
@@ -812,6 +840,16 @@ export class InspectionsService {
       supersedureCells:
         observationsByType.supersedure_cells?.booleanValue ?? null,
       queenSeen: observationsByType.queen_seen?.booleanValue ?? false,
+
+      // Frame count observations
+      totalFrames: observationsByType.total_frames?.numericValue ?? null,
+      eggsFrames: observationsByType.eggs_frames?.numericValue ?? null,
+      uncappedBroodFrames:
+        observationsByType.uncapped_brood_frames?.numericValue ?? null,
+      cappedBroodFrames:
+        observationsByType.capped_brood_frames?.numericValue ?? null,
+      pollenFrames: observationsByType.pollen_frames?.numericValue ?? null,
+      honeyFrames: observationsByType.honey_frames?.numericValue ?? null,
 
       // New observation types
       broodPattern:
