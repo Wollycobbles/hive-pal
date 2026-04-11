@@ -30,8 +30,8 @@ const FrameCounter = <TName extends FieldPath<InspectionFormData>>({
         const currentValue = field.value as number | null | undefined;
         const maxValue = hasTotalFrames ? totalFrames : 999;
         const pct =
-          hasTotalFrames && currentValue != null
-            ? Math.round((currentValue / totalFrames!) * 100)
+          hasTotalFrames && currentValue != null && totalFrames != null && totalFrames > 0
+            ? Math.round((currentValue / totalFrames) * 100)
             : null;
 
         const decrement = (e: React.MouseEvent) => {
@@ -44,7 +44,7 @@ const FrameCounter = <TName extends FieldPath<InspectionFormData>>({
         const increment = (e: React.MouseEvent) => {
           e.preventDefault();
           e.stopPropagation();
-          const next = Math.min(maxValue!, (currentValue ?? 0) + 1);
+          const next = Math.min(maxValue, (currentValue ?? 0) + 1);
           field.onChange(next);
         };
 
