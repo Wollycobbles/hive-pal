@@ -90,31 +90,31 @@ export const ObservationsCard = ({
                 <FrameCountBar
                   label={t('inspection:observations.eggsFrames')}
                   count={observations.eggsFrames}
-                  total={observations.totalFrames!}
+                  total={observations.totalFrames ?? 0}
                   color="bg-yellow-400"
                 />
                 <FrameCountBar
                   label={t('inspection:observations.uncappedBroodFrames')}
                   count={observations.uncappedBroodFrames}
-                  total={observations.totalFrames!}
+                  total={observations.totalFrames ?? 0}
                   color="bg-orange-400"
                 />
                 <FrameCountBar
                   label={t('inspection:observations.cappedBroodFrames')}
                   count={observations.cappedBroodFrames}
-                  total={observations.totalFrames!}
+                  total={observations.totalFrames ?? 0}
                   color="bg-amber-600"
                 />
                 <FrameCountBar
                   label={t('inspection:observations.pollenFrames')}
                   count={observations.pollenFrames}
-                  total={observations.totalFrames!}
+                  total={observations.totalFrames ?? 0}
                   color="bg-green-500"
                 />
                 <FrameCountBar
                   label={t('inspection:observations.honeyFrames')}
                   count={observations.honeyFrames}
-                  total={observations.totalFrames!}
+                  total={observations.totalFrames ?? 0}
                   color="bg-yellow-500"
                 />
               </div>

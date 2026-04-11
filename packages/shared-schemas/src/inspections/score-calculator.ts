@@ -69,6 +69,7 @@ export function calculateWeightedScore(values: WeightedValue[]): number | null {
 }
 
 function framePercentageToScore(frames: number, totalFrames: number): number {
+  if (totalFrames <= 0) return 0;
   return Math.min(10, (frames / totalFrames) * 10);
 }
 
