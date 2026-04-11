@@ -47,7 +47,15 @@ export const observationSchema = z.object({
   swarmCells: z.boolean().nullish(),
   supersedureCells: z.boolean().nullish(),
   queenSeen: z.boolean().nullish(),
-  
+
+  // Frame count observations – actual number of frames of each type
+  totalFrames: z.number().int().min(0).nullish(),
+  eggsFrames: z.number().int().min(0).nullish(),
+  uncappedBroodFrames: z.number().int().min(0).nullish(),
+  cappedBroodFrames: z.number().int().min(0).nullish(),
+  pollenFrames: z.number().int().min(0).nullish(),
+  honeyFrames: z.number().int().min(0).nullish(),
+
   // New observation types
   broodPattern: broodPatternSchema,
   additionalObservations: z.array(additionalObservationSchema).optional(),
