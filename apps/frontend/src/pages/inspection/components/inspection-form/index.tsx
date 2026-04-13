@@ -145,11 +145,11 @@ export const InspectionForm: React.FC<InspectionFormProps> = ({
     enabled: !!selectedHiveId,
   });
 
-  // Calculate total frames from hive box configuration
-  const totalFrames = selectedHive?.boxes?.reduce(
-    (sum, box) => sum + box.frameCount,
-    0,
-  ) ?? null;
+  // Calculate total frames from brood boxes only (honey supers are excluded)
+  const totalFrames =
+    selectedHive?.boxes
+      ?.filter(box => box.type === 'BROOD')
+      .reduce((sum, box) => sum + box.frameCount, 0) ?? null;
 
   // Format date for API call
   const dateString = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '';
