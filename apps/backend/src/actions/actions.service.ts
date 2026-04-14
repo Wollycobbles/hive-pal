@@ -7,6 +7,7 @@ import {
   ActionFilter,
   ActionResponse,
   ActionType,
+  BoxTypeEnum,
   CreateAction,
   CreateStandaloneAction,
   UpdateAction,
@@ -205,6 +206,7 @@ export class ActionsService {
             framesRemoved: details.framesRemoved,
             totalBoxes: details.totalBoxes,
             totalFrames: details.totalFrames,
+            boxes: details.boxes ?? [],
           },
         });
       } else if (details.type === ActionType.MAINTENANCE) {
@@ -425,6 +427,7 @@ export class ActionsService {
             framesRemoved: details.framesRemoved,
             totalBoxes: details.totalBoxes,
             totalFrames: details.totalFrames,
+            boxes: details.boxes ?? [],
           },
         });
       } else if (details.type === ActionType.MAINTENANCE) {
@@ -573,6 +576,7 @@ export class ActionsService {
               framesRemoved: details.framesRemoved,
               totalBoxes: details.totalBoxes,
               totalFrames: details.totalFrames,
+              boxes: details.boxes ?? [],
             },
           });
         } else if (details.type === ActionType.HARVEST) {
@@ -883,6 +887,7 @@ export class ActionsService {
             framesRemoved: prismaAction.boxConfigurationAction.framesRemoved,
             totalBoxes: prismaAction.boxConfigurationAction.totalBoxes,
             totalFrames: prismaAction.boxConfigurationAction.totalFrames,
+            boxes: (prismaAction.boxConfigurationAction.boxes as { type: BoxTypeEnum; frameCount: number }[] | null) ?? undefined,
           },
         };
 

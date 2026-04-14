@@ -4,6 +4,7 @@ import {
   ActionType,
   observationSchema,
 } from 'shared-schemas';
+import type { Box } from 'shared-schemas';
 
 // Frontend-specific modifications for the form
 // We use date object instead of datetime string
@@ -61,6 +62,19 @@ export const otherActionSchema = z.object({
   notes: z.string(),
 });
 
+// Box configuration action
+export const boxConfigurationActionSchema = z.object({
+  type: z.literal(ActionType.BOX_CONFIGURATION),
+  boxesAdded: z.number().min(0),
+  boxesRemoved: z.number().min(0),
+  framesAdded: z.number().min(0),
+  framesRemoved: z.number().min(0),
+  totalBoxes: z.number().min(0),
+  totalFrames: z.number().min(0),
+  // Local-only: carry the updated boxes so the form can re-derive totalFrames
+  updatedBoxes: z.custom<Box[]>().optional(),
+});
+
 // Combined action schema
 export const actionSchema = z.discriminatedUnion('type', [
   feedingActionSchema,
@@ -69,6 +83,7 @@ export const actionSchema = z.discriminatedUnion('type', [
   maintenanceActionSchema,
   noteActionSchema,
   otherActionSchema,
+  boxConfigurationActionSchema,
 ]);
 
 // Score override schema for the form
@@ -91,5 +106,6 @@ export type TreatmentActionData = z.infer<typeof treatmentActionSchema>;
 export type FramesActionData = z.infer<typeof framesActionSchema>;
 export type MaintenanceActionData = z.infer<typeof maintenanceActionSchema>;
 export type NoteActionData = z.infer<typeof noteActionSchema>;
+export type BoxConfigurationActionData = z.infer<typeof boxConfigurationActionSchema>;
 export type ActionData = z.infer<typeof actionSchema>;
 export type InspectionFormData = z.infer<typeof inspectionSchema>;

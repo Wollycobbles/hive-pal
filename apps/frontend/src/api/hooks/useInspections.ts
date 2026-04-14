@@ -17,6 +17,7 @@ import { useApiaryStore } from '@/hooks/use-apiary';
 import { InspectionFormData } from '@/pages/inspection/components/inspection-form/schema.ts';
 import { useNavigate } from 'react-router-dom';
 import { toInspectionDateISOString } from '@/utils/inspection-date';
+import { useUpdateHiveBoxes } from './useHives';
 
 // Query keys
 const INSPECTIONS_KEYS = {
@@ -201,9 +202,15 @@ export const useUpsertInspection = (
 ) => {
   const { mutateAsync: createInspectionMutation } = useCreateInspection();
   const { mutateAsync: updateInspectionMutation } = useUpdateInspection();
+  const { mutateAsync: updateHiveBoxes } = useUpdateHiveBoxes();
   const getUrl = (inspectionId?: string) => `/inspections/${inspectionId}`;
   const navigate = useNavigate();
   return async (data: InspectionFormData, status?: InspectionStatus) => {
+    // Extract box configuration action so we can apply hive update on success
+    const boxConfigAction = data.actions?.find(a => a.type === 'BOX_CONFIGURATION') as
+      | import('@/pages/inspection/components/inspection-form/schema').BoxConfigurationActionData
+      | undefined;
+
     // Transform actions to match API format
     const transformedActions = data.actions
       ?.map((action): CreateAction | null => {
@@ -250,6 +257,22 @@ export const useUpsertInspection = (
                 status: action.status,
               },
             };
+          case 'BOX_CONFIGURATION':
+            // Strip the local-only updatedBoxes field before sending to API
+            // but include the per-box summary derived from updatedBoxes
+            return {
+              type: ActionType.BOX_CONFIGURATION,
+              details: {
+                type: ActionType.BOX_CONFIGURATION,
+                boxesAdded: action.boxesAdded,
+                boxesRemoved: action.boxesRemoved,
+                framesAdded: action.framesAdded,
+                framesRemoved: action.framesRemoved,
+                totalBoxes: action.totalBoxes,
+                totalFrames: action.totalFrames,
+                boxes: action.updatedBoxes?.map(b => ({ type: b.type, frameCount: b.frameCount })),
+              },
+            };
           default:
             return null;
         }
@@ -274,8 +297,25 @@ export const useUpsertInspection = (
       score: scoreOverride,
     };
 
+    const applyBoxUpdate = async () => {
+      if (
+        boxConfigAction?.updatedBoxes &&
+        boxConfigAction.updatedBoxes.length > 0 &&
+        data.hiveId
+      ) {
+        await updateHiveBoxes({
+          id: data.hiveId,
+          boxes: boxConfigAction.updatedBoxes.map(box => ({
+            ...box,
+            id: box.id?.startsWith('temp-') ? undefined : box.id,
+          })),
+        });
+      }
+    };
+
     if (!inspectionId) {
       const res = await createInspectionMutation(formattedData);
+      await applyBoxUpdate();
       await options?.onBeforeNavigate?.(res.id);
       navigate(getUrl(res.id));
     } else {
@@ -286,6 +326,7 @@ export const useUpsertInspection = (
           id: inspectionId,
         },
       });
+      await applyBoxUpdate();
       await options?.onBeforeNavigate?.(res.id);
       navigate(getUrl(res.id));
     }

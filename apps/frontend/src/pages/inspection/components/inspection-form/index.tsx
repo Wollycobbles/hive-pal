@@ -146,10 +146,21 @@ export const InspectionForm: React.FC<InspectionFormProps> = ({
   });
 
   // Calculate total frames from brood boxes only (honey supers are excluded)
+  // If the user has recorded a box configuration action, use its updated boxes instead
+  const formActions = form.watch('actions') || [];
+  const boxConfigAction = formActions.find(a => a.type === 'BOX_CONFIGURATION') as
+    | import('./schema').BoxConfigurationActionData
+    | undefined;
+
+  const effectiveBoxes = boxConfigAction?.updatedBoxes ?? selectedHive?.boxes ?? [];
+
   const totalFrames =
-    selectedHive?.boxes
-      ?.filter(box => box.type === 'BROOD')
-      .reduce((sum, box) => sum + box.frameCount, 0) ?? null;
+    effectiveBoxes
+      .filter((box: { type: string }) => box.type === 'BROOD')
+      .reduce((sum: number, box: { frameCount: number }) => sum + box.frameCount, 0) || null;
+
+  const broodBoxCount =
+    effectiveBoxes.filter((box: { type: string }) => box.type === 'BROOD').length || null;
 
   // Format date for API call
   const dateString = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '';
@@ -216,7 +227,7 @@ export const InspectionForm: React.FC<InspectionFormProps> = ({
   const isCompleted = inspection?.status === InspectionStatus.COMPLETED;
   const { isSubmitting } = form.formState;
   return (
-    <div className={'max-w-4xl ml-4'}>
+    <div className={'max-w-4xl mx-auto px-4'}>
       <h1 className={'text-lg font-bold'}>
         {isEdit ? t('inspection:form.editInspection') : t('inspection:form.newInspection')}
       </h1>
@@ -345,13 +356,13 @@ export const InspectionForm: React.FC<InspectionFormProps> = ({
               <WeatherSection />
 
               <hr className={'border-t border-border'} />
-              <ObservationsSection />
+              <ObservationsSection broodFrames={totalFrames} broodBoxCount={broodBoxCount} />
               <hr className={'border-t border-border'} />
               <FrameCountSection totalFrames={totalFrames} />
               <hr className={'border-t border-border'} />
               <ScorePreviewSection />
               <hr className={'border-t border-border'} />
-              <ActionsSection />
+              <ActionsSection hiveBoxes={selectedHive?.boxes ?? []} hiveId={selectedHive?.id} />
               <hr className={'border-t border-border'} />
               <NotesSection />
             </>

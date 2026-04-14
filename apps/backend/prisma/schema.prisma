@@ -341,6 +341,7 @@ model BoxConfigurationAction {
   framesRemoved Int    @default(0) // Total number of frames removed
   totalBoxes    Int    // Total boxes after the change
   totalFrames   Int    // Total frames after the change
+  boxes         Json?  // Per-box summary: [{type, frameCount}]
 }
 
 model MaintenanceAction {
