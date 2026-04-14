@@ -157,12 +157,17 @@ export class HiveService {
         },
         select: {
           date: true,
+          scoreWarnings: true,
+          observations: {
+            where: { type: { in: ['strength', 'total_frames'] } },
+            select: { type: true, numericValue: true },
+          },
         },
         orderBy: {
           date: 'desc' as const,
         },
-        take: 1,
-      } as const,
+        take: 2,
+      },
       queens: {
         where: {
           status: 'ACTIVE' as const,
@@ -225,6 +230,12 @@ export class HiveService {
           notes: hive.notes || undefined,
           installationDate: hive.installationDate?.toISOString(),
           lastInspectionDate: hive.inspections[0]?.date?.toISOString(),
+          lastInspectionStrength: hive.inspections[0]?.observations?.find(o => o.type === 'strength')?.numericValue ?? null,
+          lastInspectionTotalFrames: hive.inspections[0]?.observations?.find(o => o.type === 'total_frames')?.numericValue ?? null,
+          previousInspectionStrength: hive.inspections[1]?.observations?.find(o => o.type === 'strength')?.numericValue ?? null,
+          lastInspectionWarnings: hive.inspections[0]?.scoreWarnings
+            ? (JSON.parse(hive.inspections[0].scoreWarnings) as string[])
+            : [],
           positionRow: hive.positionRow ?? undefined,
           positionCol: hive.positionCol ?? undefined,
           settings: (hive.settings as HiveSettings) || undefined,

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { StatisticCards } from './statistic-cards';
@@ -9,6 +9,7 @@ import { FeedingSection } from './feeding-section';
 import { HiveTimeline } from './hive-timeline';
 import { HiveSettings } from './hive-settings';
 import { HiveCharts } from './charts';
+import { HiveHeaderStats } from './hive-header-stats';
 import { useHive } from '@/api/hooks';
 import { useBreadcrumbStore } from '@/stores/breadcrumb-store';
 import { QueenHistoryTab } from './queen-history-tab';
@@ -21,6 +22,7 @@ export const HiveDetailPage = () => {
   const { data: hive, error, refetch } = useHive(hiveId as string);
   const { setHiveContext, clearContext } = useBreadcrumbStore();
   const { mode: imageMode } = useImageDisplayStore();
+  const [activeTab, setActiveTab] = useState('overview');
   const isSide = imageMode === 'side';
 
   // Set breadcrumb context when hive data is loaded
@@ -88,9 +90,7 @@ export const HiveDetailPage = () => {
 
             {/* Compact stats section */}
             <div className="border-t mt-3 pt-3">
-              {hive?.hiveScore && (
-                <StatisticCards score={hive.hiveScore} variant="inline" />
-              )}
+              {hiveId && <HiveHeaderStats hiveId={hiveId} />}
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-3">
                 <QueenInformation
                   hiveId={hive?.id}
@@ -105,7 +105,7 @@ export const HiveDetailPage = () => {
           </div>
 
           {/* Tabs for different sections */}
-          <Tabs defaultValue="overview" className="mb-4 sm:mb-6">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-4 sm:mb-6">
             <TabsList className="mb-3 sm:mb-4 flex-wrap h-auto">
               <TabsTrigger value="overview" className="text-xs sm:text-sm">
                 Overview
@@ -129,7 +129,7 @@ export const HiveDetailPage = () => {
             </TabsContent>
 
             <TabsContent value="analytics">
-              <HiveCharts hiveId={hiveId} hiveScore={hive?.hiveScore} />
+              <HiveCharts hiveId={hiveId} />
             </TabsContent>
 
             <TabsContent value="boxes">

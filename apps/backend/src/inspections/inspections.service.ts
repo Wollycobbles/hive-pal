@@ -181,8 +181,13 @@ export class InspectionsService {
                   type: 'capped_brood_frames',
                   numericValue: observations?.cappedBroodFrames,
                 },
+                {
+                  type: 'drone_brood_frames',
+                  numericValue: observations?.droneBroodFrames,
+                },
                 { type: 'pollen_frames', numericValue: observations?.pollenFrames },
                 { type: 'honey_frames', numericValue: observations?.honeyFrames },
+                { type: 'empty_frames', numericValue: observations?.emptyFrames },
 
                 // New observation types
                 {
@@ -533,8 +538,13 @@ export class InspectionsService {
                 type: 'capped_brood_frames',
                 numericValue: observations?.cappedBroodFrames,
               },
+              {
+                type: 'drone_brood_frames',
+                numericValue: observations?.droneBroodFrames,
+              },
               { type: 'pollen_frames', numericValue: observations?.pollenFrames },
               { type: 'honey_frames', numericValue: observations?.honeyFrames },
+              { type: 'empty_frames', numericValue: observations?.emptyFrames },
 
               // New observation types
               { type: 'brood_pattern', textValue: observations?.broodPattern },
@@ -848,8 +858,11 @@ export class InspectionsService {
         observationsByType.uncapped_brood_frames?.numericValue ?? null,
       cappedBroodFrames:
         observationsByType.capped_brood_frames?.numericValue ?? null,
+      droneBroodFrames:
+        observationsByType.drone_brood_frames?.numericValue ?? null,
       pollenFrames: observationsByType.pollen_frames?.numericValue ?? null,
       honeyFrames: observationsByType.honey_frames?.numericValue ?? null,
+      emptyFrames: observationsByType.empty_frames?.numericValue ?? null,
 
       // New observation types
       broodPattern:

@@ -1,7 +1,10 @@
 import { HiveStatus } from './hive-status';
-import { Activity, TrendingUp } from 'lucide-react';
+import { Activity, AlertTriangle } from 'lucide-react';
+import { TrendIndicator } from '@/components/common/trend-indicator';
 import { Card, CardTitle } from '@/components/ui/card';
 import { ViewDetailsLink } from '@/components/ui/view-details-link';
+import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { HiveResponse } from 'shared-schemas';
 import { AlertsPopover } from '@/components/alerts';
 import { useHive } from '@/api/hooks/useHives';
@@ -14,6 +17,12 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { buildBoxGradient } from '@/utils/box-gradient';
 import { useImageDisplayStore } from '@/stores/image-display-store';
+
+const WARNING_LABELS: Record<string, string> = {
+  no_brood:          'No brood detected',
+  swarm_preparation: 'Swarm preparation detected',
+  supersedure:       'Queen supersedure detected',
+};
 
 type HiveListProps = {
   hives: HiveResponse[];
@@ -86,16 +95,56 @@ const HiveCard: React.FC<{ hive: HiveResponse }> = ({ hive }) => {
             {formatLastInspectionDate(hive.lastInspectionDate)}
           </p>
         </div>
-        <div className="flex items-center justify-end gap-2">
-          {hiveDetails?.hiveScore?.overallScore !== undefined && (
-            <div className="flex items-center gap-1 text-sm">
-              <TrendingUp className="h-4 w-4 text-blue-500" />
-              <span className="font-medium">
-                {hiveDetails.hiveScore.overallScore}/100
-              </span>
-            </div>
+        <div className="flex flex-col items-end gap-1">
+          <div className="flex items-center gap-2">
+            {hive.lastInspectionStrength != null && (() => {
+              const current = hive.lastInspectionStrength;
+              const total   = hive.lastInspectionTotalFrames;
+              const delta   = hive.previousInspectionStrength != null
+                ? current - hive.previousInspectionStrength
+                : null;
+              return (
+                <div className="flex items-center gap-1 text-sm">
+                  <span className="text-xs text-muted-foreground">Strength:</span>
+                  <span className="font-semibold tabular-nums">
+                    {current}{total != null && `/${total}`}
+                  </span>
+                  <TrendIndicator delta={delta} iconSize="h-3.5 w-3.5" />
+                </div>
+              );
+            })()}
+            <HiveStatus status={hive.status} />
+          </div>
+
+          {hive.lastInspectionWarnings.length > 0 && (
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-11 w-11 text-amber-500 hover:text-amber-600 hover:bg-amber-50"
+                  aria-label="Inspection warnings"
+                >
+                  <AlertTriangle className="h-6 w-6" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-64" align="end">
+                <div className="space-y-2">
+                  <h4 className="font-medium text-sm flex items-center gap-1.5 text-amber-600">
+                    <AlertTriangle className="h-4 w-4" />
+                    Inspection Warnings
+                  </h4>
+                  <ul className="space-y-1">
+                    {hive.lastInspectionWarnings.map((w, i) => (
+                      <li key={i} className="text-sm text-muted-foreground">
+                        {WARNING_LABELS[w] ?? w}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </PopoverContent>
+            </Popover>
           )}
-          <HiveStatus status={hive.status} />
         </div>
 
         {/* Row 2: Notes + Feeding */}

@@ -1,0 +1,71 @@
+import { Line, LineChart, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { format, parseISO } from 'date-fns';
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
+} from '@/components/ui/chart';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { ChartPeriod } from './index';
+import { useInspectionChartData } from './useChartData';
+import { InspectionResponse } from 'shared-schemas';
+
+interface StoresChartProps {
+  hiveId: string | undefined;
+  period: ChartPeriod;
+}
+
+function hasStoresData(inspection: InspectionResponse): boolean {
+  const obs = inspection.observations;
+  return obs != null && (obs.pollenFrames != null || obs.honeyFrames != null);
+}
+
+export const StoresChart: React.FC<StoresChartProps> = ({ hiveId, period }) => {
+  const chartData = useInspectionChartData(
+    hiveId,
+    period,
+    inspection => ({
+      date: format(parseISO(inspection.date), 'MMM dd'),
+      pollen: inspection.observations?.pollenFrames ?? null,
+      honey: inspection.observations?.honeyFrames ?? null,
+    }),
+    hasStoresData,
+  );
+
+  if (!hiveId || chartData.length === 0) return null;
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Store Trend</CardTitle>
+        <CardDescription>Pollen and honey frame counts over time</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <ChartContainer
+          config={{
+            pollen: { label: 'Pollen', color: '#22c55e' },
+            honey:  { label: 'Honey',  color: '#eab308' },
+          }}
+        >
+          <LineChart data={chartData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="date" />
+            <YAxis allowDecimals={false} />
+            <ChartTooltip content={<ChartTooltipContent />} />
+            <ChartLegend content={<ChartLegendContent />} />
+            <Line type="monotone" dataKey="pollen" stroke="var(--color-pollen)" strokeWidth={2} connectNulls />
+            <Line type="monotone" dataKey="honey"  stroke="var(--color-honey)"  strokeWidth={2} connectNulls />
+          </LineChart>
+        </ChartContainer>
+      </CardContent>
+    </Card>
+  );
+};

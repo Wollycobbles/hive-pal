@@ -12,7 +12,6 @@ import { ScheduledInspectionCard } from './components/scheduled-inspection-card'
 import { isFuture, isPast, isToday, parseISO } from 'date-fns';
 import {
   ActivityIcon,
-  BarChartIcon,
   CalendarClockIcon,
   CalendarIcon,
   ChevronRight,
@@ -20,14 +19,15 @@ import {
   CloudIcon,
   CloudRainIcon,
   CrownIcon,
-  DropletsIcon,
   HistoryIcon,
   InfoIcon,
   SearchIcon,
   SunIcon,
   ThermometerIcon,
-  UsersIcon,
 } from 'lucide-react';
+import { TrendIndicator } from '@/components/common/trend-indicator';
+import { largestRemainder } from '@/utils/math';
+import { ObservationSchemaType } from 'shared-schemas';
 
 import {
   MainContent,
@@ -256,6 +256,16 @@ export const InspectionListPage = () => {
   );
 };
 
+const FRAME_FIELDS: { key: keyof NonNullable<ObservationSchemaType>; label: string; color: string }[] = [
+  { key: 'eggsFrames',          label: 'Eggs',     color: '#facc15' },
+  { key: 'uncappedBroodFrames', label: 'Uncapped', color: '#fb923c' },
+  { key: 'cappedBroodFrames',   label: 'Capped',   color: '#b45309' },
+  { key: 'droneBroodFrames',    label: 'Drone',    color: '#92400e' },
+  { key: 'pollenFrames',        label: 'Pollen',   color: '#22c55e' },
+  { key: 'honeyFrames',         label: 'Stores',   color: '#eab308' },
+  { key: 'emptyFrames',         label: 'Space',    color: '#cbd5e1' },
+];
+
 const renderInspectionsTable = (
   inspections: InspectionResponse[],
   caption: string,
@@ -311,7 +321,7 @@ const renderInspectionsTable = (
           <TableHead>
             {activeTab === InspectionTab.UPCOMING
               ? t('inspection:fields.status')
-              : t('inspection:fields.scoreStatus')}
+              : 'Strength'}
           </TableHead>
           <TableHead>{t('inspection:fields.queenSeen')}</TableHead>
           <TableHead className="text-right">
@@ -320,7 +330,19 @@ const renderInspectionsTable = (
         </TableRow>
       </TableHeader>
       <TableBody>
-        {inspections.map(inspection => (
+        {inspections.map((inspection, index) => {
+          const prevInspection = inspections[index + 1];
+          const obs = inspection.observations;
+          const strength    = obs?.strength ?? null;
+          const totalFrames = obs?.totalFrames ?? null;
+          const prevStrength = prevInspection?.observations?.strength ?? null;
+          const strengthDelta = strength != null && prevStrength != null ? strength - prevStrength : null;
+
+          const frameCounts = FRAME_FIELDS.map(f => (obs?.[f.key] as number | null | undefined) ?? 0);
+          const frameTotal  = frameCounts.reduce((a, b) => a + b, 0);
+          const framePcts   = frameTotal > 0 ? largestRemainder(frameCounts, frameTotal) : null;
+
+          return (
           <TableRow key={inspection.id}>
             <TableCell className="font-medium">
               <div className="flex items-center gap-2">
@@ -366,84 +388,62 @@ const renderInspectionsTable = (
               ) : (
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className={`flex items-center gap-2 p-0 h-auto ${getMetricColorClass(inspection.score?.overallScore)}`}
-                    >
-                      <BarChartIcon className="h-4 w-4" />
-                      <span className="font-medium">
-                        {inspection.score?.overallScore !== null
-                          ? inspection.score?.overallScore
-                          : 'N/A'}
-                      </span>
-                      <InfoIcon className="h-3 w-3 text-muted-foreground" />
+                    <Button variant="ghost" size="sm" className="flex items-center gap-1 p-0 h-auto">
+                      {strength != null ? (
+                        <>
+                          <span className="font-medium tabular-nums">
+                            {strength}{totalFrames != null ? `/${totalFrames}` : ''}
+                          </span>
+                          <TrendIndicator delta={strengthDelta} iconSize="h-3 w-3" />
+                        </>
+                      ) : (
+                        <span className="text-muted-foreground text-sm">—</span>
+                      )}
+                      <InfoIcon className="h-3 w-3 text-muted-foreground ml-1" />
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-60">
-                    <div className="space-y-2">
-                      <h4 className="font-medium text-sm">
-                        {t('inspection:scores.title')}
-                      </h4>
-                      <div className="grid grid-cols-[20px_1fr_auto] gap-2 items-center">
-                        <UsersIcon className="h-4 w-4 text-blue-500" />
-                        <span className="text-sm">
-                          {t('inspection:scores.population')}
-                        </span>
-                        <span
-                          className={`text-sm font-medium ${getMetricColorClass(inspection.score?.populationScore)}`}
-                        >
-                          {inspection.score?.populationScore?.toFixed(2) ??
-                            'N/A'}
-                        </span>
+                    <div className="space-y-3">
+                      <h4 className="font-medium text-sm">Brood Nest Stats</h4>
 
-                        <DropletsIcon className="h-4 w-4 text-amber-500" />
-                        <span className="text-sm">
-                          {t('inspection:scores.stores')}
-                        </span>
-                        <span
-                          className={`text-sm font-medium ${getMetricColorClass(inspection.score?.storesScore)}`}
-                        >
-                          {inspection.score?.storesScore?.toFixed(2) ?? 'N/A'}
-                        </span>
+                      {framePcts ? (
+                        <div className="space-y-1.5">
+                          {FRAME_FIELDS.map((f, i) => {
+                            if (frameCounts[i] === 0) return null;
+                            return (
+                              <div key={f.key} className="flex items-center gap-2">
+                                <span className="h-2 w-2 rounded-full shrink-0" style={{ backgroundColor: f.color }} />
+                                <span className="text-sm flex-1">{f.label}</span>
+                                <span className="text-sm font-medium tabular-nums">{framePcts[i]}%</span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <p className="text-xs text-muted-foreground">No frame data recorded</p>
+                      )}
 
-                        <CrownIcon className="h-4 w-4 text-purple-500" />
-                        <span className="text-sm">
-                          {t('inspection:scores.queen')}
-                        </span>
-                        <span
-                          className={`text-sm font-medium ${getMetricColorClass(inspection.score?.queenScore)}`}
-                        >
-                          {inspection.score?.queenScore?.toFixed(2) ?? 'N/A'}
-                        </span>
+                      {obs?.queenCells != null && obs.queenCells > 0 && (
+                        <div className="flex items-center gap-2 pt-2 border-t">
+                          <CrownIcon className="h-3.5 w-3.5 text-rose-500 shrink-0" />
+                          <span className="text-sm flex-1">Queen Cells</span>
+                          <span className="text-sm font-medium tabular-nums">{obs.queenCells}</span>
+                        </div>
+                      )}
 
-                        <BarChartIcon className="h-4 w-4 text-green-500" />
-                        <span className="text-sm font-medium">
-                          {t('inspection:scores.overall')}
-                        </span>
-                        <span
-                          className={`text-sm font-medium ${getMetricColorClass(inspection.score?.overallScore)}`}
-                        >
-                          {inspection.score?.overallScore?.toFixed(2) ?? 'N/A'}
-                        </span>
-                      </div>
-
-                      {inspection.score?.warnings &&
-                        inspection.score.warnings.length > 0 && (
-                          <div className="mt-2 pt-2 border-t">
-                            <h5 className="text-sm font-medium text-amber-500 flex items-center gap-1">
-                              <ActivityIcon className="h-3 w-3" />
-                              {t('inspection:scores.warnings')}
-                            </h5>
-                            <ul className="mt-1 text-xs space-y-1">
-                              {inspection.score.warnings.map((warning, i) => (
-                                <li key={i} className="text-muted-foreground">
-                                  {warning}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
+                      {inspection.score?.warnings && inspection.score.warnings.length > 0 && (
+                        <div className="pt-2 border-t">
+                          <h5 className="text-sm font-medium text-amber-500 flex items-center gap-1 mb-1">
+                            <ActivityIcon className="h-3 w-3" />
+                            {t('inspection:scores.warnings')}
+                          </h5>
+                          <ul className="text-xs space-y-1">
+                            {inspection.score.warnings.map((warning, i) => (
+                              <li key={i} className="text-muted-foreground">{warning}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                     </div>
                   </PopoverContent>
                 </Popover>
@@ -480,7 +480,8 @@ const renderInspectionsTable = (
               </Button>
             </TableCell>
           </TableRow>
-        ))}
+          );
+        })}
       </TableBody>
     </Table>
   ) : (

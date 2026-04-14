@@ -5,12 +5,15 @@ import { Minus, Plus, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { InspectionFormData } from './schema';
+import { largestRemainder } from '@/utils/math';
 
 type FrameCounterProps<T> = {
   name: T;
   label: string;
   color: string;
   totalFrames: number | null | undefined;
+  /** Pre-computed composition percentage (already rounded via largest-remainder) */
+  pct: number | null;
 };
 
 const FrameCounter = <TName extends FieldPath<InspectionFormData>>({
@@ -18,6 +21,7 @@ const FrameCounter = <TName extends FieldPath<InspectionFormData>>({
   label,
   color,
   totalFrames,
+  pct,
 }: FrameCounterProps<TName>) => {
   const { control } = useFormContext<InspectionFormData>();
   const hasTotalFrames = totalFrames != null && totalFrames > 0;
@@ -29,10 +33,6 @@ const FrameCounter = <TName extends FieldPath<InspectionFormData>>({
       render={({ field }) => {
         const currentValue = field.value as number | null | undefined;
         const maxValue = hasTotalFrames ? totalFrames : 999;
-        const pct =
-          hasTotalFrames && currentValue != null && totalFrames != null && totalFrames > 0
-            ? Math.round((currentValue / totalFrames) * 100)
-            : null;
 
         const decrement = (e: React.MouseEvent) => {
           e.preventDefault();
@@ -79,12 +79,12 @@ const FrameCounter = <TName extends FieldPath<InspectionFormData>>({
                 <Button
                   variant="outline"
                   size="icon"
-                  className="h-12 w-12 rounded-xl shrink-0 text-lg"
+                  className="h-14 w-14 rounded-xl shrink-0 text-lg"
                   onClick={decrement}
                   disabled={currentValue == null || currentValue <= 0}
                   aria-label={`Decrease ${label}`}
                 >
-                  <Minus className="h-5 w-5" />
+                  <Minus className="h-6 w-6" />
                 </Button>
 
                 {/* Count display */}
@@ -92,11 +92,9 @@ const FrameCounter = <TName extends FieldPath<InspectionFormData>>({
                   <span className="text-3xl font-bold tabular-nums leading-none">
                     {currentValue ?? '—'}
                   </span>
-                  {hasTotalFrames && (
+                  {pct != null && (
                     <span className="text-xs text-muted-foreground">
-                      {currentValue != null
-                        ? `/ ${totalFrames} frames${pct != null ? ` (${pct}%)` : ''}`
-                        : `of ${totalFrames} frames`}
+                      {pct}%
                     </span>
                   )}
                 </div>
@@ -105,25 +103,23 @@ const FrameCounter = <TName extends FieldPath<InspectionFormData>>({
                 <Button
                   variant="outline"
                   size="icon"
-                  className="h-12 w-12 rounded-xl shrink-0 text-lg"
+                  className="h-14 w-14 rounded-xl shrink-0 text-lg"
                   onClick={increment}
                   disabled={
                     hasTotalFrames ? currentValue === maxValue : false
                   }
                   aria-label={`Increase ${label}`}
                 >
-                  <Plus className="h-5 w-5" />
+                  <Plus className="h-6 w-6" />
                 </Button>
               </div>
 
-              {/* Progress bar */}
-              {hasTotalFrames && currentValue != null && totalFrames != null && (
+              {/* Composition progress bar — only shown when there is something to compare */}
+              {pct != null && (
                 <div className="w-full h-2 rounded-full bg-muted overflow-hidden">
                   <div
                     className={`h-full rounded-full transition-all duration-200 ${color}`}
-                    style={{
-                      width: `${Math.min(100, (currentValue / totalFrames) * 100)}%`,
-                    }}
+                    style={{ width: `${pct}%` }}
                   />
                 </div>
               )}
@@ -151,7 +147,36 @@ export const FrameCountSection: React.FC<FrameCountSectionProps> = ({
     control,
   });
 
+  // Watch all 6 frame type values
+  const eggsFrames        = useWatch({ name: 'observations.eggsFrames',         control });
+  const uncappedBroodFrames = useWatch({ name: 'observations.uncappedBroodFrames', control });
+  const cappedBroodFrames = useWatch({ name: 'observations.cappedBroodFrames',  control });
+  const droneBroodFrames  = useWatch({ name: 'observations.droneBroodFrames',   control });
+  const pollenFrames      = useWatch({ name: 'observations.pollenFrames',       control });
+  const honeyFrames       = useWatch({ name: 'observations.honeyFrames',        control });
+  const emptyFrames       = useWatch({ name: 'observations.emptyFrames',        control });
+
   const effectiveTotalFrames = frameTotalField ?? totalFrames ?? null;
+
+  // Ordered counts for all 7 frame types — same order as frameTypes below
+  const frameCounts = [
+    eggsFrames ?? 0,
+    uncappedBroodFrames ?? 0,
+    cappedBroodFrames ?? 0,
+    droneBroodFrames ?? 0,
+    pollenFrames ?? 0,
+    honeyFrames ?? 0,
+    emptyFrames ?? 0,
+  ];
+  const allFramesSum = frameCounts.reduce((a, b) => a + b, 0);
+
+  // Coordinated percentages — guaranteed to sum to exactly 100
+  const pcts: (number | null)[] =
+    allFramesSum > 0
+      ? largestRemainder(frameCounts, allFramesSum).map((p, i) =>
+          frameCounts[i] > 0 ? p : null,
+        )
+      : frameCounts.map(() => null);
 
   const frameTypes: {
     name: FieldPath<InspectionFormData>;
@@ -174,6 +199,11 @@ export const FrameCountSection: React.FC<FrameCountSectionProps> = ({
       color: 'bg-amber-600',
     },
     {
+      name: 'observations.droneBroodFrames',
+      labelKey: 'observations.droneBroodFrames',
+      color: 'bg-amber-800',
+    },
+    {
       name: 'observations.pollenFrames',
       labelKey: 'observations.pollenFrames',
       color: 'bg-green-500',
@@ -182,6 +212,11 @@ export const FrameCountSection: React.FC<FrameCountSectionProps> = ({
       name: 'observations.honeyFrames',
       labelKey: 'observations.honeyFrames',
       color: 'bg-yellow-500',
+    },
+    {
+      name: 'observations.emptyFrames',
+      labelKey: 'observations.emptyFrames',
+      color: 'bg-slate-300',
     },
   ];
 
@@ -201,13 +236,14 @@ export const FrameCountSection: React.FC<FrameCountSectionProps> = ({
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {frameTypes.map(({ name, labelKey, color }) => (
+        {frameTypes.map(({ name, labelKey, color }, i) => (
           <FrameCounter
             key={name}
             name={name}
             label={t(labelKey)}
             color={color}
             totalFrames={effectiveTotalFrames}
+            pct={pcts[i]}
           />
         ))}
       </div>
