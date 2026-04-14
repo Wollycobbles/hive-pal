@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { StatisticCards } from './statistic-cards';
 import { BoxConfigurator } from './box-configurator';
 import { ActionSideBar } from '@/pages/hive/hive-detail-page/action-sidebar.tsx';
@@ -16,6 +17,13 @@ import { QueenHistoryTab } from './queen-history-tab';
 import { HiveStatusButton } from './hive-status-button';
 import { buildBoxGradient } from '@/utils/box-gradient';
 import { useImageDisplayStore } from '@/stores/image-display-store';
+import { AlertTriangle } from 'lucide-react';
+
+const WARNING_LABELS: Record<string, string> = {
+  no_brood:          'No brood detected',
+  swarm_preparation: 'Swarm preparation detected',
+  supersedure:       'Queen supersedure detected',
+};
 
 export const HiveDetailPage = () => {
   const { id: hiveId } = useParams<{ id: string }>();
@@ -125,6 +133,19 @@ export const HiveDetailPage = () => {
             </TabsList>
 
             <TabsContent value="overview">
+              {(hive?.hiveScore?.warnings?.length ?? 0) > 0 && (
+                <Alert className="mb-4 border-amber-400 bg-amber-50 text-amber-900 dark:bg-amber-950 dark:text-amber-100 dark:border-amber-600">
+                  <AlertTriangle className="h-4 w-4 !text-amber-600 dark:!text-amber-400" />
+                  <AlertTitle className="font-semibold">Inspection Warnings</AlertTitle>
+                  <AlertDescription>
+                    <ul className="mt-1 space-y-1">
+                      {hive!.hiveScore!.warnings.map((w, i) => (
+                        <li key={i}>{WARNING_LABELS[w] ?? w}</li>
+                      ))}
+                    </ul>
+                  </AlertDescription>
+                </Alert>
+              )}
               <HiveTimeline hiveId={hiveId} apiaryId={hive?.apiaryId} />
             </TabsContent>
 
