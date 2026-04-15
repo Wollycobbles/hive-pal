@@ -202,8 +202,20 @@ export const InspectionForm: React.FC<InspectionFormProps> = ({
     },
   });
 
+  const validateSubjectiveStrength = (data: InspectionFormData): boolean => {
+    const strength = data.observations?.strength;
+    if (isSubjective && strength != null && strength > 10) {
+      form.setError('observations.strength', {
+        message: 'Must be between 0 and 10 in subjective mode',
+      });
+      return false;
+    }
+    return true;
+  };
+
   // Handler for regular save button
   const handleSave = form.handleSubmit(data => {
+    if (!validateSubjectiveStrength(data)) return;
     if (mode === 'batch' && onSubmitSuccess) {
       // In batch mode, call the custom success handler
       onSubmitSuccess(data);
@@ -216,6 +228,7 @@ export const InspectionForm: React.FC<InspectionFormProps> = ({
 
   // Handler for save and complete button
   const handleSaveAndComplete = form.handleSubmit(data => {
+    if (!validateSubjectiveStrength(data)) return;
     if (mode === 'batch' && onSubmitSuccess) {
       onSubmitSuccess(data);
     } else {

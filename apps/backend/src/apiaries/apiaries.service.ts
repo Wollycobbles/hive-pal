@@ -20,6 +20,12 @@ export class ApiariesService {
     this.logger.setContext('ApiariesService');
   }
 
+  private parseSettings(
+    raw: Prisma.JsonValue | null | undefined,
+  ): { inspectionType: 'subjective' | 'data_driven' } | undefined {
+    return (raw as { inspectionType: 'subjective' | 'data_driven' } | null) ?? undefined;
+  }
+
   private async mapFeaturePhotoUrl(
     featurePhoto: { id: string; storageKey: string } | null,
   ): Promise<{
@@ -73,7 +79,7 @@ export class ApiariesService {
       location: apiary.location,
       latitude: apiary.latitude,
       longitude: apiary.longitude,
-      settings: (apiary.settings as { inspectionType: 'subjective' | 'data_driven' } | null) ?? undefined,
+      settings: this.parseSettings(apiary.settings),
       ...featurePhotoFields,
     };
   }
@@ -112,7 +118,7 @@ export class ApiariesService {
           location: apiary.location,
           latitude: apiary.latitude,
           longitude: apiary.longitude,
-          settings: (apiary.settings as { inspectionType: 'subjective' | 'data_driven' } | null) ?? undefined,
+          settings: this.parseSettings(apiary.settings),
           ...featurePhotoFields,
           role: isOwner ? ('OWNER' as const) : apiary.members[0]?.role,
           isShared: !isOwner,
@@ -158,7 +164,7 @@ export class ApiariesService {
       location: apiary.location,
       latitude: apiary.latitude,
       longitude: apiary.longitude,
-      settings: (apiary.settings as { inspectionType: 'subjective' | 'data_driven' } | null) ?? undefined,
+      settings: this.parseSettings(apiary.settings),
       ...featurePhotoFields,
       role: isOwner ? ('OWNER' as const) : apiary.members[0]?.role,
       isShared: !isOwner,
@@ -176,10 +182,7 @@ export class ApiariesService {
     try {
       const updatedApiary = await this.prisma.apiary.update({
         where: { id, userId },
-        data: {
-          ...updateApiaryDto,
-          settings: updateApiaryDto.settings ?? undefined,
-        },
+        data: updateApiaryDto,
         include: {
           featurePhoto: { select: { id: true, storageKey: true } },
         },
@@ -196,7 +199,7 @@ export class ApiariesService {
         location: updatedApiary.location,
         latitude: updatedApiary.latitude,
         longitude: updatedApiary.longitude,
-        settings: (updatedApiary.settings as { inspectionType: 'subjective' | 'data_driven' } | null) ?? undefined,
+        settings: this.parseSettings(updatedApiary.settings),
         ...featurePhotoFields,
       };
     } catch (error: unknown) {

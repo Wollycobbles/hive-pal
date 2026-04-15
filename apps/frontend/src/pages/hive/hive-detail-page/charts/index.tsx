@@ -8,7 +8,6 @@ import { QueenCellsChart } from './queen-cells-chart';
 import { BooleanEventsChart } from './boolean-events-chart';
 import { InspectionCharts } from './inspection-charts';
 import { HealthScoreChart } from './health-score-chart';
-import { useHive } from '@/api/hooks';
 import {
   Select,
   SelectContent,
@@ -20,18 +19,21 @@ import { Calendar } from 'lucide-react';
 
 export type ChartPeriod = '1month' | '3months' | '6months' | 'ytd' | 'all';
 
+import type { HiveScore } from 'shared-schemas';
+
 interface HiveChartsProps {
   hiveId: string | undefined;
   inspectionType?: 'subjective' | 'data_driven';
+  hiveScore?: HiveScore | null;
 }
 
 export const HiveCharts: React.FC<HiveChartsProps> = ({
   hiveId,
   inspectionType,
+  hiveScore,
 }) => {
   const [period, setPeriod] = useState<ChartPeriod>('6months');
   const isSubjective = (inspectionType ?? 'data_driven') === 'subjective';
-  const { data: hive } = useHive(hiveId ?? '', { enabled: !!hiveId && isSubjective });
 
   if (!hiveId) return null;
 
@@ -59,7 +61,7 @@ export const HiveCharts: React.FC<HiveChartsProps> = ({
       {isSubjective ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <InspectionCharts hiveId={hiveId} period={period} />
-          <HealthScoreChart hiveScore={hive?.hiveScore} />
+          <HealthScoreChart hiveScore={hiveScore} />
           <FeedingChart hiveId={hiveId} period={period} />
         </div>
       ) : (

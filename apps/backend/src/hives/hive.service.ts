@@ -31,6 +31,14 @@ import {
   calculateScores,
 } from 'shared-schemas';
 
+function parseApiaryInspectionType(
+  raw: unknown,
+): 'subjective' | 'data_driven' {
+  const settings = raw as { inspectionType?: string } | null;
+  const value = settings?.inspectionType;
+  return value === 'subjective' || value === 'data_driven' ? value : 'data_driven';
+}
+
 @Injectable()
 export class HiveService {
   constructor(
@@ -413,7 +421,7 @@ export class HiveService {
           : hive.installationDate?.toISOString(),
       lastInspectionDate: latestCompletedInspection?.date?.toISOString(),
       settings: (hive.settings as HiveSettings) || undefined,
-      inspectionType: ((hive.apiary?.settings as { inspectionType?: string } | null)?.inspectionType as 'subjective' | 'data_driven' | undefined) ?? 'data_driven',
+      inspectionType: parseApiaryInspectionType(hive.apiary?.settings),
       ...featurePhotoFields,
       boxes: hive.boxes.map((box) => ({
         id: box.id,

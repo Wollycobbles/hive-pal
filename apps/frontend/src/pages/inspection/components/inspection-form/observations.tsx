@@ -125,6 +125,45 @@ const ObservationCounter = <TName extends FieldPath<InspectionFormData>>({
   );
 };
 
+// ─── Subjective Score Field ───────────────────────────────────────────────────
+// A simple 0–10 numeric input used in subjective inspection mode.
+
+type SubjectiveScoreFieldProps = {
+  name: FieldPath<InspectionFormData>;
+  label: string;
+};
+
+const SubjectiveScoreField: React.FC<SubjectiveScoreFieldProps> = ({ name, label }) => {
+  const { control } = useFormContext<InspectionFormData>();
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          <div className="flex flex-col gap-1.5 p-3 rounded-xl border bg-card">
+            <FormLabel className="text-sm font-medium">{label} (0–10)</FormLabel>
+            <FormControl>
+              <Input
+                type="number"
+                min={0}
+                max={10}
+                step={1}
+                value={field.value ?? ''}
+                onChange={e => {
+                  const val = e.target.value;
+                  field.onChange(val === '' ? undefined : Number(val));
+                }}
+              />
+            </FormControl>
+          </div>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
+
 // ─── Observations Section ─────────────────────────────────────────────────────
 
 type ObservationsSectionProps = {
@@ -181,30 +220,9 @@ export const ObservationsSection: React.FC<ObservationsSectionProps> = ({
       {/* Main counter cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {isSubjective ? (
-          <FormField
-            control={control}
+          <SubjectiveScoreField
             name="observations.strength"
-            render={({ field }) => (
-              <FormItem>
-                <div className="flex flex-col gap-1.5 p-3 rounded-xl border bg-card">
-                  <FormLabel className="text-sm font-medium">{t('observations.strength')} (0–10)</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      min={0}
-                      max={10}
-                      step={1}
-                      value={field.value ?? ''}
-                      onChange={e => {
-                        const val = e.target.value;
-                        field.onChange(val === '' ? undefined : Number(val));
-                      }}
-                    />
-                  </FormControl>
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
+            label={t('observations.strength')}
           />
         ) : (
           <ObservationCounter
@@ -224,98 +242,10 @@ export const ObservationsSection: React.FC<ObservationsSectionProps> = ({
       {/* Subjective 0–10 brood and stores fields */}
       {isSubjective && (
         <div className="grid grid-cols-2 gap-3">
-          <FormField
-            control={control}
-            name="observations.cappedBrood"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Capped Brood (0–10)</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    min={0}
-                    max={10}
-                    step={1}
-                    value={field.value ?? ''}
-                    onChange={e => {
-                      const val = e.target.value;
-                      field.onChange(val === '' ? undefined : Number(val));
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={control}
-            name="observations.uncappedBrood"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Uncapped Brood (0–10)</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    min={0}
-                    max={10}
-                    step={1}
-                    value={field.value ?? ''}
-                    onChange={e => {
-                      const val = e.target.value;
-                      field.onChange(val === '' ? undefined : Number(val));
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={control}
-            name="observations.honeyStores"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Honey Stores (0–10)</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    min={0}
-                    max={10}
-                    step={1}
-                    value={field.value ?? ''}
-                    onChange={e => {
-                      const val = e.target.value;
-                      field.onChange(val === '' ? undefined : Number(val));
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={control}
-            name="observations.pollenStores"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Pollen Stores (0–10)</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    min={0}
-                    max={10}
-                    step={1}
-                    value={field.value ?? ''}
-                    onChange={e => {
-                      const val = e.target.value;
-                      field.onChange(val === '' ? undefined : Number(val));
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <SubjectiveScoreField name="observations.cappedBrood" label="Capped Brood" />
+          <SubjectiveScoreField name="observations.uncappedBrood" label="Uncapped Brood" />
+          <SubjectiveScoreField name="observations.honeyStores" label="Honey Stores" />
+          <SubjectiveScoreField name="observations.pollenStores" label="Pollen Stores" />
         </div>
       )}
 

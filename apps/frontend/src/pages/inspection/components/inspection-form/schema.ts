@@ -94,6 +94,18 @@ export const scoreFormSchema = z.object({
   queenScore: z.number().min(0).max(10).nullable().optional(),
 });
 
+// Schema used when the apiary is in subjective mode — strength is capped at 10
+// (in data-driven mode strength is a frame count with no upper bound).
+export const subjectiveInspectionSchema = inspectionFormSchema.extend({
+  actions: z.array(actionSchema).optional(),
+  score: scoreFormSchema.optional(),
+  observations: observationSchema
+    .extend({
+      strength: z.number().int().min(0).max(10).nullish(),
+    })
+    .optional(),
+});
+
 // Final inspection schema
 export const inspectionSchema = inspectionFormSchema.extend({
   actions: z.array(actionSchema).optional(),

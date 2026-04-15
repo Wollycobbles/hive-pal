@@ -18,21 +18,14 @@ import { useTranslation } from 'react-i18next';
 import { buildBoxGradient } from '@/utils/box-gradient';
 import { useImageDisplayStore } from '@/stores/image-display-store';
 import { useApiary } from '@/hooks/use-apiary';
-
-const WARNING_LABELS: Record<string, string> = {
-  no_brood:          'No brood detected',
-  swarm_preparation: 'Swarm preparation detected',
-  supersedure:       'Queen supersedure detected',
-};
+import { WARNING_LABELS } from '@/utils/warning-labels';
 
 type HiveListProps = {
   hives: HiveResponse[];
 };
 
-const HiveCard: React.FC<{ hive: HiveResponse }> = ({ hive }) => {
+const HiveCard: React.FC<{ hive: HiveResponse; isSubjective: boolean }> = ({ hive, isSubjective }) => {
   const { t } = useTranslation(['hive']);
-  const { activeApiary } = useApiary();
-  const isSubjective = activeApiary?.settings?.inspectionType === 'subjective';
   const { data: hiveDetails } = useHive(hive.id, { staleTime: 5 * 60 * 1000 });
   const { data: actions } = useActions(
     { hiveId: hive.id },
@@ -192,11 +185,14 @@ const HiveCard: React.FC<{ hive: HiveResponse }> = ({ hive }) => {
 };
 
 export const HiveList: React.FC<HiveListProps> = ({ hives }) => {
+  const { activeApiary } = useApiary();
+  const isSubjective = activeApiary?.settings?.inspectionType === 'subjective';
+
   return (
     <div>
       <div className={'grid grid-cols-1 lg:grid-cols-2 gap-4'}>
         {hives.map(hive => (
-          <HiveCard key={hive.id} hive={hive} />
+          <HiveCard key={hive.id} hive={hive} isSubjective={isSubjective} />
         ))}
       </div>
     </div>

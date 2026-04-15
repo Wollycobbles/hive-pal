@@ -18,12 +18,7 @@ import { HiveStatusButton } from './hive-status-button';
 import { buildBoxGradient } from '@/utils/box-gradient';
 import { useImageDisplayStore } from '@/stores/image-display-store';
 import { AlertTriangle } from 'lucide-react';
-
-const WARNING_LABELS: Record<string, string> = {
-  no_brood:          'No brood detected',
-  swarm_preparation: 'Swarm preparation detected',
-  supersedure:       'Queen supersedure detected',
-};
+import { WARNING_LABELS } from '@/utils/warning-labels';
 
 export const HiveDetailPage = () => {
   const { id: hiveId } = useParams<{ id: string }>();
@@ -152,7 +147,7 @@ export const HiveDetailPage = () => {
             </TabsContent>
 
             <TabsContent value="analytics">
-              <HiveCharts hiveId={hiveId} inspectionType={hive?.inspectionType ?? 'data_driven'} />
+              <HiveCharts hiveId={hiveId} inspectionType={hive?.inspectionType ?? 'data_driven'} hiveScore={hive?.hiveScore} />
             </TabsContent>
 
             <TabsContent value="boxes">

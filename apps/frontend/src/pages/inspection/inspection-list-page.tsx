@@ -627,14 +627,6 @@ const renderUpcomingInspections = (
   );
 };
 
-// Helper function to get color class based on metric value
-const getMetricColorClass = (value: number | null | undefined) => {
-  if (value === null || value === undefined) return '';
-  if (value >= 7) return 'text-green-600';
-  if (value >= 4) return 'text-amber-500';
-  return 'text-red-500';
-};
-
 // Helper function to determine the appropriate weather icon
 const getWeatherIcon = (weatherCondition: string | null | undefined) => {
   if (!weatherCondition) return null;
