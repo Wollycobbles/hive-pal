@@ -11,6 +11,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Checkbox } from '@/components/ui/checkbox.tsx';
+import { Input } from '@/components/ui/input';
 import { InspectionFormData } from './schema';
 
 // ─── Counter Card ─────────────────────────────────────────────────────────────
@@ -131,11 +132,14 @@ type ObservationsSectionProps = {
   broodFrames?: number | null;
   /** Number of brood boxes */
   broodBoxCount?: number | null;
+  /** Whether the apiary uses subjective (0–10) inspection mode */
+  isSubjective?: boolean;
 };
 
 export const ObservationsSection: React.FC<ObservationsSectionProps> = ({
   broodFrames,
   broodBoxCount,
+  isSubjective = false,
 }) => {
   const { t } = useTranslation('inspection');
   const { control } = useFormContext<InspectionFormData>();
@@ -176,18 +180,144 @@ export const ObservationsSection: React.FC<ObservationsSectionProps> = ({
 
       {/* Main counter cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <ObservationCounter
-          name="observations.strength"
-          label={t('observations.strength')}
-          description="Count the number of spaces between the frames that you can see are full of bees"
-          max={strengthMax}
-        />
+        {isSubjective ? (
+          <FormField
+            control={control}
+            name="observations.strength"
+            render={({ field }) => (
+              <FormItem>
+                <div className="flex flex-col gap-1.5 p-3 rounded-xl border bg-card">
+                  <FormLabel className="text-sm font-medium">{t('observations.strength')} (0–10)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      min={0}
+                      max={10}
+                      step={1}
+                      value={field.value ?? ''}
+                      onChange={e => {
+                        const val = e.target.value;
+                        field.onChange(val === '' ? undefined : Number(val));
+                      }}
+                    />
+                  </FormControl>
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        ) : (
+          <ObservationCounter
+            name="observations.strength"
+            label={t('observations.strength')}
+            description="Count the number of spaces between the frames that you can see are full of bees"
+            max={strengthMax}
+          />
+        )}
         <ObservationCounter
           name="observations.queenCells"
           label={t('observations.queenCells')}
           /* unbounded */
         />
       </div>
+
+      {/* Subjective 0–10 brood and stores fields */}
+      {isSubjective && (
+        <div className="grid grid-cols-2 gap-3">
+          <FormField
+            control={control}
+            name="observations.cappedBrood"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Capped Brood (0–10)</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    min={0}
+                    max={10}
+                    step={1}
+                    value={field.value ?? ''}
+                    onChange={e => {
+                      const val = e.target.value;
+                      field.onChange(val === '' ? undefined : Number(val));
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="observations.uncappedBrood"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Uncapped Brood (0–10)</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    min={0}
+                    max={10}
+                    step={1}
+                    value={field.value ?? ''}
+                    onChange={e => {
+                      const val = e.target.value;
+                      field.onChange(val === '' ? undefined : Number(val));
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="observations.honeyStores"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Honey Stores (0–10)</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    min={0}
+                    max={10}
+                    step={1}
+                    value={field.value ?? ''}
+                    onChange={e => {
+                      const val = e.target.value;
+                      field.onChange(val === '' ? undefined : Number(val));
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="observations.pollenStores"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Pollen Stores (0–10)</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    min={0}
+                    max={10}
+                    step={1}
+                    value={field.value ?? ''}
+                    onChange={e => {
+                      const val = e.target.value;
+                      field.onChange(val === '' ? undefined : Number(val));
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      )}
 
       {/* Swarm / supersedure cells — shown only when queen cells > 0 */}
       {(queenCells ?? 0) > 0 && (

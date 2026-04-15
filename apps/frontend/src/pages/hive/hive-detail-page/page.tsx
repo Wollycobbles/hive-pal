@@ -98,7 +98,9 @@ export const HiveDetailPage = () => {
 
             {/* Compact stats section */}
             <div className="border-t mt-3 pt-3">
-              {hiveId && <HiveHeaderStats hiveId={hiveId} />}
+              {hive?.inspectionType === 'subjective'
+                ? hive.hiveScore && <StatisticCards score={hive.hiveScore} variant="inline" />
+                : hiveId && <HiveHeaderStats hiveId={hiveId} />}
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-3">
                 <QueenInformation
                   hiveId={hive?.id}
@@ -150,7 +152,7 @@ export const HiveDetailPage = () => {
             </TabsContent>
 
             <TabsContent value="analytics">
-              <HiveCharts hiveId={hiveId} />
+              <HiveCharts hiveId={hiveId} inspectionType={hive?.inspectionType ?? 'data_driven'} />
             </TabsContent>
 
             <TabsContent value="boxes">

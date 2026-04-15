@@ -162,6 +162,9 @@ export const InspectionForm: React.FC<InspectionFormProps> = ({
   const broodBoxCount =
     effectiveBoxes.filter((box: { type: string }) => box.type === 'BROOD').length || null;
 
+  const inspectionType = selectedHive?.inspectionType ?? 'data_driven';
+  const isSubjective = inspectionType === 'subjective';
+
   // Format date for API call
   const dateString = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '';
   const isDateInFuture = selectedDate && selectedDate > new Date();
@@ -356,12 +359,21 @@ export const InspectionForm: React.FC<InspectionFormProps> = ({
               <WeatherSection />
 
               <hr className={'border-t border-border'} />
-              <ObservationsSection broodFrames={totalFrames} broodBoxCount={broodBoxCount} />
+              <ObservationsSection
+                broodFrames={isSubjective ? null : totalFrames}
+                broodBoxCount={isSubjective ? null : broodBoxCount}
+                isSubjective={isSubjective}
+              />
               <hr className={'border-t border-border'} />
-              <FrameCountSection totalFrames={totalFrames} />
-              <hr className={'border-t border-border'} />
-              <ScorePreviewSection />
-              <hr className={'border-t border-border'} />
+
+              {!isSubjective && (
+                <>
+                  <FrameCountSection totalFrames={totalFrames} />
+                  <hr className={'border-t border-border'} />
+                  <ScorePreviewSection />
+                  <hr className={'border-t border-border'} />
+                </>
+              )}
               <ActionsSection hiveBoxes={selectedHive?.boxes ?? []} hiveId={selectedHive?.id} />
               <hr className={'border-t border-border'} />
               <NotesSection />

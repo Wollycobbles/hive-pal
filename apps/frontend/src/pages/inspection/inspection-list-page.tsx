@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useApiary } from '@/hooks/use-apiary';
 import { useTranslation } from 'react-i18next';
 import { useHives, useInspections } from '@/api/hooks';
 import {
@@ -74,6 +75,8 @@ export const InspectionListPage = () => {
   const activeTab = (view as InspectionTab) || InspectionTab.ALL;
 
   const navigate = useNavigate();
+  const { activeApiary } = useApiary();
+  const isSubjective = activeApiary?.settings?.inspectionType === 'subjective';
   const [searchTerm, setSearchTerm] = useState<string | undefined>('');
   const [selectedHiveId, setSelectedHiveId] = useState<string | undefined>(
     undefined,
@@ -218,6 +221,7 @@ export const InspectionListPage = () => {
               hivesData,
               InspectionTab.ALL,
               t,
+              isSubjective,
             )}
           </TabsContent>
 
@@ -229,6 +233,7 @@ export const InspectionListPage = () => {
               hivesData,
               InspectionTab.RECENT,
               t,
+              isSubjective,
             )}
           </TabsContent>
 
@@ -239,6 +244,7 @@ export const InspectionListPage = () => {
               t,
               navigate,
               refetchInspections,
+              isSubjective,
             )}
           </TabsContent>
         </Tabs>
@@ -273,6 +279,7 @@ const renderInspectionsTable = (
   hives: HiveResponse[] = [],
   activeTab: InspectionTab = InspectionTab.ALL,
   t: (key: string, options?: Record<string, unknown>) => string,
+  isSubjective: boolean = false,
 ) => {
   const getHiveName = (hiveId: string) => {
     const hive = hives.find(h => h.id === hiveId);
@@ -319,7 +326,7 @@ const renderInspectionsTable = (
           <TableHead>{t('inspection:fields.hive')}</TableHead>
           <TableHead>{t('inspection:fields.weather')}</TableHead>
           <TableHead>
-            {activeTab === InspectionTab.UPCOMING
+            {activeTab === InspectionTab.UPCOMING || isSubjective
               ? t('inspection:fields.status')
               : 'Strength'}
           </TableHead>
@@ -382,7 +389,8 @@ const renderInspectionsTable = (
               </div>
             </TableCell>
             <TableCell>
-              {activeTab === InspectionTab.UPCOMING ||
+              {isSubjective ||
+                activeTab === InspectionTab.UPCOMING ||
                 inspection.status === InspectionStatus.SCHEDULED ? (
                 getStatusBadge(inspection.status)
               ) : (
@@ -499,6 +507,7 @@ const renderUpcomingInspections = (
   t: (key: string, options?: Record<string, unknown>) => string,
   navigate: (path: string) => void,
   refetchInspections: () => void,
+  isSubjective: boolean = false,
 ) => {
   const getHiveName = (hiveId: string) => {
     const hive = hives.find(h => h.id === hiveId);
@@ -602,6 +611,7 @@ const renderUpcomingInspections = (
             hives,
             InspectionTab.UPCOMING,
             t,
+            isSubjective,
           )}
         </div>
       )}

@@ -157,6 +157,7 @@ export class HiveService {
         },
         select: {
           date: true,
+          overallScore: true,
           scoreWarnings: true,
           observations: {
             where: { type: { in: ['strength', 'total_frames'] } },
@@ -232,6 +233,7 @@ export class HiveService {
           lastInspectionDate: hive.inspections[0]?.date?.toISOString(),
           lastInspectionStrength: hive.inspections[0]?.observations?.find(o => o.type === 'strength')?.numericValue ?? null,
           lastInspectionTotalFrames: hive.inspections[0]?.observations?.find(o => o.type === 'total_frames')?.numericValue ?? null,
+          lastInspectionOverallScore: hive.inspections[0]?.overallScore ?? null,
           previousInspectionStrength: hive.inspections[1]?.observations?.find(o => o.type === 'strength')?.numericValue ?? null,
           lastInspectionWarnings: hive.inspections[0]?.scoreWarnings
             ? (JSON.parse(hive.inspections[0].scoreWarnings) as string[])
@@ -306,7 +308,7 @@ export class HiveService {
         },
       },
       include: {
-        apiary: true,
+        apiary: { select: { settings: true } },
         queens: {
           where: {
             status: 'ACTIVE',
@@ -411,6 +413,7 @@ export class HiveService {
           : hive.installationDate?.toISOString(),
       lastInspectionDate: latestCompletedInspection?.date?.toISOString(),
       settings: (hive.settings as HiveSettings) || undefined,
+      inspectionType: ((hive.apiary?.settings as { inspectionType?: string } | null)?.inspectionType as 'subjective' | 'data_driven' | undefined) ?? 'data_driven',
       ...featurePhotoFields,
       boxes: hive.boxes.map((box) => ({
         id: box.id,

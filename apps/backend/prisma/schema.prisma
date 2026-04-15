@@ -79,6 +79,7 @@ model Apiary {
   featurePhoto          Photo?              @relation("ApiaryFeaturePhoto", fields: [featurePhotoId], references: [id], onDelete: SetNull)
   members               ApiaryMember[]
   invites               ApiaryInvite[]
+  settings              Json?
 
   // Create index for quick lookup by userId - used in authorization checks
   @@index([userId])

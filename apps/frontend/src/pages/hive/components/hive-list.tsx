@@ -17,6 +17,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { buildBoxGradient } from '@/utils/box-gradient';
 import { useImageDisplayStore } from '@/stores/image-display-store';
+import { useApiary } from '@/hooks/use-apiary';
 
 const WARNING_LABELS: Record<string, string> = {
   no_brood:          'No brood detected',
@@ -30,6 +31,8 @@ type HiveListProps = {
 
 const HiveCard: React.FC<{ hive: HiveResponse }> = ({ hive }) => {
   const { t } = useTranslation(['hive']);
+  const { activeApiary } = useApiary();
+  const isSubjective = activeApiary?.settings?.inspectionType === 'subjective';
   const { data: hiveDetails } = useHive(hive.id, { staleTime: 5 * 60 * 1000 });
   const { data: actions } = useActions(
     { hiveId: hive.id },
@@ -97,22 +100,33 @@ const HiveCard: React.FC<{ hive: HiveResponse }> = ({ hive }) => {
         </div>
         <div className="flex flex-col items-end gap-1">
           <div className="flex items-center gap-2">
-            {hive.lastInspectionStrength != null && (() => {
-              const current = hive.lastInspectionStrength;
-              const total   = hive.lastInspectionTotalFrames;
-              const delta   = hive.previousInspectionStrength != null
-                ? current - hive.previousInspectionStrength
-                : null;
-              return (
+            {isSubjective ? (
+              hive.lastInspectionOverallScore != null && (
                 <div className="flex items-center gap-1 text-sm">
-                  <span className="text-xs text-muted-foreground">Strength:</span>
+                  <span className="text-xs text-muted-foreground">Score:</span>
                   <span className="font-semibold tabular-nums">
-                    {current}{total != null && `/${total}`}
+                    {hive.lastInspectionOverallScore.toFixed(1)}/10
                   </span>
-                  <TrendIndicator delta={delta} iconSize="h-3.5 w-3.5" />
                 </div>
-              );
-            })()}
+              )
+            ) : (
+              hive.lastInspectionStrength != null && (() => {
+                const current = hive.lastInspectionStrength;
+                const total   = hive.lastInspectionTotalFrames;
+                const delta   = hive.previousInspectionStrength != null
+                  ? current - hive.previousInspectionStrength
+                  : null;
+                return (
+                  <div className="flex items-center gap-1 text-sm">
+                    <span className="text-xs text-muted-foreground">Strength:</span>
+                    <span className="font-semibold tabular-nums">
+                      {current}{total != null && `/${total}`}
+                    </span>
+                    <TrendIndicator delta={delta} iconSize="h-3.5 w-3.5" />
+                  </div>
+                );
+              })()
+            )}
             <HiveStatus status={hive.status} />
           </div>
 
