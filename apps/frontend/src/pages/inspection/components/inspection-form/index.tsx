@@ -44,6 +44,11 @@ import { mapWeatherConditionToForm } from '@/utils/weather-mapping';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { AudioSection } from './audio-section';
+import { PhotosSection, PendingPhoto } from './photos-section';
+import { uploadPendingPhotos } from './upload-pending-photos';
+import { uploadPendingRecordings } from './upload-pending-recordings';
+import { ScorePreviewSection } from './score-preview';
+import { InspectionDateTimePicker } from '@/components/inspection-date-time-picker';
 
 interface PendingRecording {
   id: string;
@@ -78,6 +83,7 @@ export const InspectionForm: React.FC<InspectionFormProps> = ({
   const [pendingRecordings, setPendingRecordings] = useState<
     PendingRecording[]
   >([]);
+  const [pendingPhotos, setPendingPhotos] = useState<PendingPhoto[]>([]);
 
   // Use our new custom hooks
   const { data: inspection } = useInspection(inspectionId as string, {
@@ -90,6 +96,7 @@ export const InspectionForm: React.FC<InspectionFormProps> = ({
       hiveId,
       ...inspection,
       date: inspection?.date ? new Date(inspection.date) : new Date(),
+      isAllDay: inspection?.isAllDay ?? true,
       actions:
         inspection?.actions?.map(action => {
           if (action.details.type === ActionType.FEEDING) {
@@ -161,7 +168,18 @@ export const InspectionForm: React.FC<InspectionFormProps> = ({
     }
   }, [weatherData, form, isDateInFuture, selectedHive?.apiaryId]);
 
-  const onSubmit = useUpsertInspection(inspectionId);
+  const onSubmit = useUpsertInspection(inspectionId, {
+    onBeforeNavigate: async (id: string) => {
+      await Promise.all([
+        pendingRecordings.length > 0
+          ? uploadPendingRecordings(id, pendingRecordings)
+          : Promise.resolve(),
+        pendingPhotos.length > 0
+          ? uploadPendingPhotos(id, pendingPhotos)
+          : Promise.resolve(),
+      ]);
+    },
+  });
 
   // Handler for regular save button
   const handleSave = form.handleSubmit(data => {
@@ -185,6 +203,7 @@ export const InspectionForm: React.FC<InspectionFormProps> = ({
   });
 
   const date = form.watch('date');
+  const isAllDay = form.watch('isAllDay') ?? true;
   const isInFuture = date && date > new Date();
   const isEdit = Boolean(inspectionId);
   const isCompleted = inspection?.status === InspectionStatus.COMPLETED;
@@ -245,7 +264,9 @@ export const InspectionForm: React.FC<InspectionFormProps> = ({
                           )}
                         >
                           {field.value ? (
-                            format(field.value, 'PPP')
+                            isAllDay
+                              ? format(field.value, 'PPP')
+                              : format(field.value, 'PPP HH:mm')
                           ) : (
                             <span>{t('inspection:form.pickDate')}</span>
                           )}
@@ -257,11 +278,32 @@ export const InspectionForm: React.FC<InspectionFormProps> = ({
                       <Calendar
                         mode="single"
                         selected={field.value}
-                        onSelect={field.onChange}
+                        onSelect={selected => {
+                          if (!selected) return;
+                          if (!isAllDay && field.value) {
+                            selected.setHours(
+                              field.value.getHours(),
+                              field.value.getMinutes(),
+                              0,
+                              0,
+                            );
+                          }
+                          field.onChange(selected);
+                        }}
                         initialFocus
                       />
                     </PopoverContent>
                   </Popover>
+
+                  <div className="flex items-center gap-2 mt-1">
+                    <InspectionDateTimePicker
+                      date={field.value ?? new Date()}
+                      isAllDay={isAllDay}
+                      onDateChange={field.onChange}
+                      onIsAllDayChange={checked => form.setValue('isAllDay', checked)}
+                    />
+                  </div>
+
                   {isInFuture && (
                     <div className={'p-4 rounded'}>
                       <strong className={'text-blue-500'}>
@@ -287,10 +329,18 @@ export const InspectionForm: React.FC<InspectionFormProps> = ({
                 onPendingRecordingsChange={setPendingRecordings}
               />
               <hr className={'border-t border-border'} />
+              <PhotosSection
+                inspectionId={inspectionId}
+                pendingPhotos={pendingPhotos}
+                onPendingPhotosChange={setPendingPhotos}
+              />
+              <hr className={'border-t border-border'} />
               <WeatherSection />
 
               <hr className={'border-t border-border'} />
               <ObservationsSection />
+              <hr className={'border-t border-border'} />
+              <ScorePreviewSection />
               <hr className={'border-t border-border'} />
               <ActionsSection />
               <hr className={'border-t border-border'} />

@@ -175,10 +175,19 @@
       "save": "Save",
       "inUse": "In Use",
       "perHive": "Per Hive",
-      "extra": "Extra",
+      "extra": "In Stock",
       "needed": "Needed",
       "status": "Status",
-      "actions": "Actions"
+      "actions": "Actions",
+      "deleteItem": "Delete Equipment Item",
+      "hideItem": "Hide Equipment Item",
+      "deleteConfirm": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
+      "hideConfirm": "This will hide \"{{name}}\" from your equipment list. You can restore it later.",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "hide": "Hide",
+      "showHidden": "Show {{count}} hidden item(s)",
+      "restore": "Restore"
     }
   },
   "llmPrompt": {
@@ -206,6 +215,8 @@
       "installedValue": "Installed: {{installedAt}}",
       "noActiveQueenRecorded": "No active queen recorded.",
       "boxConfiguration": "Box Configuration",
+      "maintenance": "{{status}} {{component}}",
+      "maintenanceDefault": "Maintenance",
       "position": "Position {{position}}: {{type}}",
       "variant": "variant={{variant}}",
       "frames": "frames",

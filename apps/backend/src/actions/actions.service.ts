@@ -21,6 +21,7 @@ type ActionWithRelations = Prisma.ActionGetPayload<{
     frameAction: true;
     harvestAction: true;
     boxConfigurationAction: true;
+    maintenanceAction: true;
     createdByUser: { select: { name: true; email: true } };
   };
 }>;
@@ -138,7 +139,7 @@ export class ActionsService {
     // Get the hiveId from the inspection
     const inspection = await tx.inspection.findUnique({
       where: { id: inspectionId },
-      select: { hiveId: true },
+      select: { hiveId: true, date: true },
     });
 
     if (!inspection) {
@@ -155,6 +156,7 @@ export class ActionsService {
           inspectionId,
           type,
           notes,
+          date: inspection.date,
           ...(userId && { createdByUserId: userId }),
         },
       });
@@ -203,6 +205,14 @@ export class ActionsService {
             framesRemoved: details.framesRemoved,
             totalBoxes: details.totalBoxes,
             totalFrames: details.totalFrames,
+          },
+        });
+      } else if (details.type === ActionType.MAINTENANCE) {
+        await tx.maintenanceAction.create({
+          data: {
+            actionId: createdAction.id,
+            component: details.component,
+            status: details.status,
           },
         });
       }
@@ -307,6 +317,7 @@ export class ActionsService {
         frameAction: true,
         harvestAction: true,
         boxConfigurationAction: true,
+        maintenanceAction: true,
         createdByUser: { select: { name: true, email: true } },
       },
     });
@@ -416,6 +427,14 @@ export class ActionsService {
             totalFrames: details.totalFrames,
           },
         });
+      } else if (details.type === ActionType.MAINTENANCE) {
+        await tx.maintenanceAction.create({
+          data: {
+            actionId: createdAction.id,
+            component: details.component,
+            status: details.status,
+          },
+        });
       }
 
       // Fetch the complete action with relations
@@ -427,6 +446,7 @@ export class ActionsService {
           frameAction: true,
           harvestAction: true,
           boxConfigurationAction: true,
+          maintenanceAction: true,
           createdByUser: { select: { name: true, email: true } },
         },
       });
@@ -478,6 +498,7 @@ export class ActionsService {
         frameAction: true,
         harvestAction: true,
         boxConfigurationAction: true,
+        maintenanceAction: true,
         createdByUser: { select: { name: true, email: true } },
       },
     });
@@ -562,6 +583,14 @@ export class ActionsService {
               unit: details.unit,
             },
           });
+        } else if (details.type === ActionType.MAINTENANCE) {
+          await tx.maintenanceAction.create({
+            data: {
+              actionId,
+              component: details.component,
+              status: details.status,
+            },
+          });
         }
         // NOTE type doesn't need additional details, content is in notes
       }
@@ -575,6 +604,7 @@ export class ActionsService {
           frameAction: true,
           harvestAction: true,
           boxConfigurationAction: true,
+          maintenanceAction: true,
           createdByUser: { select: { name: true, email: true } },
         },
       });
@@ -647,6 +677,7 @@ export class ActionsService {
     await tx.frameAction.deleteMany({ where: { actionId } });
     await tx.harvestAction.deleteMany({ where: { actionId } });
     await tx.boxConfigurationAction.deleteMany({ where: { actionId } });
+    await tx.maintenanceAction.deleteMany({ where: { actionId } });
   }
 
   // Prisma-to-Domain Transformation Function
@@ -807,6 +838,25 @@ export class ActionsService {
           },
         };
       }
+
+      case ActionType.MAINTENANCE:
+        if (!prismaAction.maintenanceAction) {
+          throw new Error('Maintenance action details missing');
+        }
+        return {
+          ...base,
+          type: ActionType.MAINTENANCE,
+          details: {
+            type: ActionType.MAINTENANCE as const,
+            component: prismaAction.maintenanceAction.component as
+              | 'BOX'
+              | 'BOTTOM_BOARD'
+              | 'COVER',
+            status: prismaAction.maintenanceAction.status as
+              | 'CLEANED'
+              | 'REPLACED',
+          },
+        };
 
       case ActionType.NOTE:
         return {

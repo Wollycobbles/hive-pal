@@ -24,7 +24,8 @@ import {
   useDueTodayInspections,
   useUpcomingInspections,
 } from '@/api/hooks/useInspections';
-import { format } from 'date-fns';
+import { useScheduledInspectionActions } from '@/api/hooks/useScheduledInspectionActions';
+import { UpcomingInspectionListItem } from '@/components/upcoming-inspection-list-item';
 
 export const ApiaryHeader: React.FC = () => {
   const { t } = useTranslation(['common', 'inspection']);
@@ -54,6 +55,9 @@ export const ApiaryHeader: React.FC = () => {
   }, [hives]);
 
   const getHiveName = (hiveId: string) => hiveNameMap.get(hiveId) || hiveId;
+
+  const { setReschedulingInspection, handleDoInspection, rescheduleDialogElement } =
+    useScheduledInspectionActions(getHiveName);
 
   const overdueCount = overdueInspections?.length ?? 0;
   const dueTodayCount = dueTodayInspections?.length ?? 0;
@@ -122,6 +126,7 @@ export const ApiaryHeader: React.FC = () => {
   };
 
   return (
+    <>
     <Card className={`h-full flex overflow-hidden gap-0 py-0 border-none shadow-none ${imageMode === 'side' && apiary?.featurePhotoUrl ? 'flex-col sm:flex-row' : 'flex-col'}`}>
       {imageMode !== 'hidden' && apiary?.featurePhotoUrl && (
         <img
@@ -140,21 +145,21 @@ export const ApiaryHeader: React.FC = () => {
         </CardTitle>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" asChild>
-            <Link to={`/apiaries/${activeApiaryId}`}>
+            <Link to={`/apiaries/${activeApiaryId}`} aria-label={t('reports.widget.apiaryDetails')}>
               <MapPin className="h-4 w-4" />
-              {t('reports.widget.apiaryDetails')}
+              <span className="hidden sm:inline">{t('reports.widget.apiaryDetails')}</span>
             </Link>
           </Button>
           <Button variant="outline" size="sm" asChild>
-            <Link to="/reports">
+            <Link to="/reports" aria-label={t('reports.widget.viewReports')}>
               <FileBarChart className="h-4 w-4" />
-              {t('reports.widget.viewReports')}
+              <span className="hidden sm:inline">{t('reports.widget.viewReports')}</span>
             </Link>
           </Button>
           <Button variant="outline" size="sm" asChild>
-            <Link to="/calendar">
+            <Link to="/calendar" aria-label={t('inspection:dashboard.viewCalendar', 'Calendar')}>
               <CalendarDays className="h-4 w-4" />
-              {t('inspection:dashboard.viewCalendar', 'Calendar')}
+              <span className="hidden sm:inline">{t('inspection:dashboard.viewCalendar', 'Calendar')}</span>
             </Link>
           </Button>
         </div>
@@ -246,24 +251,13 @@ export const ApiaryHeader: React.FC = () => {
               </h4>
               <div className="space-y-2">
                 {upcomingInspections?.map(inspection => (
-                  <div
+                  <UpcomingInspectionListItem
                     key={inspection.id}
-                    className="flex flex-col gap-1 text-sm p-2 rounded-md bg-blue-50 border border-blue-100"
-                  >
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <span>{format(new Date(inspection.date), 'MMM d')}</span>
-                      <span>{format(new Date(inspection.date), 'HH:mm')}</span>
-                      <span className="text-xs px-1.5 py-0.5 rounded bg-blue-100 text-blue-700">
-                        {t('inspection:status.pending', 'Scheduled')}
-                      </span>
-                    </div>
-                    <Link
-                      to={`/hives/${inspection.hiveId}`}
-                      className="font-medium text-blue-700 hover:underline"
-                    >
-                      {getHiveName(inspection.hiveId)}
-                    </Link>
-                  </div>
+                    inspection={inspection}
+                    hiveName={getHiveName(inspection.hiveId)}
+                    onDoInspection={handleDoInspection}
+                    onReschedule={setReschedulingInspection}
+                  />
                 ))}
               </div>
             </div>
@@ -272,5 +266,8 @@ export const ApiaryHeader: React.FC = () => {
       )}
       </div>
     </Card>
+
+    {rescheduleDialogElement}
+    </>
   );
 };

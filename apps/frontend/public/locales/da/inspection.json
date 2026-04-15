@@ -15,6 +15,8 @@
     "form": {
         "selectHive": "Vælg et stade",
         "pickDate": "Vælg en dato",
+    "allDay": "All day",
+    "specificTime": "Set specific time",
         "newInspection": "Ny inspektion",
         "editInspection": "Rediger inspektion",
         "hive": "Stade",
@@ -96,6 +98,19 @@
                 "remove": "Fjern",
                 "saveNote": "Gem notat",
                 "edit": "Rediger"
+            },
+            "maintenance": "Vedligehold",
+            "maintenance_section": {
+                "title": "Vedligehold",
+                "component": "Komponent",
+                "box": "Magasin",
+                "bottomBoard": "Bund",
+                "cover": "Låg",
+                "status": "Status",
+                "cleaned": "Rengjort",
+                "replaced": "Udskiftet",
+                "notesOptional": "Noter (frivilligt)",
+                "notesPlaceholder": "Yderligere noter omkring dette vedligehold..."
             }
         },
         "audio": {
@@ -109,8 +124,12 @@
         "population": "Bipopulation",
         "stores": "Beholdninger",
         "queen": "Dronning",
-        "title": "Inspektion scores",
-        "warnings": "Advarsler"
+        "title": "Sundheds score",
+        "warnings": "Advarsler",
+        "override": "Tilsidesæt",
+        "resetToCalculated": "Nulstil til beregnet",
+        "autoCalculated": "Auto-beregnet",
+        "overridden": "Tilpasset"
     },
     "actions": {
         "details": "Detaljer",
@@ -125,7 +144,9 @@
         "doInspection": "Udfør inspektion",
         "reschedule": "Omlægge",
         "completeInspection": "Færdiggør inspektion",
-        "addInspection": "Tilføj inspektion"
+        "addInspection": "Tilføj inspektion",
+        "print": "Udskriv",
+        "share": "Del"
     },
     "messages": {
         "exportComingSoon": "Funktionen \"eksporter\" kommer snart",
@@ -191,7 +212,7 @@
             "ants_present": "Myrer observeret",
             "healthy": "Sund",
             "active": "Aktiv",
-            "sluggish": "Træg",
+            "sluggish": "Svag",
             "thriving": "Trives"
         },
         "reminderObservations": "Påmindelser",
@@ -261,7 +282,8 @@
         "navigation": "Navigation",
         "allInspections": "Alle inspektioner",
         "recentInspections": "Seneste inspektioner",
-        "goBack": "Tilbage"
+        "goBack": "Tilbage",
+        "deleteFailed": "Sletning af inspektion fejlede"
     },
     "schedule": {
         "title": "Planlæg inspektion",
@@ -312,7 +334,7 @@
         "recentInspections": "Seneste inspektioner",
         "upcomingInspections": "Kommende inspektioner",
         "printInspectionList": "Udskriv inspektionsliste",
-        "shareInspectionList": "Del inspektions liste"
+        "shareInspectionList": "Del inspektionsliste"
     },
     "scheduled": {
         "title": "Planlagte inspektioner",

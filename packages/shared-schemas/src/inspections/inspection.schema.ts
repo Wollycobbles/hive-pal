@@ -3,17 +3,28 @@ import { observationSchema } from './observations.schema';
 import {  inspectionStatusSchema } from './status';
 import {actionResponseSchema, createActionSchema} from '../actions';
 
+export const scoreOverrideSchema = z.object({
+  overallScore: z.number().min(0).max(10).nullable(),
+  populationScore: z.number().min(0).max(10).nullable(),
+  storesScore: z.number().min(0).max(10).nullable(),
+  queenScore: z.number().min(0).max(10).nullable(),
+});
+
+export type ScoreOverride = z.infer<typeof scoreOverrideSchema>;
+
 // Base schema for creating inspections
 export const createInspectionSchema = z.object({
   id: z.string().uuid().optional(),
   hiveId: z.string().uuid(),
   date: z.string().datetime(),
+  isAllDay: z.boolean().optional(),
   temperature: z.number().nullish(),
   weatherConditions: z.string().nullish(),
   notes: z.string().nullish(),
   observations: observationSchema.optional(),
   actions: z.array(createActionSchema).optional(),
   status: inspectionStatusSchema.optional(),
+  score: scoreOverrideSchema.optional(),
 });
 
 // Schema for updating inspections
@@ -26,6 +37,7 @@ export const updateInspectionResponseSchema = z.object({
   status: inspectionStatusSchema.optional(),
   date: z.string().datetime(),
   hiveId: z.string().uuid(),
+  isAllDay: z.boolean().optional(),
 });
 
 export const scoreSchema = z.object({
@@ -41,6 +53,7 @@ export const createInsectionResponseSchema = z.object({
   hiveId: z.string().uuid(),
   status: inspectionStatusSchema,
   date: z.string().datetime(),
+  isAllDay: z.boolean().optional(),
   id: z.string().uuid(),
 });
 

@@ -151,7 +151,8 @@
         "password": "Лозинка",
         "changePassword": "Промените лозинку вашег налога",
         "saveSettings": "Сачувај подешавања",
-        "preferencesUpdated": "Ваша подешавања су успешно ажурирана."
+        "preferencesUpdated": "Ваша подешавања су успешно ажурирана.",
+        "saving": "Чување..."
     },
     "feedback": {
         "title": "Пошаљи повратне информације",
@@ -221,6 +222,9 @@
         "overdue": "Касни",
         "scheduled": "Заказано",
         "cancelled": "Отказано",
+        "doInspection": "Изврши преглед",
+        "reschedule": "Прераспореди",
+        "inspectHive": "Прегледај {{hiveName}}",
         "strength": "Снага",
         "honey": "Мед",
         "queenSeen": "Матица виђена",
@@ -334,5 +338,8 @@
         "size": "Величина",
         "download": "Преузми",
         "delete": "Избриши"
+    },
+    "footer": {
+        "privacyPolicy": "Politika privatnosti"
     }
 }

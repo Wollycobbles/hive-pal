@@ -154,7 +154,8 @@
     "password": "Heslo",
     "changePassword": "Zmeniť heslo účtu",
     "saveSettings": "Uložiť nastavenia",
-    "preferencesUpdated": "Vaše nastavenia boli úspešne aktualizované."
+    "preferencesUpdated": "Vaše nastavenia boli úspešne aktualizované.",
+    "saving": "Ukladanie..."
   },
   "feedback": {
     "title": "Poslať spätnú väzbu",
@@ -220,10 +221,14 @@
     "showLess": "Zobraziť menej",
     "notesAvailable": "Poznámky k dispozícii",
     "boxConfiguration": "Konfigurácia nadstavkov",
+    "maintenance": "Údržba",
     "inspection": "Prehliadka",
     "overdue": "Po termíne",
     "scheduled": "Naplánované",
     "cancelled": "Zrušené",
+    "doInspection": "Vykonať prehliadku",
+    "reschedule": "Preplánovat",
+    "inspectHive": "Prehliadka {{hiveName}}",
     "strength": "Sila",
     "honey": "Med",
     "queenSeen": "Matka videná",
@@ -278,5 +283,8 @@
       "viewReports": "Zobraziť reporty",
       "noApiary": "Vyberte včelnicu na zobrazenie štatistík"
     }
+  },
+  "footer": {
+    "privacyPolicy": "Zásady ochrany osobných údajov"
   }
 }

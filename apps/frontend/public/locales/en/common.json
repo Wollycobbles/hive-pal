@@ -158,7 +158,8 @@
     "password": "Password",
     "changePassword": "Change your account password",
     "saveSettings": "Save Settings",
-    "preferencesUpdated": "Your preferences have been updated successfully."
+    "preferencesUpdated": "Your preferences have been updated successfully.",
+    "saving": "Saving..."
   },
   "feedback": {
     "title": "Send Feedback",
@@ -207,6 +208,7 @@
   "quickAdd": {
     "title": "Add Entry",
     "quickCheck": "Quick Check",
+    "inspection": "Inspection",
     "action": "Action",
     "photo": "Photo",
     "document": "Document"
@@ -293,10 +295,14 @@
     "showLess": "Show less",
     "notesAvailable": "Notes available",
     "boxConfiguration": "Box configuration",
+    "maintenance": "Maintenance",
     "inspection": "Inspection",
     "overdue": "Overdue",
     "scheduled": "Scheduled",
     "cancelled": "Cancelled",
+    "doInspection": "Do inspection",
+    "reschedule": "Reschedule",
+    "inspectHive": "Inspect {{hiveName}}",
     "strength": "Strength",
     "honey": "Honey",
     "queenSeen": "Queen seen",
@@ -432,5 +438,8 @@
       "apiaryDetails": "Apiary Details",
       "noApiary": "Select an apiary to view statistics"
     }
+  },
+  "footer": {
+    "privacyPolicy": "Privacy Policy"
   }
 }

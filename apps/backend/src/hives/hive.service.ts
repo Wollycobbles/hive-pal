@@ -28,6 +28,7 @@ import {
   AlertSeverity,
   AlertStatus,
   isVariantCompatible,
+  calculateScores,
 } from 'shared-schemas';
 
 @Injectable()
@@ -354,7 +355,38 @@ export class HiveService {
     const metrics = this.inspectionService.mapObservationsToDto(
       latestCompletedInspection?.observations ?? [],
     );
-    const score = this.metricsService.calculateOveralScore(metrics);
+    // Always calculate from observations, then overlay any stored overrides
+    const calculated = calculateScores(metrics);
+    const insp = latestCompletedInspection as Record<string, unknown> | null;
+    const storedOverall = insp?.['overallScore'] as number | null | undefined;
+    const storedPopulation = insp?.['populationScore'] as
+      | number
+      | null
+      | undefined;
+    const storedStores = insp?.['storesScore'] as number | null | undefined;
+    const storedQueen = insp?.['queenScore'] as number | null | undefined;
+    const storedWarnings = insp?.['scoreWarnings'] as string | null | undefined;
+    const storedConfidence = insp?.['scoreConfidence'] as
+      | number
+      | null
+      | undefined;
+
+    const score =
+      storedOverall != null ||
+      storedPopulation != null ||
+      storedStores != null ||
+      storedQueen != null
+        ? {
+            overallScore: storedOverall ?? calculated.overallScore,
+            populationScore: storedPopulation ?? calculated.populationScore,
+            storesScore: storedStores ?? calculated.storesScore,
+            queenScore: storedQueen ?? calculated.queenScore,
+            warnings: storedWarnings
+              ? (JSON.parse(storedWarnings) as string[])
+              : calculated.warnings,
+            confidence: storedConfidence ?? calculated.confidence,
+          }
+        : calculated;
     const featurePhotoFields = await this.mapFeaturePhotoUrl(hive.featurePhoto);
 
     return {

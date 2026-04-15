@@ -1,16 +1,17 @@
 import React, { useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { AlertTriangle, Clock, CalendarDays } from 'lucide-react';
+import { AlertTriangle, CalendarDays, Clock } from 'lucide-react';
 import {
   useOverdueInspections,
   useDueTodayInspections,
   useUpcomingInspections,
 } from '@/api/hooks/useInspections';
+import { useScheduledInspectionActions } from '@/api/hooks/useScheduledInspectionActions';
 import { useHives } from '@/api/hooks';
 import { Card, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { format } from 'date-fns';
+import { UpcomingInspectionListItem } from '@/components/upcoming-inspection-list-item';
 
 export const InspectionStatusSummary: React.FC = () => {
   const { t } = useTranslation(['inspection', 'common']);
@@ -32,7 +33,10 @@ export const InspectionStatusSummary: React.FC = () => {
 
   const getHiveName = (hiveId: string) => hiveNameMap.get(hiveId) || hiveId;
 
-  const isLoading = overdueLoading || dueTodayLoading || upcomingLoading;
+  const { setReschedulingInspection, handleDoInspection, rescheduleDialogElement } =
+    useScheduledInspectionActions(getHiveName);
+
+  const isLoading= overdueLoading || dueTodayLoading || upcomingLoading;
   const overdueCount = overdueInspections?.length ?? 0;
   const dueTodayCount = dueTodayInspections?.length ?? 0;
   const upcomingCount = upcomingInspections?.length ?? 0;
@@ -67,6 +71,7 @@ export const InspectionStatusSummary: React.FC = () => {
   }
 
   return (
+    <>
     <Card className="h-full flex flex-col overflow-hidden gap-0 py-0 border-none shadow-none">
       <div className="flex items-center justify-between px-4 pt-3 pb-1">
         <CardTitle className="text-lg flex items-center gap-2">
@@ -119,24 +124,13 @@ export const InspectionStatusSummary: React.FC = () => {
             </h4>
             <div className="space-y-2">
               {upcomingInspections?.map(inspection => (
-                <div
+                <UpcomingInspectionListItem
                   key={inspection.id}
-                  className="flex flex-col gap-1 text-sm p-2 rounded-md bg-blue-50 border border-blue-100"
-                >
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <span>{format(new Date(inspection.date), 'MMM d')}</span>
-                    <span>{format(new Date(inspection.date), 'HH:mm')}</span>
-                    <span className="text-xs px-1.5 py-0.5 rounded bg-blue-100 text-blue-700">
-                      {t('inspection:status.pending', 'Scheduled')}
-                    </span>
-                  </div>
-                  <Link
-                    to={`/hives/${inspection.hiveId}`}
-                    className="font-medium text-blue-700 hover:underline"
-                  >
-                    {getHiveName(inspection.hiveId)}
-                  </Link>
-                </div>
+                  inspection={inspection}
+                  hiveName={getHiveName(inspection.hiveId)}
+                  onDoInspection={handleDoInspection}
+                  onReschedule={setReschedulingInspection}
+                />
               ))}
             </div>
           </div>
@@ -153,5 +147,8 @@ export const InspectionStatusSummary: React.FC = () => {
         )}
       </div>
     </Card>
+
+    {rescheduleDialogElement}
+  </>
   );
 };

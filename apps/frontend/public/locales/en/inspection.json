@@ -38,12 +38,16 @@
     "no": "No"
   },
   "scores": {
-    "title": "Inspection Scores",
+    "title": "Health Scores",
     "population": "Population",
     "stores": "Stores",
     "queen": "Queen",
     "overall": "Overall",
-    "warnings": "Warnings"
+    "warnings": "Warnings",
+    "override": "Override",
+    "resetToCalculated": "Reset to calculated",
+    "autoCalculated": "Auto-calculated",
+    "overridden": "Custom"
   },
   "observations": {
     "title": "Observations",
@@ -107,7 +111,9 @@
     "doInspection": "Do Inspection",
     "reschedule": "Reschedule",
     "cancel": "Cancel",
-    "completeInspection": "Complete Inspection"
+    "completeInspection": "Complete Inspection",
+    "print": "Print",
+    "share": "Share"
   },
   "sidebar": {
     "actions": "Actions",
@@ -210,6 +216,8 @@
     "selectHive": "Select a hive",
     "inspectionDate": "Inspection date",
     "pickDate": "Pick a date",
+    "allDay": "All day",
+    "specificTime": "Set specific time",
     "futureScheduled": "This inspection is scheduled for the future",
     "futureScheduledDescription": "You are scheduling an inspection for a future date.",
     "cancel": "Cancel",
@@ -287,12 +295,33 @@
         "remove": "Remove",
         "saveNote": "Save Note",
         "edit": "Edit"
+      },
+      "maintenance": "Maintenance",
+      "maintenance_section": {
+        "title": "Maintenance",
+        "component": "Component",
+        "box": "Box",
+        "bottomBoard": "Bottom Board",
+        "cover": "Cover",
+        "status": "Status",
+        "cleaned": "Cleaned",
+        "replaced": "Replaced",
+        "notesOptional": "Notes (optional)",
+        "notesPlaceholder": "Additional notes about the maintenance..."
       }
     },
     "audio": {
       "title": "Audio Notes",
       "pendingUpload": "{{count}} pending upload",
       "uploadWarning": "Audio recordings will be uploaded when you save the inspection."
+    },
+    "photos": {
+      "title": "Photos",
+      "addPhoto": "Add Photo",
+      "pendingUpload": "{{count}} pending upload",
+      "uploadWarning": "Photos will be uploaded when you save the inspection.",
+      "deleteConfirm": "Delete this photo?",
+      "maxReached": "Maximum {{max}} photos per inspection"
     }
   },
   "detailSidebar": {

@@ -16,6 +16,7 @@ import {
 import { useApiaryStore } from '@/hooks/use-apiary';
 import { InspectionFormData } from '@/pages/inspection/components/inspection-form/schema.ts';
 import { useNavigate } from 'react-router-dom';
+import { toInspectionDateISOString } from '@/utils/inspection-date';
 
 // Query keys
 const INSPECTIONS_KEYS = {
@@ -194,12 +195,15 @@ export const useDeleteInspection = () => {
   });
 };
 
-export const useUpsertInspection = (inspectionId?: string) => {
-  const { mutate: createInspectionMutation } = useCreateInspection();
-  const { mutate: updateInspectionMutation } = useUpdateInspection();
+export const useUpsertInspection = (
+  inspectionId?: string,
+  options?: { onBeforeNavigate?: (inspectionId: string) => Promise<void> },
+) => {
+  const { mutateAsync: createInspectionMutation } = useCreateInspection();
+  const { mutateAsync: updateInspectionMutation } = useUpdateInspection();
   const getUrl = (inspectionId?: string) => `/inspections/${inspectionId}`;
   const navigate = useNavigate();
-  return (data: InspectionFormData, status?: InspectionStatus) => {
+  return async (data: InspectionFormData, status?: InspectionStatus) => {
     // Transform actions to match API format
     const transformedActions = data.actions
       ?.map((action): CreateAction | null => {
@@ -236,36 +240,54 @@ export const useUpsertInspection = (inspectionId?: string) => {
                 quantity: action.frames,
               },
             };
+          case 'MAINTENANCE':
+            return {
+              type: ActionType.MAINTENANCE,
+              notes: action.notes,
+              details: {
+                type: ActionType.MAINTENANCE,
+                component: action.component,
+                status: action.status,
+              },
+            };
           default:
             return null;
         }
       })
       .filter((a): a is CreateAction => Boolean(a));
 
+    // Build score override if custom scores were set
+    const scoreOverride = data.score
+      ? {
+          overallScore: data.score.overallScore ?? null,
+          populationScore: data.score.populationScore ?? null,
+          storesScore: data.score.storesScore ?? null,
+          queenScore: data.score.queenScore ?? null,
+        }
+      : undefined;
+
     const formattedData = {
       ...data,
-      date: data.date.toISOString(),
+      date: toInspectionDateISOString(data.date, data.isAllDay ?? true),
       status: status || data.status,
       actions: transformedActions,
+      score: scoreOverride,
     };
 
     if (!inspectionId) {
-      createInspectionMutation(formattedData, {
-        onSuccess: res => navigate(getUrl(res.id)),
-      });
+      const res = await createInspectionMutation(formattedData);
+      await options?.onBeforeNavigate?.(res.id);
+      navigate(getUrl(res.id));
     } else {
-      updateInspectionMutation(
-        {
+      const res = await updateInspectionMutation({
+        id: inspectionId,
+        data: {
+          ...formattedData,
           id: inspectionId,
-          data: {
-            ...formattedData,
-            id: inspectionId,
-          },
         },
-        {
-          onSuccess: res => navigate(getUrl(res.id)),
-        },
-      );
+      });
+      await options?.onBeforeNavigate?.(res.id);
+      navigate(getUrl(res.id));
     }
   };
 };

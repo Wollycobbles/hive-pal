@@ -45,14 +45,16 @@ import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Input } from '@/components/ui/input';
+import { toInspectionDateISOString } from '@/utils/inspection-date';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { InspectionDateTimePicker } from '@/components/inspection-date-time-picker';
 
 const scheduleSchema = z
   .object({
     hiveIds: z.array(z.string()).min(1, 'Please select at least one hive'),
     date: z.date(),
+    isAllDay: z.boolean().default(true),
     notes: z.string().optional(),
     createAsBatch: z.boolean().optional(),
     batchName: z.string().optional(),
@@ -119,6 +121,7 @@ export const ScheduleInspectionPage = () => {
     resolver: zodResolver(scheduleSchema),
     defaultValues: {
       hiveIds: [],
+      isAllDay: true,
       notes: '',
       createAsBatch: false,
       batchName: '',
@@ -126,9 +129,10 @@ export const ScheduleInspectionPage = () => {
   });
 
   const createAsBatch = form.watch('createAsBatch');
+  const isAllDay = form.watch('isAllDay') ?? true;
 
   const handleSchedule = form.handleSubmit(async data => {
-    const { hiveIds, date, notes, createAsBatch, batchName } = data;
+    const { hiveIds, date, isAllDay, notes, createAsBatch, batchName } = data;
 
     // Get the apiary ID from the first selected hive
     const firstHive = hives?.find(h => h.id === hiveIds[0]);
@@ -169,7 +173,8 @@ export const ScheduleInspectionPage = () => {
             createInspection(
               {
                 hiveId,
-                date: date.toISOString(),
+                date: toInspectionDateISOString(date, isAllDay),
+                isAllDay,
                 notes,
                 status: InspectionStatus.SCHEDULED,
                 actions: [],
@@ -243,6 +248,12 @@ export const ScheduleInspectionPage = () => {
   };
 
   const handleDateSelect = (date: Date) => {
+    if (!isAllDay) {
+      const current = form.getValues('date');
+      if (current) {
+        date.setHours(current.getHours(), current.getMinutes(), 0, 0);
+      }
+    }
     setSelectedDate(date);
     form.setValue('date', date);
   };
@@ -509,6 +520,19 @@ export const ScheduleInspectionPage = () => {
                       );
                     })}
                   </div>
+                </div>
+
+                <div className="mb-4 flex flex-col gap-2">
+                  <InspectionDateTimePicker
+                    date={selectedDate as Date}
+                    isAllDay={isAllDay}
+                    onDateChange={d => {
+                      setSelectedDate(d);
+                      form.setValue('date', d);
+                    }}
+                    onIsAllDayChange={checked => form.setValue('isAllDay', checked)}
+                    switchId="scheduleIsAllDay"
+                  />
                 </div>
 
                 <div className="mb-4">

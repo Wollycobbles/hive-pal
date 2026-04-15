@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -9,6 +10,7 @@ import {
 import {
   Plus,
   ClipboardCheck,
+  ClipboardPlus,
   Zap,
   Camera,
   FileText,
@@ -34,6 +36,7 @@ export function QuickAddMenu({
   variant = 'inline',
 }: QuickAddMenuProps) {
   const { t } = useTranslation('common');
+  const navigate = useNavigate();
   const [activeDialog, setActiveDialog] = useState<ActiveDialog>(null);
   const { data: features } = useFeatures();
 
@@ -57,6 +60,12 @@ export function QuickAddMenu({
           <DropdownMenuItem onClick={() => setActiveDialog('quick-check')}>
             <ClipboardCheck className="mr-2 h-4 w-4" />
             {t('quickAdd.quickCheck', { defaultValue: 'Quick Check' })}
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => {
+            navigate(hiveId ? `/hives/${hiveId}/inspections/create` : '/inspections/create');
+          }}>
+            <ClipboardPlus className="mr-2 h-4 w-4" />
+            {t('quickAdd.inspection', { defaultValue: 'Inspection' })}
           </DropdownMenuItem>
           {hiveId && (
             <DropdownMenuItem onClick={() => setActiveDialog('action')}>

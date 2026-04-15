@@ -29,13 +29,14 @@ import { InspectionResponse } from 'shared-schemas';
 import { WeatherCondition } from 'shared-schemas';
 import { useHives } from '@/api/hooks';
 import { useWeatherDailyForecast } from '@/api/hooks/useWeather';
+import { InspectionDateTimePicker } from '@/components/inspection-date-time-picker';
 
 interface RescheduleDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   inspection: InspectionResponse;
   hiveName: string;
-  onReschedule: (date: Date) => void;
+  onReschedule: (date: Date, isAllDay: boolean) => void;
 }
 
 const getWeatherIcon = (condition: WeatherCondition) => {
@@ -68,6 +69,7 @@ export const RescheduleDialog: React.FC<RescheduleDialogProps> = ({
 }) => {
   const { t } = useTranslation(['inspection']);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [isAllDay, setIsAllDay] = useState(inspection.isAllDay ?? true);
   const [daysToShow, setDaysToShow] = useState(7);
 
   const { data: hives } = useHives();
@@ -98,13 +100,17 @@ export const RescheduleDialog: React.FC<RescheduleDialogProps> = ({
   };
 
   const handleDateSelect = (date: Date) => {
+    if (!isAllDay && selectedDate) {
+      date.setHours(selectedDate.getHours(), selectedDate.getMinutes(), 0, 0);
+    }
     setSelectedDate(date);
   };
 
   const handleReschedule = () => {
     if (selectedDate) {
-      onReschedule(selectedDate);
+      onReschedule(selectedDate, isAllDay);
       setSelectedDate(null);
+      setIsAllDay(true);
       setDaysToShow(7);
     }
   };
@@ -112,6 +118,7 @@ export const RescheduleDialog: React.FC<RescheduleDialogProps> = ({
   const handleCancel = () => {
     onOpenChange(false);
     setSelectedDate(null);
+    setIsAllDay(true);
     setDaysToShow(7);
   };
 
@@ -238,21 +245,32 @@ export const RescheduleDialog: React.FC<RescheduleDialogProps> = ({
           )}
 
           {selectedDate && (
-            <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-950 rounded-lg">
+            <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-950 rounded-lg space-y-3">
               <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
                 <Calendar className="h-4 w-4" />
                 <span className="text-sm font-medium">
                   {t('inspection:dialogs.reschedule.newDate', {
-                    date: format(selectedDate, 'EEEE, MMMM d, yyyy'),
+                    date: isAllDay
+                      ? format(selectedDate, 'EEEE, MMMM d, yyyy')
+                      : format(selectedDate, 'EEEE, MMMM d, yyyy HH:mm'),
                   })}
                 </span>
               </div>
-              <div className="flex items-center gap-2 mt-1">
+              <div className="flex items-center gap-2">
                 <Home className="h-3 w-3 text-blue-600 dark:text-blue-400" />
                 <span className="text-sm text-blue-600 dark:text-blue-400">
                   {hiveName}
                 </span>
               </div>
+              <InspectionDateTimePicker
+                  date={selectedDate}
+                  isAllDay={isAllDay}
+                  onDateChange={setSelectedDate}
+                  onIsAllDayChange={setIsAllDay}
+                  switchId="rescheduleIsAllDay"
+                  labelClassName="text-sm cursor-pointer select-none text-blue-600 dark:text-blue-400"
+                  iconClassName="h-4 w-4 text-blue-600 dark:text-blue-400"
+                />
             </div>
           )}
         </div>

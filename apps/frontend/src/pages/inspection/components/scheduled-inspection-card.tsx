@@ -37,6 +37,7 @@ import {
 import { cn } from '@/lib/utils';
 import { InspectionResponse, InspectionStatus } from 'shared-schemas';
 import { useUpdateInspection } from '@/api/hooks/useInspections';
+import { toInspectionDateISOString } from '@/utils/inspection-date';
 import { RescheduleDialog } from './reschedule-dialog';
 
 interface ScheduledInspectionCardProps {
@@ -90,12 +91,13 @@ export const ScheduledInspectionCard: React.FC<
     );
   };
 
-  const handleReschedule = (newDate: Date) => {
+  const handleReschedule = (newDate: Date, isAllDay: boolean) => {
     updateInspection(
       {
         id: inspection.id,
         data: {
-          date: newDate.toISOString(),
+          date: toInspectionDateISOString(newDate, isAllDay),
+          isAllDay,
           status: InspectionStatus.SCHEDULED,
         },
       },
@@ -157,7 +159,7 @@ export const ScheduledInspectionCard: React.FC<
                 <span className="font-medium text-foreground">
                   {format(inspectionDate, 'MMM d')}
                 </span>
-                <span>{format(inspectionDate, 'h:mm a')}</span>
+                {!inspection.isAllDay && <span>{format(inspectionDate, 'h:mm a')}</span>}
               </div>
 
               {/* Status Badge */}
