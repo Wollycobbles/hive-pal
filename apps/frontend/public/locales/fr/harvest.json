@@ -5,7 +5,7 @@
   },
   "stats": {
     "totalHarvests": "Total Harvests",
-    "totalHoney": "Total Honey",
+    "totalHoney": "Miel Total",
     "averageYield": "Average Yield",
     "latestHarvest": "Latest Harvest",
     "completedHarvests": "{{count}} completed",
