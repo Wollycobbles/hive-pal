@@ -43,7 +43,11 @@
         "stores": "Scorte",
         "queen": "Regina",
         "overall": "Totale",
-        "warnings": "Avvisi"
+        "warnings": "Avvisi",
+        "override": "Override",
+        "resetToCalculated": "Reset to calculated",
+        "autoCalculated": "Auto-calculated",
+        "overridden": "Custom"
     },
     "observations": {
         "title": "Osservazioni",
@@ -55,9 +59,9 @@
         "pollenStores": "Scorte di polline",
         "queenCells": "Celle reali",
         "swarmCells": "Celle da sciame",
-        "swarmCellsDescription": "",
+        "swarmCellsDescription": "Built on the bottom or edges of frames. Multiple cells often present. Bees are preparing to swarm.",
         "supersedureCells": "Celle di sostituzione",
-        "supersedureCellsDescription": "",
+        "supersedureCellsDescription": "Built in the middle of a frame face. Usually just one or two cells. Bees are replacing an old or failing queen.",
         "clearRating": "Cancella valutazione",
         "rateAs": "Valuta come {{value}}",
         "broodPattern": "Rosata di covata",
@@ -94,7 +98,20 @@
             "requires_treatment": "Richiede trattamento",
             "low_stores": "Scorte scarse",
             "prepare_for_winter": "Preparare per l'inverno"
-        }
+        },
+        "frameCounts": {
+            "title": "Brood Nest Counts",
+            "totalFrames": "{{count}} frames total",
+            "framesOf": "/ {{total}} frames"
+        },
+        "eggsFrames": "Eggs",
+        "uncappedBroodFrames": "Uncapped Brood",
+        "cappedBroodFrames": "Capped Brood",
+        "droneBroodFrames": "Drone Brood",
+        "pollenFrames": "Pollen",
+        "nectarFrames": "Nectar",
+        "honeyFrames": "Honey",
+        "emptyFrames": "Empty / Foundation"
     },
     "actions": {
         "details": "Dettagli",
@@ -110,7 +127,8 @@
         "cancel": "Annulla",
         "completeInspection": "Completa Ispezione",
         "print": "Stampa",
-        "share": "Condividi"
+        "share": "Condividi",
+        "addInspection": "Add Inspection"
     },
     "sidebar": {
         "actions": "Azioni",
@@ -174,5 +192,250 @@
         "dueToday": "In scadenza oggi",
         "overdueCount": "{{count}} {{count, plural, one {ispezione in ritardo} other{ispezioni in ritardo}}}",
         "dueTodayCount": "{{count}} {{count, plural, one {ispezione prevista oggi} other{ispezioni previste oggi}}}"
+    },
+    "detail": {
+        "loading": "Loading inspection...",
+        "error": "Error",
+        "errorDescription": "Failed to load inspection details.",
+        "goBack": "Go back",
+        "notFound": "Inspection not found",
+        "back": "Back",
+        "share": "Share",
+        "shareFailed": "Failed to create share link",
+        "viewHive": "View hive"
+    },
+    "statusCard": {
+        "title": "Status",
+        "currentStatus": "Current Status",
+        "actions": "Actions",
+        "markCompleted": "Mark as Completed",
+        "cancelInspection": "Cancel Inspection"
+    },
+    "weatherCard": {
+        "title": "Weather",
+        "temperature": "Temperature",
+        "conditions": "Conditions"
+    },
+    "notesCard": {
+        "title": "Notes"
+    },
+    "observationsCard": {
+        "title": "Observations",
+        "strength": "Strength",
+        "uncappedBrood": "Uncapped Brood",
+        "cappedBrood": "Capped Brood",
+        "honeyStores": "Honey Stores",
+        "pollenStores": "Pollen Stores",
+        "queenCells": "Queen cells",
+        "broodPattern": "Brood Pattern",
+        "additionalObservations": "Additional Observations",
+        "reminders": "Reminders"
+    },
+    "form": {
+        "newInspection": "New inspection",
+        "editInspection": "Edit inspection",
+        "hive": "Hive",
+        "selectHive": "Select a hive",
+        "inspectionDate": "Inspection date",
+        "pickDate": "Pick a date",
+        "allDay": "All day",
+        "specificTime": "Set specific time",
+        "futureScheduled": "This inspection is scheduled for the future",
+        "futureScheduledDescription": "You are scheduling an inspection for a future date.",
+        "cancel": "Cancel",
+        "saveAndNext": "Save and Next",
+        "saving": "Saving...",
+        "save": "Save",
+        "completeInspection": "Complete Inspection",
+        "saveAndComplete": "Save and complete",
+        "weather": {
+            "title": "Weather information",
+            "description": "Add weather conditions",
+            "temperature": "Temperature",
+            "condition": "Condition",
+            "sunny": "Sunny",
+            "partlyCloudy": "Partly cloudy",
+            "cloudy": "Cloudy",
+            "rainy": "Rainy"
+        },
+        "notes": {
+            "title": "Notes",
+            "description": "Add any additional notes about this inspection",
+            "label": "Notes",
+            "placeholder": "Enter any observations, findings, or actions taken during the inspection..."
+        },
+        "actions": {
+            "title": "Actions",
+            "titleSingular": "Action",
+            "feeding": "Feeding",
+            "treatment": "Treatment",
+            "frames": "Frames",
+            "note": "Note",
+            "save": "Save",
+            "feeding_section": {
+                "title": "Feeding",
+                "feedType": "Feed type",
+                "syrup": "Syrup",
+                "honey": "Honey",
+                "candy": "Candy",
+                "proteinCandy": "Protein Candy",
+                "pollenPatty": "Pollen Patty",
+                "other": "Other",
+                "customFeedName": "Feed Name",
+                "customFeedNamePlaceholder": "Enter custom feed type name",
+                "quantity": "Quantity",
+                "concentration": "Concentration",
+                "selectConcentration": "Select a concentration",
+                "notesOptional": "Notes (optional)",
+                "notesPlaceholder": "Add any additional notes about this feeding"
+            },
+            "treatment_section": {
+                "title": "Treatment",
+                "treatmentType": "Treatment Type",
+                "selectTreatmentType": "Select a treatment type",
+                "productName": "Product Name",
+                "productNamePlaceholder": "Enter treatment product name",
+                "unit": "Unit",
+                "selectUnit": "Select unit",
+                "amount": "Amount",
+                "notesOptional": "Notes (optional)",
+                "notesPlaceholder": "Add any additional notes about this treatment"
+            },
+            "frames_section": {
+                "title": "Frames",
+                "framesLabel": "Number of frames added/removed",
+                "framesHint": "Use positive numbers for frames added, negative for frames removed",
+                "notesOptional": "Notes (optional)",
+                "notesPlaceholder": "Add any additional notes about frames changes"
+            },
+            "note_section": {
+                "title": "Note",
+                "description": "Add a note or observation about this hive",
+                "noteContent": "Note Content",
+                "placeholder": "Enter your note or observation...",
+                "characters": "{{count}}/500 characters",
+                "remove": "Remove",
+                "saveNote": "Save Note",
+                "edit": "Edit"
+            },
+            "maintenance": "Maintenance",
+            "maintenance_section": {
+                "title": "Maintenance",
+                "component": "Component",
+                "box": "Box",
+                "bottomBoard": "Bottom Board",
+                "cover": "Cover",
+                "status": "Status",
+                "cleaned": "Cleaned",
+                "replaced": "Replaced",
+                "notesOptional": "Notes (optional)",
+                "notesPlaceholder": "Additional notes about the maintenance..."
+            }
+        },
+        "audio": {
+            "title": "Audio Notes",
+            "pendingUpload": "{{count}} pending upload",
+            "uploadWarning": "Audio recordings will be uploaded when you save the inspection."
+        },
+        "photos": {
+            "title": "Photos",
+            "addPhoto": "Add Photo",
+            "pendingUpload": "{{count}} pending upload",
+            "uploadWarning": "Photos will be uploaded when you save the inspection.",
+            "deleteConfirm": "Delete this photo?",
+            "maxReached": "Maximum {{max}} photos per inspection"
+        }
+    },
+    "detailSidebar": {
+        "inspectionActions": "Inspection Actions",
+        "editInspection": "Edit Inspection",
+        "printDetails": "Print Details",
+        "deleteInspection": "Delete Inspection",
+        "deleteFailed": "Failed to delete inspection",
+        "relatedActions": "Related Actions",
+        "viewHive": "View Hive",
+        "newInspection": "New Inspection",
+        "navigation": "Navigation",
+        "allInspections": "All Inspections",
+        "recentInspections": "Recent Inspections",
+        "goBack": "Go Back"
+    },
+    "timeline": {
+        "scheduledInspections": "Scheduled Inspections",
+        "completedInspections": "Completed Inspections",
+        "noInspections": "No inspections recorded yet.",
+        "cancelled": "Cancelled",
+        "viewDetails": "View details",
+        "edit": "Edit",
+        "strength": "Strength:",
+        "honey": "Honey:",
+        "brood": "Brood:",
+        "weather": "Weather:",
+        "queen": "Queen:",
+        "queenSeen": "Seen",
+        "queenNotSeen": "Not seen",
+        "notesAvailable": "Notes available",
+        "showFewer": "Show fewer",
+        "showAllCount": "Show all {{count}} inspections"
+    },
+    "schedule": {
+        "title": "Schedule Inspection",
+        "description": "Plan your inspections for the next 7 days with weather forecast",
+        "selectHives": "Select Hives",
+        "selectHivesDescription": "Choose which hives you want to schedule inspections for",
+        "hivesSelected": "{{count}} hive selected",
+        "hivesSelectedPlural": "{{count}} hives selected",
+        "clear": "Clear",
+        "scheduleCalendar": "Schedule Calendar",
+        "calendarDescription": "Select a day to schedule your inspection with weather forecast (next {{days}} days)",
+        "selectHiveFirst": "Please select at least one hive to view weather forecast",
+        "noApiaryWeather": "Selected hives don't have an associated apiary for weather data",
+        "today": "Today",
+        "noForecast": "No forecast available",
+        "noWeatherData": "No weather data",
+        "showFewerDays": "Show Fewer Days",
+        "showMoreDays": "Show More Days (+7)",
+        "inspectionDetails": "Inspection Details",
+        "schedulingCount": "Scheduling {{count}} inspection for {{date}}",
+        "schedulingCountPlural": "Scheduling {{count}} inspections for {{date}}",
+        "selectedHives": "Selected Hives:",
+        "createAsBatch": "Create as Batch Inspection",
+        "batchDescription": "Perform inspections sequentially with a guided workflow",
+        "batchName": "Batch Name",
+        "batchNamePlaceholder": "e.g., Spring 2025 Inspection",
+        "notesOptional": "Notes (Optional)",
+        "notesPlaceholder": "Add any notes for this scheduled inspection...",
+        "batchInfo": "This batch will be created and ready to start",
+        "scheduledInfo": "This inspection will be scheduled for a future date",
+        "batchStartInfo": "You can begin the batch inspection immediately or start it later.",
+        "scheduledStartInfo": "You can add details and complete the inspection on the scheduled date.",
+        "createBatchInspection": "Create Batch Inspection",
+        "scheduleCount": "Schedule {{count}} Inspection",
+        "scheduleCountPlural": "Schedule {{count}} Inspections",
+        "batchCreated": "Successfully created batch inspection: {{name}}",
+        "batchCreateFailed": "Failed to create batch inspection",
+        "scheduledSuccess": "Successfully scheduled {{count}} inspection",
+        "scheduledSuccessPlural": "Successfully scheduled {{count}} inspections",
+        "scheduledFailed": "Failed to schedule {{count}} inspection",
+        "scheduledFailedPlural": "Failed to schedule {{count}} inspections",
+        "noApiary": "Unable to determine apiary for selected hives"
+    },
+    "edit": {
+        "completingFrom": "Completing scheduled inspection from {{date}}",
+        "markedCompleted": "This inspection will be marked as completed when you save your changes."
+    },
+    "pendingBoxUpdate": {
+        "updatingTitle": "Updating box configuration",
+        "updatingDescription": "Your inspection has been saved. The box configuration is being updated in the background.",
+        "failedTitle": "Box configuration update failed",
+        "failedDescription": "Failed to update the box configuration. Please retry or dismiss this message.",
+        "retry": "Retry",
+        "retrySuccess": "Box configuration updated successfully",
+        "retryFailed": "Retry request failed. Please try again.",
+        "retryDisabled": "Retries disabled (5 attempts reached)",
+        "dismiss": "Dismiss",
+        "stalePayload": "The hive configuration has changed. The box update cannot be retried.",
+        "stalePayloadMessage": "The hive configuration has changed since this update failed. Please refresh the page to see the current state.",
+        "maxRetriesReached": "Maximum retry attempts reached. Please contact support if the issue persists."
     }
 }

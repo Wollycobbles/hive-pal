@@ -91,8 +91,8 @@
         "lastInspected": "Dernière inspection le {{date}}",
         "noInspection": "Aucune inspection",
         "score": "Score :",
-        "strength": "",
-        "inspectionWarnings": "",
+        "strength": "Strength:",
+        "inspectionWarnings": "Inspection Warnings",
         "feeding": "Nourrissement :"
     },
     "scores": {

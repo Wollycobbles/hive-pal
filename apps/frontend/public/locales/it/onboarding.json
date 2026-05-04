@@ -18,7 +18,8 @@
   },
   "hive": {
     "title": "Aggiungi la tua prima arnia",
-    "description": "Ora aggiungiamo la tua prima arnia al nuovo apiario: {{apiaryName}}."
+    "description": "Ora aggiungiamo la tua prima arnia al nuovo apiario: {{apiaryName}}.",
+    "skip": "Skip for now"
   },
   "complete": {
     "title": "Congratulazioni!",

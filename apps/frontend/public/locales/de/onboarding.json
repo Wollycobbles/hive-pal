@@ -18,7 +18,8 @@
   },
   "hive": {
     "title": "Füge deinen ersten Bienenstock hinzu",
-    "description": "Jetzt fügen wir deinen ersten Bienenstock zu deinem neuen Bienenstand hinzu: {{apiaryName}}."
+    "description": "Jetzt fügen wir deinen ersten Bienenstock zu deinem neuen Bienenstand hinzu: {{apiaryName}}.",
+    "skip": "Skip for now"
   },
   "complete": {
     "title": "Glückwunsch!",

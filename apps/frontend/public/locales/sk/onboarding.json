@@ -18,7 +18,8 @@
   },
   "hive": {
     "title": "Pridajte svoj prvý úľ",
-    "description": "Teraz pridajme váš prvý úľ do vašej novej včelnice: {{apiaryName}}."
+    "description": "Teraz pridajme váš prvý úľ do vašej novej včelnice: {{apiaryName}}.",
+    "skip": "Skip for now"
   },
   "complete": {
     "title": "Gratulujeme!",

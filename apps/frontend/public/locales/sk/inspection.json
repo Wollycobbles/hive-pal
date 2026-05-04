@@ -43,7 +43,11 @@
         "stores": "Zásoby",
         "queen": "Matka",
         "overall": "Celkové",
-        "warnings": "Upozornenia"
+        "warnings": "Upozornenia",
+        "override": "Override",
+        "resetToCalculated": "Reset to calculated",
+        "autoCalculated": "Auto-calculated",
+        "overridden": "Custom"
     },
     "observations": {
         "title": "Pozorovania",
@@ -55,9 +59,9 @@
         "pollenStores": "Zásoby peľu",
         "queenCells": "Matečníky",
         "swarmCells": "Rojové matečníky",
-        "swarmCellsDescription": "",
+        "swarmCellsDescription": "Built on the bottom or edges of frames. Multiple cells often present. Bees are preparing to swarm.",
         "supersedureCells": "Tichá výmena matky",
-        "supersedureCellsDescription": "",
+        "supersedureCellsDescription": "Built in the middle of a frame face. Usually just one or two cells. Bees are replacing an old or failing queen.",
         "clearRating": "Vymazať hodnotenie",
         "rateAs": "Ohodnotiť ako {{value}}",
         "broodPattern": "Vzor plodu",
@@ -94,7 +98,20 @@
             "requires_treatment": "Vyžaduje ošetrenie",
             "low_stores": "Nízke zásoby",
             "prepare_for_winter": "Príprava na zimu"
-        }
+        },
+        "frameCounts": {
+            "title": "Brood Nest Counts",
+            "totalFrames": "{{count}} frames total",
+            "framesOf": "/ {{total}} frames"
+        },
+        "eggsFrames": "Eggs",
+        "uncappedBroodFrames": "Uncapped Brood",
+        "cappedBroodFrames": "Capped Brood",
+        "droneBroodFrames": "Drone Brood",
+        "pollenFrames": "Pollen",
+        "nectarFrames": "Nectar",
+        "honeyFrames": "Honey",
+        "emptyFrames": "Empty / Foundation"
     },
     "actions": {
         "details": "Podrobnosti",
@@ -109,7 +126,9 @@
         "reschedule": "Preplánovať",
         "cancel": "Zrušiť",
         "completeInspection": "Dokončiť prehliadku",
-        "print": "Tlačiť"
+        "print": "Tlačiť",
+        "addInspection": "Add Inspection",
+        "share": "Share"
     },
     "sidebar": {
         "actions": "Akcie",
@@ -310,6 +329,14 @@
             "title": "Zvukové poznámky",
             "pendingUpload": "{{count}} čaká na nahratie",
             "uploadWarning": "Zvukové nahrávky budú nahrané po uložení prehliadky."
+        },
+        "photos": {
+            "title": "Photos",
+            "addPhoto": "Add Photo",
+            "pendingUpload": "{{count}} pending upload",
+            "uploadWarning": "Photos will be uploaded when you save the inspection.",
+            "deleteConfirm": "Delete this photo?",
+            "maxReached": "Maximum {{max}} photos per inspection"
         }
     },
     "detailSidebar": {
@@ -323,7 +350,8 @@
         "navigation": "Navigácia",
         "allInspections": "Všetky prehliadky",
         "recentInspections": "Nedávne prehliadky",
-        "goBack": "Vrátiť sa späť"
+        "goBack": "Vrátiť sa späť",
+        "deleteFailed": "Failed to delete inspection"
     },
     "timeline": {
         "scheduledInspections": "Naplánované prehliadky",
@@ -395,5 +423,19 @@
         "dueToday": "Dnes na rade",
         "overdueCount": "{{count}} prehliadka po termíne",
         "dueTodayCount": "{{count}} prehliadka dnes na rade"
+    },
+    "pendingBoxUpdate": {
+        "updatingTitle": "Updating box configuration",
+        "updatingDescription": "Your inspection has been saved. The box configuration is being updated in the background.",
+        "failedTitle": "Box configuration update failed",
+        "failedDescription": "Failed to update the box configuration. Please retry or dismiss this message.",
+        "retry": "Retry",
+        "retrySuccess": "Box configuration updated successfully",
+        "retryFailed": "Retry request failed. Please try again.",
+        "retryDisabled": "Retries disabled (5 attempts reached)",
+        "dismiss": "Dismiss",
+        "stalePayload": "The hive configuration has changed. The box update cannot be retried.",
+        "stalePayloadMessage": "The hive configuration has changed since this update failed. Please refresh the page to see the current state.",
+        "maxRetriesReached": "Maximum retry attempts reached. Please contact support if the issue persists."
     }
 }

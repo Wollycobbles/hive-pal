@@ -91,8 +91,8 @@
     "lastInspected": "Zuletzt inspiziert am {{date}}",
     "noInspection": "Noch keine Inspektion",
     "score": "Bewertung:",
-    "strength": "",
-    "inspectionWarnings": "",
+    "strength": "Strength:",
+    "inspectionWarnings": "Inspection Warnings",
     "feeding": "Fütterung:"
   },
   "scores": {
@@ -158,7 +158,7 @@
     "noHivesInApiary": "Noch keine Bienenstöcke in diesem Bienenstand vorhanden.",
     "dragToOrganize": "Fügen Sie Bienenstöcke hinzu und ziehen Sie sie in das Raster oben, um Ihren Bienenstand zu organisieren."
   },
-  "equipment":{
+  "equipment": {
     "currentHives": "Aktuelle Bienenstöcke",
     "targetHives": "Soll-Bienenstöcke",
     "itemsNeeded": "Benötigte Artikel",
@@ -170,7 +170,7 @@
     "saveAllChanges": "Alle Änderungen speichern",
     "equipmentPlanningOverview": "Übersicht über die Ausstattungsplanung",
     "trackCurrentEquipment": "Behalte den Überblick über deinen aktuellen Bestand und plane deine saisonalen Erweiterungen",
-    "table":{
+    "table": {
       "title": "Ausstattung",
       "addEquipment": "Ausstattung hinzufügen",
       "equipmentName": "Ausstattungsname",
@@ -180,7 +180,16 @@
       "extra": "Auf Lager",
       "needed": "Erforderlich",
       "status": "Status",
-      "actions": "Aktionen"
+      "actions": "Aktionen",
+      "deleteItem": "Delete Equipment Item",
+      "hideItem": "Hide Equipment Item",
+      "deleteConfirm": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
+      "hideConfirm": "This will hide \"{{name}}\" from your equipment list. You can restore it later.",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "hide": "Hide",
+      "showHidden": "Show {{count}} hidden item(s)",
+      "restore": "Restore"
     }
   },
   "llmPrompt": {
@@ -263,7 +272,9 @@
       "frameManagement": "Rahmenverwaltung",
       "harvested": "Geerntet {{amount}} {{unit}}",
       "harvest": "Ernte",
-      "note": "Notiz"
+      "note": "Notiz",
+      "maintenance": "{{status}} {{component}}",
+      "maintenanceDefault": "Maintenance"
     }
   }
 }

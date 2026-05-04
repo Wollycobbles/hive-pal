@@ -15,8 +15,8 @@
     "form": {
         "selectHive": "Vælg et stade",
         "pickDate": "Vælg en dato",
-    "allDay": "All day",
-    "specificTime": "Set specific time",
+        "allDay": "All day",
+        "specificTime": "Set specific time",
         "newInspection": "Ny inspektion",
         "editInspection": "Rediger inspektion",
         "hive": "Stade",
@@ -98,12 +98,33 @@
                 "remove": "Fjern",
                 "saveNote": "Gem notat",
                 "edit": "Rediger"
+            },
+            "maintenance": "Maintenance",
+            "maintenance_section": {
+                "title": "Maintenance",
+                "component": "Component",
+                "box": "Box",
+                "bottomBoard": "Bottom Board",
+                "cover": "Cover",
+                "status": "Status",
+                "cleaned": "Cleaned",
+                "replaced": "Replaced",
+                "notesOptional": "Notes (optional)",
+                "notesPlaceholder": "Additional notes about the maintenance..."
             }
         },
         "audio": {
             "title": "Lyd notat",
             "pendingUpload": "{{count}} afventende upload",
             "uploadWarning": "Lyd notater vil blive uploadet når du gemmer din inspektion."
+        },
+        "photos": {
+            "title": "Photos",
+            "addPhoto": "Add Photo",
+            "pendingUpload": "{{count}} pending upload",
+            "uploadWarning": "Photos will be uploaded when you save the inspection.",
+            "deleteConfirm": "Delete this photo?",
+            "maxReached": "Maximum {{max}} photos per inspection"
         }
     },
     "scores": {
@@ -112,7 +133,11 @@
         "stores": "Beholdninger",
         "queen": "Dronning",
         "title": "Inspektion scores",
-        "warnings": "Advarsler"
+        "warnings": "Advarsler",
+        "override": "Override",
+        "resetToCalculated": "Reset to calculated",
+        "autoCalculated": "Auto-calculated",
+        "overridden": "Custom"
     },
     "actions": {
         "details": "Detaljer",
@@ -170,9 +195,9 @@
         "pollenStores": "Pollen beholdning",
         "queenCells": "Dronningeceller",
         "swarmCells": "Sværmceller",
-        "swarmCellsDescription": "",
+        "swarmCellsDescription": "Built on the bottom or edges of frames. Multiple cells often present. Bees are preparing to swarm.",
         "supersedureCells": "Nødceller",
-        "supersedureCellsDescription": "",
+        "supersedureCellsDescription": "Built in the middle of a frame face. Usually just one or two cells. Bees are replacing an old or failing queen.",
         "clearRating": "Nulstil vurdering",
         "rateAs": "Vurder som {{value}}",
         "broodPattern": "Yngelmønster",
@@ -209,7 +234,20 @@
             "requires_treatment": "Kræver behandling",
             "low_stores": "Lav beholdning",
             "prepare_for_winter": "Klargør vinterleje"
-        }
+        },
+        "frameCounts": {
+            "title": "Brood Nest Counts",
+            "totalFrames": "{{count}} frames total",
+            "framesOf": "/ {{total}} frames"
+        },
+        "eggsFrames": "Eggs",
+        "uncappedBroodFrames": "Uncapped Brood",
+        "cappedBroodFrames": "Capped Brood",
+        "droneBroodFrames": "Drone Brood",
+        "pollenFrames": "Pollen",
+        "nectarFrames": "Nectar",
+        "honeyFrames": "Honey",
+        "emptyFrames": "Empty / Foundation"
     },
     "statusCard": {
         "actions": "Handlinger",
@@ -267,7 +305,8 @@
         "navigation": "Navigation",
         "allInspections": "Alle inspektioner",
         "recentInspections": "Seneste inspektioner",
-        "goBack": "Tilbage"
+        "goBack": "Tilbage",
+        "deleteFailed": "Failed to delete inspection"
     },
     "schedule": {
         "title": "Planlæg inspektion",
@@ -384,5 +423,19 @@
         "dueToday": "Forfalder i dag",
         "overdueCount": "{{count}} inspektion{{count, plural, one {} other{s}}} overskredet",
         "dueTodayCount": "{{count}} inspektion{{count, plural, one {} other{s}}} forfalder i dag"
+    },
+    "pendingBoxUpdate": {
+        "updatingTitle": "Updating box configuration",
+        "updatingDescription": "Your inspection has been saved. The box configuration is being updated in the background.",
+        "failedTitle": "Box configuration update failed",
+        "failedDescription": "Failed to update the box configuration. Please retry or dismiss this message.",
+        "retry": "Retry",
+        "retrySuccess": "Box configuration updated successfully",
+        "retryFailed": "Retry request failed. Please try again.",
+        "retryDisabled": "Retries disabled (5 attempts reached)",
+        "dismiss": "Dismiss",
+        "stalePayload": "The hive configuration has changed. The box update cannot be retried.",
+        "stalePayloadMessage": "The hive configuration has changed since this update failed. Please refresh the page to see the current state.",
+        "maxRetriesReached": "Maximum retry attempts reached. Please contact support if the issue persists."
     }
 }

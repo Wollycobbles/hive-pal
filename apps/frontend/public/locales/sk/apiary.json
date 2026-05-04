@@ -81,17 +81,19 @@
     "copied": "URL odberu bolo skopírované do schránky",
     "copyFailed": "Nepodarilo sa skopírovať do schránky",
     "readOnlyNote": "Táto URL poskytuje prístup len na čítanie k vášmu plánu prehliadok. Obnovenie URL zneplatní predchádzajúce.",
-    "copyUrl": "Kopírovať URL"
+    "copyUrl": "Kopírovať URL",
+    "includeScheduledInspections": "Include auto-generated inspections",
+    "updateFailed": "Failed to update calendar settings"
   },
   "form": {
     "namePlaceholder": "Názov včelnice",
     "locationPlaceholder": "Popis polohy",
     "inspectionType": {
-      "label": "",
-      "placeholder": "",
-      "dataDriven": "",
-      "subjective": "",
-      "description": ""
+      "label": "Inspection Type",
+      "placeholder": "Select inspection type",
+      "dataDriven": "Data Driven",
+      "subjective": "Subjective",
+      "description": "Data Driven uses frame counts and auto-scoring. Subjective uses qualitative 0–10 ratings."
     }
   }
 }

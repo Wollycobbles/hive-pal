@@ -81,17 +81,19 @@
         "copied": "Abonnement-URL in die Zwischenablage kopiert",
         "copyFailed": "Kopieren in die Zwischenablage fehlgeschlagen",
         "readOnlyNote": "Diese URL bietet schreibgeschützten Zugriff auf Ihren Durchsichtenplan. Beim Neugenerieren wird die vorherige URL ungültig.",
-        "copyUrl": "URL kopieren"
+        "copyUrl": "URL kopieren",
+        "includeScheduledInspections": "Include auto-generated inspections",
+        "updateFailed": "Failed to update calendar settings"
     },
     "form": {
         "namePlaceholder": "Name des Bienenstands",
         "locationPlaceholder": "Standortbeschreibung",
         "inspectionType": {
-            "label": "",
-            "placeholder": "",
-            "dataDriven": "",
-            "subjective": "",
-            "description": ""
+            "label": "Inspection Type",
+            "placeholder": "Select inspection type",
+            "dataDriven": "Data Driven",
+            "subjective": "Subjective",
+            "description": "Data Driven uses frame counts and auto-scoring. Subjective uses qualitative 0–10 ratings."
         }
     }
 }

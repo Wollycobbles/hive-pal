@@ -59,9 +59,9 @@
         "pollenStores": "Réserves de pollen",
         "queenCells": "Cellules royales",
         "swarmCells": "Cellules d'essaimage",
-        "swarmCellsDescription": "",
+        "swarmCellsDescription": "Built on the bottom or edges of frames. Multiple cells often present. Bees are preparing to swarm.",
         "supersedureCells": "Cellules de supersédure",
-        "supersedureCellsDescription": "",
+        "supersedureCellsDescription": "Built in the middle of a frame face. Usually just one or two cells. Bees are replacing an old or failing queen.",
         "clearRating": "Évaluation claire",
         "rateAs": "Noter comme {{value}}",
         "broodPattern": "Disposition du couvain",
@@ -98,7 +98,20 @@
             "requires_treatment": "Nécessite un traitement",
             "low_stores": "Réserves faibles",
             "prepare_for_winter": "Préparer pour l'hiver"
-        }
+        },
+        "frameCounts": {
+            "title": "Brood Nest Counts",
+            "totalFrames": "{{count}} frames total",
+            "framesOf": "/ {{total}} frames"
+        },
+        "eggsFrames": "Eggs",
+        "uncappedBroodFrames": "Uncapped Brood",
+        "cappedBroodFrames": "Capped Brood",
+        "droneBroodFrames": "Drone Brood",
+        "pollenFrames": "Pollen",
+        "nectarFrames": "Nectar",
+        "honeyFrames": "Honey",
+        "emptyFrames": "Empty / Foundation"
     },
     "actions": {
         "details": "Détails",
@@ -410,5 +423,19 @@
         "dueToday": "À faire aujourd'hui",
         "overdueCount": "{{count}} inspection{{count, plural, one {} other{s}}} en retard",
         "dueTodayCount": "{{count}} inspection{{count, plural, one {} other{s}}} à faire aujourd'hui"
+    },
+    "pendingBoxUpdate": {
+        "updatingTitle": "Updating box configuration",
+        "updatingDescription": "Your inspection has been saved. The box configuration is being updated in the background.",
+        "failedTitle": "Box configuration update failed",
+        "failedDescription": "Failed to update the box configuration. Please retry or dismiss this message.",
+        "retry": "Retry",
+        "retrySuccess": "Box configuration updated successfully",
+        "retryFailed": "Retry request failed. Please try again.",
+        "retryDisabled": "Retries disabled (5 attempts reached)",
+        "dismiss": "Dismiss",
+        "stalePayload": "The hive configuration has changed. The box update cannot be retried.",
+        "stalePayloadMessage": "The hive configuration has changed since this update failed. Please refresh the page to see the current state.",
+        "maxRetriesReached": "Maximum retry attempts reached. Please contact support if the issue persists."
     }
 }

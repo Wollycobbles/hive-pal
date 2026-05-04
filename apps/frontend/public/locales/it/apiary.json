@@ -70,11 +70,30 @@
     "namePlaceholder": "Nome apiario",
     "locationPlaceholder": "Descrizione della posizione",
     "inspectionType": {
-      "label": "",
-      "placeholder": "",
-      "dataDriven": "",
-      "subjective": "",
-      "description": ""
+      "label": "Inspection Type",
+      "placeholder": "Select inspection type",
+      "dataDriven": "Data Driven",
+      "subjective": "Subjective",
+      "description": "Data Driven uses frame counts and auto-scoring. Subjective uses qualitative 0–10 ratings."
     }
+  },
+  "map": {
+    "selectLocation": "Select Apiary Location",
+    "selectedLocation": "Selected Location",
+    "apiaryLocation": "Apiary Location"
+  },
+  "calendarSubscription": {
+    "title": "Calendar Subscription",
+    "description": "Subscribe to this apiary's inspection schedule in your calendar app",
+    "addToCalendar": "Add to Calendar",
+    "regenerateUrl": "Regenerate URL",
+    "regenerated": "Subscription URL regenerated",
+    "regenerateFailed": "Failed to regenerate subscription URL",
+    "copied": "Subscription URL copied to clipboard",
+    "copyFailed": "Failed to copy to clipboard",
+    "readOnlyNote": "This URL provides read-only access to your inspection schedule. Regenerating the URL will invalidate the previous one.",
+    "copyUrl": "Copy URL",
+    "includeScheduledInspections": "Include auto-generated inspections",
+    "updateFailed": "Failed to update calendar settings"
   }
 }

@@ -100,3 +100,76 @@ Choose the appropriate framework based on what you are testing:
 
 Both frameworks coexist and complement each other to provide complete test coverage.
 
+## Internationalization (i18n)
+
+This project uses **i18next** for internationalization with translation files stored as JSON in `public/locales/{locale}/{namespace}.json`.
+
+### Supported Locales
+
+- **en** (English) - Baseline/source locale with complete translations
+- **da** (Danish)
+- **de** (German)
+- **fr** (French)
+- **it** (Italian)
+- **sk** (Slovak)
+- **sr** (Serbian)
+
+### Namespaces
+
+Translations are organized into 8 namespaces:
+- `admin` - Administrative interface
+- `apiary` - Apiary management
+- `auth` - Authentication flows
+- `common` - Common UI elements and navigation
+- `hive` - Hive-specific terminology and labels
+- `inspection` - Inspection form fields and descriptions
+- `onboarding` - Onboarding flow
+- `queen` - Queen bee tracking
+
+### English Placeholders
+
+**Important:** Non-English locales may contain English text placeholders where community translations are not yet available. These English strings indicate areas that need translation work. They are provided as temporary fallbacks to ensure the UI remains functional while waiting for translated content.
+
+**Current State (as of latest backfill):**
+- Italian: 564 keys with English placeholders (46% of total)
+- Serbian: 382 keys with English placeholders (31%)
+- Slovak: 190 keys with English placeholders (15%)
+- German: 149 keys with English placeholders (12%)
+- Danish: 128 keys with English placeholders (10%)
+- French: 32 keys with English placeholders (3%)
+
+### Contributing Translations
+
+To help translate Hive Pal into your language:
+
+1. **Identify untranslated keys:** Look for English text in non-English locales (see current state above)
+2. **Edit the JSON file:** Update `public/locales/{locale}/{namespace}.json` with proper translations
+3. **Preserve structure:** Maintain the JSON structure and key hierarchy - only change the string values
+4. **Test locally:** Run `pnpm dev` and switch to your locale to verify translations display correctly
+5. **Submit PR:** Create a pull request with your translation updates
+
+**Translation Guidelines:**
+- Keep translations concise and aligned with existing terminology
+- Preserve any formatting (e.g., {variable} placeholders for dynamic content)
+- Test with the UI - some labels have character length constraints
+- Review existing translations in the same locale for consistency
+
+### Managing Translations
+
+The backfill script (`scripts/backfill-translations.js`) can be used to:
+- Add English placeholders for all missing keys in target locales
+- Preserve existing translations while adding new ones
+- Validate JSON structure and formatting
+
+**To run the backfill script:**
+```bash
+# Dry-run (shows changes without modifying files)
+node scripts/backfill-translations.js --dry-run
+
+# Execute backfill on all locales
+node scripts/backfill-translations.js
+
+# Execute backfill for specific locale
+node scripts/backfill-translations.js --locale it
+```
+

@@ -53,7 +53,8 @@
     "addQueen": "Aggiungi Regina",
     "editQueen": "Modifica Regina",
     "viewDetails": "Visualizza Dettagli",
-    "manageQueen": "Gestisci Regina"
+    "manageQueen": "Gestisci Regina",
+    "transferQueen": "Transfer Queen"
   },
   "form": {
     "selectHive": "Seleziona un'arnia",

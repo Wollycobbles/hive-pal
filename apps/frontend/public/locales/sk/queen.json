@@ -53,7 +53,8 @@
     "addQueen": "Pridať matku",
     "editQueen": "Upraviť matku",
     "viewDetails": "Zobraziť podrobnosti",
-    "manageQueen": "Spravovať matku"
+    "manageQueen": "Spravovať matku",
+    "transferQueen": "Transfer Queen"
   },
   "form": {
     "selectHive": "Vybrať úľ",
