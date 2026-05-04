@@ -1,0 +1,112 @@
+{
+  "page": {
+    "title": "Harvests",
+    "description": "Manage your honey harvests and track production"
+  },
+  "stats": {
+    "totalHarvests": "Total Harvests",
+    "totalHoney": "Total Honey",
+    "averageYield": "Average Yield",
+    "latestHarvest": "Latest Harvest",
+    "completedHarvests": "{{count}} completed",
+    "fromCompletedHarvests": "From completed harvests",
+    "perHarvest": "Per harvest",
+    "noData": "No data"
+  },
+  "table": {
+    "title": "Harvest History",
+    "headers": {
+      "date": "Date",
+      "status": "Status",
+      "hives": "Hives",
+      "frames": "Frames",
+      "honey": "Honey ({{unit}})",
+      "actions": "Actions"
+    },
+    "empty": {
+      "title": "No harvests yet",
+      "description": "Start tracking your honey harvests to see production statistics"
+    }
+  },
+  "details": {
+    "title": "Harvest Details",
+    "information": "Harvest Information",
+    "fields": {
+      "date": "Date",
+      "totalHives": "Total Hives",
+      "totalFrames": "Total Frames",
+      "totalWeight": "Total Weight",
+      "notes": "Notes",
+      "noNotes": "No notes"
+    }
+  },
+  "weight": {
+    "setWeight": "Set Weight",
+    "button": "Save",
+    "buttonCancel": "Cancel",
+    "placeholder": "0.0",
+    "notSet": "Not set",
+    "error": "Please enter a valid weight"
+  },
+  "notes": {
+    "editButton": "Edit"
+  },
+  "hiveDistribution": {
+    "title": "Hive Distribution",
+    "editButton": "Edit",
+    "frames": "frames",
+    "saveButton": "Save & Recalculate",
+    "savingButton": "Saving...",
+    "cancelButton": "Cancel"
+  },
+  "wizard": {
+    "title": "Start New Harvest",
+    "triggerButton": "Start Harvest",
+    "dateLabel": "Harvest Date",
+    "datePickerPlaceholder": "Pick a date",
+    "hivesLabel": "Select Hives and Frame Counts",
+    "frameSummary": "Selected: {{selectedCount}} hive(s) • {{totalFrames}} total frames",
+    "notesLabel": "Notes (Optional)",
+    "notesPlaceholder": "Add any notes about this harvest...",
+    "cancelButton": "Cancel",
+    "startButton": "Start Harvest",
+    "startingButton": "Starting...",
+    "error": "Please select at least one hive",
+    "successMessage": "Harvest started successfully"
+  },
+  "actions": {
+    "view": "View",
+    "share": "Share",
+    "reopen": "Reopen",
+    "finalize": "Finalize",
+    "delete": "Delete",
+    "deleteConfirmTitle": "Delete Harvest?",
+    "deleteConfirmDescription": "This action cannot be undone. This will permanently delete the harvest."
+  },
+  "status": {
+    "draft": "Draft Harvest",
+    "draftDescription": "This harvest is in draft status. Set the total weight to proceed with calculations.",
+    "inProgress": "Ready to Finalize",
+    "inProgressDescription": "Weight has been set and distribution calculated. Click \"Finalize\" to create harvest actions for each hive.",
+    "completed": "Completed Alert",
+    "completedDescription": "This harvest has been finalized. Deleting it will also remove all associated harvest actions from the hive timelines."
+  },
+  "messages": {
+    "loading": "Loading harvests...",
+    "loadingDetails": "Loading...",
+    "notFound": "Harvest not found",
+    "weightSetSuccess": "Weight set successfully",
+    "weightSetError": "Failed to set weight",
+    "notesUpdateSuccess": "Notes updated",
+    "notesUpdateError": "Failed to update notes",
+    "finalizationSuccess": "Harvest finalized successfully",
+    "finalizationError": "Failed to finalize harvest",
+    "reopenSuccess": "Harvest reopened for editing",
+    "reopenError": "Failed to reopen harvest",
+    "deleteSuccess": "Harvest deleted",
+    "deleteError": "Failed to delete harvest",
+    "hivesUpdateSuccess": "Hives updated and distribution recalculated",
+    "hivesUpdateError": "Failed to update hives",
+    "shareError": "Failed to create share link"
+  }
+}

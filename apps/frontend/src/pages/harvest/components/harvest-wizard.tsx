@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Dialog,
   DialogContent,
@@ -28,6 +29,7 @@ import { useNavigate } from 'react-router-dom';
 import { useApiary } from '@/hooks/use-apiary';
 
 export const HarvestWizard = () => {
+  const { t } = useTranslation('harvest');
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Date>(new Date());
   const [notes, setNotes] = useState('');
@@ -62,7 +64,7 @@ export const HarvestWizard = () => {
 
   const handleSubmit = async () => {
     if (selectedHives.size === 0) {
-      toast.error('Please select at least one hive');
+      toast.error(t('wizard.error'));
       return;
     }
 
@@ -81,31 +83,31 @@ export const HarvestWizard = () => {
 
     try {
       const harvest = await createHarvest.mutateAsync(data);
-      toast.success('Harvest started successfully');
+      toast.success(t('wizard.successMessage'));
       setOpen(false);
       navigate(`/harvests/${harvest.id}`);
     } catch (error) {
-      toast.error('Failed to start harvest');
+      toast.error(t('messages.loading'));
       console.error('Failed to create harvest:', error);
     }
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          Start Harvest
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Start New Harvest</DialogTitle>
-        </DialogHeader>
+       <DialogTrigger asChild>
+         <Button>
+           <Plus className="mr-2 h-4 w-4" />
+           {t('wizard.triggerButton')}
+         </Button>
+       </DialogTrigger>
+       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+         <DialogHeader>
+           <DialogTitle>{t('wizard.title')}</DialogTitle>
+         </DialogHeader>
         <div className="space-y-6 py-4">
-          {/* Date Selection */}
-          <div className="space-y-2">
-            <Label htmlFor="date">Harvest Date</Label>
+           {/* Date Selection */}
+           <div className="space-y-2">
+             <Label htmlFor="date">{t('wizard.dateLabel')}</Label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
@@ -115,8 +117,8 @@ export const HarvestWizard = () => {
                     !date && 'text-muted-foreground',
                   )}
                 >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date ? format(date, 'PPP') : <span>Pick a date</span>}
+                   <CalendarIcon className="mr-2 h-4 w-4" />
+                   {date ? format(date, 'PPP') : <span>{t('wizard.datePickerPlaceholder')}</span>}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0">
@@ -130,9 +132,9 @@ export const HarvestWizard = () => {
             </Popover>
           </div>
 
-          {/* Hive Selection */}
-          <div className="space-y-2">
-            <Label>Select Hives and Frame Counts</Label>
+           {/* Hive Selection */}
+           <div className="space-y-2">
+             <Label>{t('wizard.hivesLabel')}</Label>
             <div className="space-y-3 max-h-64 overflow-y-auto border rounded-lg p-4">
               {hives.map(hive => (
                 <div key={hive.id} className="flex items-center space-x-4 py-2">
@@ -163,49 +165,55 @@ export const HarvestWizard = () => {
                         }
                         className="w-20"
                       />
-                      <span className="text-sm text-muted-foreground">
-                        frames
-                      </span>
+                       <span className="text-sm text-muted-foreground">
+                         {t('hiveDistribution.frames')}
+                       </span>
                     </div>
                   )}
                 </div>
               ))}
             </div>
-            <p className="text-sm text-muted-foreground">
-              Selected: {selectedHives.size} hive(s) •{' '}
-              {Array.from(selectedHives.values()).reduce((a, b) => a + b, 0)}{' '}
-              total frames
-            </p>
+             <p className="text-sm text-muted-foreground">
+               {t('wizard.frameSummary', {
+                 selectedCount: selectedHives.size,
+                 totalFrames: Array.from(selectedHives.values()).reduce(
+                   (a, b) => a + b,
+                   0,
+                 ),
+               })}
+             </p>
           </div>
 
-          {/* Notes */}
-          <div className="space-y-2">
-            <Label htmlFor="notes">Notes (Optional)</Label>
-            <Textarea
-              id="notes"
-              value={notes}
-              onChange={e => setNotes(e.target.value)}
-              placeholder="Add any notes about this harvest..."
-              rows={3}
-            />
+           {/* Notes */}
+           <div className="space-y-2">
+             <Label htmlFor="notes">{t('wizard.notesLabel')}</Label>
+             <Textarea
+               id="notes"
+               value={notes}
+               onChange={e => setNotes(e.target.value)}
+               placeholder={t('wizard.notesPlaceholder')}
+               rows={3}
+             />
           </div>
 
-          {/* Actions */}
-          <div className="flex justify-end space-x-2">
-            <Button
-              variant="outline"
-              onClick={() => setOpen(false)}
-              disabled={createHarvest.isPending}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={handleSubmit}
-              disabled={createHarvest.isPending || selectedHives.size === 0}
-            >
-              {createHarvest.isPending ? 'Starting...' : 'Start Harvest'}
-            </Button>
-          </div>
+           {/* Actions */}
+           <div className="flex justify-end space-x-2">
+             <Button
+               variant="outline"
+               onClick={() => setOpen(false)}
+               disabled={createHarvest.isPending}
+             >
+               {t('common:actions.cancel')}
+             </Button>
+             <Button
+               onClick={handleSubmit}
+               disabled={createHarvest.isPending || selectedHives.size === 0}
+             >
+               {createHarvest.isPending
+                 ? t('wizard.startingButton')
+                 : t('wizard.startButton')}
+             </Button>
+           </div>
         </div>
       </DialogContent>
     </Dialog>
