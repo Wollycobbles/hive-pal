@@ -123,7 +123,7 @@ export function NavAdmin({ collapsed = false }: NavAdminProps) {
             <path d="M2 8h20" />
             <path d="M2 12h20" />
           </svg>
-          {!collapsed && <span>Frame Sizes</span>}
+          {!collapsed && <span>{t('navigation.frameSizes', { defaultValue: 'Frame Sizes' })}</span>}
         </Link>
         <Link
           to="/admin/metrics"

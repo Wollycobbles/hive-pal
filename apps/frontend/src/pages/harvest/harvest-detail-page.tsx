@@ -49,7 +49,7 @@ import { ShareDialog } from '@/components/share/share-dialog';
 import { getStatusColor } from '@/utils/status-colors';
 
 export const HarvestDetailPage = () => {
-  const { t } = useTranslation('harvest');
+  const { t } = useTranslation(['harvest', 'common']);
   const { harvestId } = useParams<{ harvestId: string }>();
   const navigate = useNavigate();
   const [isEditingWeight, setIsEditingWeight] = useState(false);
@@ -530,7 +530,7 @@ export const HarvestDetailPage = () => {
         onOpenChange={setShowSharePrompt}
         resourceType={ShareResourceType.HARVEST}
         resourceId={harvest.id}
-        title="Harvest finalized!"
+        title={t('common.alerts.warning.harvestFinalized')}
       />
 
       <ShareDialog

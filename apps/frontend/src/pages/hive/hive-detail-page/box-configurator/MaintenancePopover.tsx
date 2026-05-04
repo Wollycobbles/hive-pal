@@ -25,7 +25,7 @@ interface MaintenanceProps {
 
 /** Shared hook for maintenance action creation */
 const useMaintenanceAction = (hiveId: string, component: MaintenanceComponent) => {
-  const { t } = useTranslation('inspection');
+  const { t } = useTranslation(['inspection', 'common']);
   const [date, setDate] = useState<Date>(new Date());
   const [showCalendar, setShowCalendar] = useState(false);
   const createAction = useCreateAction();
@@ -48,9 +48,9 @@ const useMaintenanceAction = (hiveId: string, component: MaintenanceComponent) =
         `${status === 'CLEANED' ? t('inspection:form.actions.maintenance_section.cleaned') : t('inspection:form.actions.maintenance_section.replaced')} — ${format(date, 'PP')}`,
       );
       onSuccess?.();
-    } catch {
-      toast.error('Failed to save maintenance action');
-    }
+     } catch {
+       toast.error(t('common.alerts.error.errorOccurred', { defaultValue: 'Failed to save maintenance action' }));
+     }
   };
 
   return { date, setDate, showCalendar, setShowCalendar, handleMaintenance, isPending: createAction.isPending };

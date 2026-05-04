@@ -1,5 +1,6 @@
 import { Line, LineChart, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { format, parseISO } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 import {
   ChartTooltip,
   ChartTooltipContent,
@@ -21,12 +22,14 @@ export const StrengthChart: React.FC<StrengthChartProps> = ({
   hiveId,
   period,
 }) => {
+  const { t } = useTranslation(['hive', 'common']);
+  
   return (
     <BaseInspectionChart
       hiveId={hiveId}
       period={period}
-      title="Colony Strength"
-      description="Occupied frame-space count recorded over time"
+      title={t('hive:charts.colonyStrength')}
+      description={t('hive:charts.strengthDescription')}
       config={{
         strength: { label: 'Strength', color: '#6366f1' },
       }}

@@ -158,7 +158,7 @@ export function ReleasesPage() {
         {releaseNotes.length === 0 && (
           <Card className="text-center py-12 bg-white">
             <CardContent>
-              <p className="text-gray-500">No release notes available.</p>
+              <p className="text-gray-500">{t('status.empty.noReleaseNotes')}</p>
             </CardContent>
           </Card>
         )}

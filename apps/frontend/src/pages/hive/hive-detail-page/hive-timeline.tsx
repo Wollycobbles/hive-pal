@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import {
   ActionResponse,
@@ -46,6 +47,7 @@ export const HiveTimeline: React.FC<HiveTimelineProps> = ({
   hiveId,
   apiaryId,
 }) => {
+  const { t } = useTranslation(['common']);
   const navigate = useNavigate();
   const { canEdit } = useApiaryPermission();
   const [editingAction, setEditingAction] = useState<ActionResponse | null>(
@@ -158,7 +160,7 @@ export const HiveTimeline: React.FC<HiveTimelineProps> = ({
   if (!hiveId) return null;
 
   return (
-    <Section title="Activity Timeline">
+    <Section title={t('common.timeline.title')}>
       <TimelineEventList
         inspections={inspections ?? []}
         actions={actions ?? []}
@@ -166,7 +168,7 @@ export const HiveTimeline: React.FC<HiveTimelineProps> = ({
         photos={photos ?? []}
         documents={documents ?? []}
         isLoading={inspectionsLoading || actionsLoading || quickChecksLoading || photosLoading || documentsLoading}
-        emptyMessage="No activity recorded for this hive yet"
+        emptyMessage={t('timeline.noActivity')}
         onEditAction={canEdit ? setEditingAction : undefined}
         onDeleteAction={canEdit ? setDeletingAction : undefined}
         onDeleteQuickCheck={canEdit ? setDeletingQuickCheck : undefined}

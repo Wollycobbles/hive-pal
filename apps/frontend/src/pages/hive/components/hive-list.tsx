@@ -135,7 +135,7 @@ const HiveCard: React.FC<{ hive: HiveResponse; isSubjective: boolean }> = ({ hiv
                   variant="ghost"
                   size="icon"
                   className="h-11 w-11 text-amber-500 hover:text-amber-600 hover:bg-amber-50"
-                  aria-label="Inspection warnings"
+                  aria-label={t('common:status.inspectionWarnings')}
                 >
                   <AlertTriangle className="h-6 w-6" />
                 </Button>

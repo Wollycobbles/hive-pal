@@ -106,7 +106,7 @@ export const FeaturePhotoPicker = forwardRef<
         <div className="relative group">
           <img
             src={displayUrl}
-            alt="Feature photo"
+            alt={t('common.photo.featureAlt')}
             className="w-full h-40 object-cover rounded-md border"
           />
           {createPhoto.isPending ? (

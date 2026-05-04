@@ -1,4 +1,5 @@
 import { useState, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Plus, Save, X, Snowflake } from 'lucide-react';
@@ -25,6 +26,7 @@ interface BoxConfiguratorProps {
 }
 
 export const BoxConfigurator = ({ hive }: BoxConfiguratorProps) => {
+  const { t } = useTranslation(['common']);
   const [boxes, setBoxes] = useState<Box[]>(hive?.boxes || []);
   const [selectedBoxId, setSelectedBoxId] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -147,10 +149,10 @@ export const BoxConfigurator = ({ hive }: BoxConfiguratorProps) => {
           id: box.id?.startsWith('temp-') ? undefined : box.id,
         })),
       });
-      toast.success('Box configuration saved successfully');
+      toast.success(t('common.alerts.success.changesSaved', { defaultValue: 'Box configuration saved successfully' }));
       setIsEditing(false);
     } catch {
-      toast.error('Failed to save box configuration');
+      toast.error(t('common.alerts.error.errorOccurred', { defaultValue: 'Failed to save box configuration' }));
     }
   };
 

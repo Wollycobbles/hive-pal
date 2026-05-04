@@ -1,5 +1,6 @@
 import { Bar, BarChart, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { format, parseISO } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 import {
   ChartTooltip,
   ChartTooltipContent,
@@ -21,12 +22,14 @@ export const QueenCellsChart: React.FC<QueenCellsChartProps> = ({
   hiveId,
   period,
 }) => {
+  const { t } = useTranslation(['hive', 'common']);
+  
   return (
     <BaseInspectionChart
       hiveId={hiveId}
       period={period}
-      title="Queen Cells"
-      description="Count of queen cells recorded per inspection"
+      title={t('hive:charts.queenCells')}
+      description={t('hive:charts.queenCellsDescription')}
       config={{
         queenCells: { label: 'Queen Cells', color: '#f43f5e' },
       }}

@@ -30,7 +30,7 @@ import { useApiaryStore } from '@/hooks/use-apiary';
 export const UserWizardPage = () => {
   const [step, setStep] = useState<number | null>(null); // null = loading
   const [apiary, setApiary] = useState<ApiaryResponse | null>(null);
-  const { t } = useTranslation('onboarding');
+  const { t } = useTranslation(['onboarding', 'common']);
   const { setActiveApiaryId } = useApiaryStore();
 
   const steps = [
@@ -148,7 +148,7 @@ export const UserWizardPage = () => {
                 <img
                   src="/hive-pal-logo.png"
                   className="w-24"
-                  alt="Hive-Pal Logo"
+                  alt={t('common.logo.alt')}
                 />
               </div>
               <h3 className="text-xl font-semibold mb-4">

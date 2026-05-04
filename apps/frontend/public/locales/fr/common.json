@@ -65,7 +65,12 @@
         "newInspection": "Nouvelle inspection",
         "scheduleInspection": "Planifier une inspection",
         "newQueen": "Nouvelle reine",
-        "recentInspections": "Inspections récentes"
+        "recentInspections": "Inspections récentes",
+        "changeHiveStatus": "Change hive status",
+        "clear": "Clear",
+        "printQRCodes": "Print QR Codes",
+        "decrease": "Decrease {{label}}",
+        "increase": "Increase {{label}}"
     },
     "status": {
         "loading": "Chargement...",
@@ -78,7 +83,20 @@
         "failed": "Échec",
         "active": "Actif",
         "inactive": "Inactif",
-        "archived": "Archivé"
+        "archived": "Archivé",
+        "empty": {
+            "genericMessage": "No data available",
+            "inspectionMessage": "No inspections found",
+            "noResults": "No results found",
+            "noFrameData": "No frame data recorded",
+            "noFeedback": "No feedback found",
+            "noFrameSizes": "No frame sizes found",
+            "noApiaries": "No apiaries with coordinates found",
+            "noQueens": "No queens found",
+            "noReleaseNotes": "No release notes available",
+            "noMovementHistory": "No movement history recorded"
+        },
+        "inspectionWarnings": "Inspection warnings"
     },
     "messages": {
         "confirmDelete": "Êtes-vous sûr de vouloir supprimer cet élément ?",
@@ -186,7 +204,24 @@
         "alert": "alerte",
         "alerts": "alertes",
         "activeAlerts": "Alertes actives",
-        "activeAlert": "Alerte active"
+        "activeAlert": "Alerte active",
+        "success": {
+            "changesSaved": "Changes saved successfully",
+            "documentUploaded": "Document uploaded",
+            "photoUploaded": "Photo uploaded",
+            "quickCheckDeleted": "Quick check deleted"
+        },
+        "error": {
+            "errorOccurred": "An error occurred",
+            "failedToDeleteDocument": "Failed to delete document",
+            "failedToDeletePhoto": "Failed to delete photo",
+            "failedToUploadDocument": "Failed to upload document",
+            "failedToUploadPhoto": "Failed to upload photo"
+        },
+        "warning": {
+            "confirmAction": "Please confirm this action",
+            "harvestFinalized": "Harvest finalized!"
+        }
     },
     "calendar": {
         "title": "Calendrier",
@@ -227,7 +262,8 @@
         "deleteTitle": "Supprimer la photo ?",
         "deleteDescription": "Cette action est irréversible. Cette photo sera définitivement supprimée.",
         "deleted": "Photo supprimée",
-        "deleteFailed": "Échec de la suppression de la photo"
+        "deleteFailed": "Échec de la suppression de la photo",
+        "featureAlt": "Feature photo"
     },
     "document": {
         "title": "Ajouter un document",
@@ -309,7 +345,8 @@
         "photos": "Photos",
         "documents": "Documents",
         "fromInspection": "À partir de l’inspection",
-        "maintenance": "Maintenance"
+        "maintenance": "Maintenance",
+        "title": "Activity Timeline"
     },
     "reports": {
         "title": "Rapports",
@@ -441,5 +478,75 @@
     },
     "footer": {
         "privacyPolicy": "Politique de confidentialité"
+    },
+    "sharing": {
+        "inviteLink": {
+            "create": "Create Link",
+            "dialogTitle": "Create Invite Link",
+            "empty": "No active invite links. Create one to share this apiary.",
+            "title": "Invite Links"
+        },
+        "members": {
+            "empty": "No members yet. Share an invite link to get started.",
+            "heading": {
+                "one": "1 Active Member",
+                "other": "{{count}} Active Members"
+            },
+            "title": "Members"
+        },
+        "permissions": {
+            "editor": "Full access",
+            "editorDescription": "Can create, edit, and delete hives, inspections, etc.",
+            "label": "Permission Level",
+            "viewer": "View only",
+            "viewerDescription": "Can view all data but cannot make changes."
+        },
+        "requests": {
+            "approve": "Approve",
+            "heading": {
+                "one": "1 Pending Request",
+                "other": "{{count}} Pending Requests"
+            },
+            "reject": "Reject"
+        }
+    },
+    "permissions": {
+        "editor": "Full access",
+        "viewer": "View only"
+    },
+    "dialogs": {
+        "confirmations": {
+            "deleteItem": "Are you sure you want to delete this item?",
+            "discardChanges": "Discard your changes?"
+        },
+        "notesPreview": "Review AI-generated notes before applying them.",
+        "scorePreview": "Review AI-suggested score values before applying them."
+    },
+    "ui": {
+        "customColor": "Custom color",
+        "toggleSidebar": "Toggle Sidebar"
+    },
+    "validation": {
+        "required": "This field is required",
+        "invalidEmail": "Invalid email address",
+        "invalidFormat": "Invalid format",
+        "minimumLength": "Minimum {{minimum}} characters"
+    },
+    "errors": {
+        "pageLoadError": "We're having trouble loading this page. Please try again or return home.",
+        "boundary": "Something went wrong. Please try refreshing the page.",
+        "inspectionWarnings": "Inspection warnings"
+    },
+    "charts": {
+        "events": "Events"
+    },
+    "share": {
+        "previewImage": "Share preview"
+    },
+    "logo": {
+        "alt": "Logo"
+    },
+    "labels": {
+        "notes": "Notes"
     }
 }

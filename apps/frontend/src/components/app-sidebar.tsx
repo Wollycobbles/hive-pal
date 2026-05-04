@@ -91,7 +91,9 @@ const getNavData = (t: TFunction<'common'>) => ({
           url: '/inspections/schedule',
         },
         {
-          title: 'Batch Inspections',
+          title: t('navigation.batchInspections', {
+            defaultValue: 'Batch Inspections',
+          }),
           url: '/batch-inspections',
         },
         {

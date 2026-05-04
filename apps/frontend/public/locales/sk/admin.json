@@ -64,5 +64,13 @@
       "lastInspection": "Posledná prehliadka",
       "noApiaries": "Pre tohto používateľa neboli nájdené žiadne včelnice"
     }
+  },
+  "errors": {
+    "failedToFetch": "Failed to fetch data",
+    "failedToReset": "Failed to reset password",
+    "unexpectedError": "An unexpected error occurred"
+  },
+  "users": {
+    "userSuspended": "User account suspended"
   }
 }

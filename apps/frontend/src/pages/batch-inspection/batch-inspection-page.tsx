@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   useBatchInspection,
   useCurrentHiveToInspect,
@@ -32,6 +33,7 @@ import {
 } from '@/components/ui/dialog';
 
 export const BatchInspectionPage = () => {
+  const { t } = useTranslation(['common']);
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [showSkipDialog, setShowSkipDialog] = React.useState(false);
@@ -106,7 +108,7 @@ export const BatchInspectionPage = () => {
       },
       onError: error => {
         console.error('Failed to skip hive:', error);
-        toast.error('Failed to skip hive');
+        toast.error(t('common.alerts.error.errorOccurred'));
       },
     });
   };
@@ -128,14 +130,14 @@ export const BatchInspectionPage = () => {
         onSuccess: result => {
           if (!result.next) {
             // Batch complete
-            toast.success('Batch inspection completed!');
+            toast.success(t('common.alerts.success.changesSaved'));
             navigate(`/batch-inspections/${id}`);
           }
           // Otherwise, the query will refetch and show the next hive
         },
         onError: error => {
           console.error('Failed to create inspection:', error);
-          toast.error('Failed to save inspection');
+          toast.error(t('common.alerts.error.errorOccurred'));
         },
       },
     );

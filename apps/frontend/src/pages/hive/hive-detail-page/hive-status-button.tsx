@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ChevronDown, Loader2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import {
   DropdownMenu,
@@ -31,6 +32,7 @@ type HiveStatusButtonProps = {
 export const HiveStatusButton: React.FC<HiveStatusButtonProps> = ({ hiveId, status }) => {
   const [open, setOpen] = useState(false);
   const { mutateAsync: updateHive, isPending } = useUpdateHive();
+  const { t } = useTranslation(['common']);
 
   const handleSelect = async (newStatus: HiveStatusEnum) => {
     if (newStatus === status) {
@@ -51,7 +53,7 @@ export const HiveStatusButton: React.FC<HiveStatusButtonProps> = ({ hiveId, stat
       <DropdownMenuTrigger asChild>
         <button
           className="flex items-center gap-1 rounded-md px-2 py-1 hover:bg-muted transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          aria-label="Change hive status"
+          aria-label={t('common.actions.changeHiveStatus')}
         >
           {isPending ? (
             <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />

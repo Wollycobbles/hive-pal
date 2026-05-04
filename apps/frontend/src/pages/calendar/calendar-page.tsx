@@ -315,7 +315,7 @@ export const CalendarPage = () => {
           </div>
 
           {isLoading ? (
-            <div className="text-sm text-muted-foreground">Loading...</div>
+            <div className="text-sm text-muted-foreground">{t('status.loading')}</div>
           ) : (
             <div className="space-y-4">
               {days.map(day => {

@@ -1,4 +1,5 @@
 import { lazy, Suspense, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useHives } from '@/api/hooks/useHives';
 import { Button } from '@/components/ui/button';
 import {
@@ -35,6 +36,7 @@ function QRPreviewLoader() {
 }
 
 export function QRCodesPrintPage() {
+  const { t } = useTranslation(['common']);
   const { data: hives, isLoading } = useHives();
   const [selectedHives, setSelectedHives] = useState<Set<string>>(new Set());
   const [qrSize, setQrSize] = useState<'small' | 'medium' | 'large'>('large');
@@ -399,14 +401,14 @@ export function QRCodesPrintPage() {
                           {includeLogo && (
                             <div className="absolute inset-0 flex items-center justify-center">
                               <div className="bg-white p-0.5 rounded shadow-sm">
-                                <img
-                                  src={logoUrl}
-                                  alt="Logo"
-                                  className="w-4 h-4"
-                                  onError={e => {
-                                    e.currentTarget.style.display = 'none';
-                                  }}
-                                />
+                                 <img
+                                   src={logoUrl}
+                                   alt={t('common.logo.alt')}
+                                   className="w-4 h-4"
+                                   onError={e => {
+                                     e.currentTarget.style.display = 'none';
+                                   }}
+                                 />
                               </div>
                             </div>
                           )}

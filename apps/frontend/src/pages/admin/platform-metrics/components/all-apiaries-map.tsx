@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { TileLayer, Marker, MapContainer, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L, { Icon } from 'leaflet';
@@ -39,12 +40,13 @@ const DEFAULT_CENTER: L.LatLngExpression = [48.5, 10.5];
 const DEFAULT_ZOOM = 4;
 
 export const AllApiariesMap: React.FC = () => {
+  const { t } = useTranslation('common');
   const { data: apiaries, isLoading, error } = useAdminApiariesMap();
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-[400px] text-muted-foreground">
-        Loading map...
+        {t('status.loading')}
       </div>
     );
   }
@@ -60,7 +62,7 @@ export const AllApiariesMap: React.FC = () => {
   if (!apiaries || apiaries.length === 0) {
     return (
       <div className="flex items-center justify-center h-[400px] text-muted-foreground">
-        No apiaries with coordinates found
+        {t('status.empty.noApiaries')}
       </div>
     );
   }

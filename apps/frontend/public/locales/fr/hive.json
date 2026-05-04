@@ -276,5 +276,18 @@
         "promptCopyToClipboard": "Copier dans le presse-papier",
         "promptCopiedToClipboard": "Prompt copié dans le presse-papiers",
         "failedToCopyToClipboard": "Échec de la copie du prompt dans le presse-papiers"
+    },
+    "charts": {
+        "broodNestTrend": "Brood Nest Trend",
+        "broodNestDescription": "Frame counts over time",
+        "booleanEventsDescription": "Boolean events recorded per inspection — dots indicate the event was observed",
+        "colonyStrength": "Colony Strength",
+        "queenCells": "Queen Cells",
+        "queenCellsDescription": "Count of queen cells recorded per inspection",
+        "storeTrend": "Store Trend",
+        "storesDescription": "Pollen, nectar, and honey frame counts over time"
+    },
+    "sections": {
+        "feeding": "Feeding"
     }
 }

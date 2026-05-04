@@ -65,7 +65,12 @@
     "newInspection": "Neue Inspektion",
     "scheduleInspection": "Inspektion planen",
     "newQueen": "Neue Königin",
-    "recentInspections": "Letzte Inspektionen"
+    "recentInspections": "Letzte Inspektionen",
+    "changeHiveStatus": "Change hive status",
+    "clear": "Clear",
+    "printQRCodes": "Print QR Codes",
+    "decrease": "Decrease {{label}}",
+    "increase": "Increase {{label}}"
   },
   "status": {
     "loading": "Wird geladen...",
@@ -78,7 +83,20 @@
     "failed": "Fehlgeschlagen",
     "active": "Aktiv",
     "inactive": "Inaktiv",
-    "archived": "Archiviert"
+    "archived": "Archiviert",
+    "empty": {
+      "genericMessage": "No data available",
+      "inspectionMessage": "No inspections found",
+      "noResults": "No results found",
+      "noFrameData": "No frame data recorded",
+      "noFeedback": "No feedback found",
+      "noFrameSizes": "No frame sizes found",
+      "noApiaries": "No apiaries with coordinates found",
+      "noQueens": "No queens found",
+      "noReleaseNotes": "No release notes available",
+      "noMovementHistory": "No movement history recorded"
+    },
+    "inspectionWarnings": "Inspection warnings"
   },
   "messages": {
     "confirmDelete": "Möchten Sie dieses Element wirklich löschen?",
@@ -186,7 +204,24 @@
     "alert": "Warnung",
     "alerts": "Warnungen",
     "activeAlerts": "Aktive Warnungen",
-    "activeAlert": "Aktive Warnung"
+    "activeAlert": "Aktive Warnung",
+    "success": {
+      "changesSaved": "Changes saved successfully",
+      "documentUploaded": "Document uploaded",
+      "photoUploaded": "Photo uploaded",
+      "quickCheckDeleted": "Quick check deleted"
+    },
+    "error": {
+      "errorOccurred": "An error occurred",
+      "failedToDeleteDocument": "Failed to delete document",
+      "failedToDeletePhoto": "Failed to delete photo",
+      "failedToUploadDocument": "Failed to upload document",
+      "failedToUploadPhoto": "Failed to upload photo"
+    },
+    "warning": {
+      "confirmAction": "Please confirm this action",
+      "harvestFinalized": "Harvest finalized!"
+    }
   },
   "calendar": {
     "title": "Kalender",
@@ -251,7 +286,8 @@
     "photos": "Fotos",
     "documents": "Dokumente",
     "fromInspection": "Aus Durchsicht",
-    "maintenance": "Maintenance"
+    "maintenance": "Maintenance",
+    "title": "Activity Timeline"
   },
   "reports": {
     "title": "Berichte",
@@ -317,7 +353,8 @@
     "uploadFailed": "Foto hochladen fehlgeschlagen",
     "deleteTitle": "Foto löschen?",
     "deleteDescription": "Dieser Vorgang kann nicht rückgängig gemacht werden. Das Foto wird dadurch endgültig gelöscht.",
-    "deleted": "Foto gelöscht"
+    "deleted": "Foto gelöscht",
+    "featureAlt": "Feature photo"
   },
   "document": {
     "uploading": "Hochladen...",
@@ -441,5 +478,75 @@
     "fact3Description": "All three castes share the same 3-day egg stage. The queen lays each egg vertically in the cell; it gradually tilts over before hatching.",
     "fact4Title": "Capping timing",
     "fact4Description": "Workers cap queen cells on day 8, worker cells on day 9, and drone cells on day 10. Spotting capped cells helps identify what's developing inside."
+  },
+  "sharing": {
+    "inviteLink": {
+      "create": "Create Link",
+      "dialogTitle": "Create Invite Link",
+      "empty": "No active invite links. Create one to share this apiary.",
+      "title": "Invite Links"
+    },
+    "members": {
+      "empty": "No members yet. Share an invite link to get started.",
+      "heading": {
+        "one": "1 Active Member",
+        "other": "{{count}} Active Members"
+      },
+      "title": "Members"
+    },
+    "permissions": {
+      "editor": "Full access",
+      "editorDescription": "Can create, edit, and delete hives, inspections, etc.",
+      "label": "Permission Level",
+      "viewer": "View only",
+      "viewerDescription": "Can view all data but cannot make changes."
+    },
+    "requests": {
+      "approve": "Approve",
+      "heading": {
+        "one": "1 Pending Request",
+        "other": "{{count}} Pending Requests"
+      },
+      "reject": "Reject"
+    }
+  },
+  "permissions": {
+    "editor": "Full access",
+    "viewer": "View only"
+  },
+  "dialogs": {
+    "confirmations": {
+      "deleteItem": "Are you sure you want to delete this item?",
+      "discardChanges": "Discard your changes?"
+    },
+    "notesPreview": "Review AI-generated notes before applying them.",
+    "scorePreview": "Review AI-suggested score values before applying them."
+  },
+  "ui": {
+    "customColor": "Custom color",
+    "toggleSidebar": "Toggle Sidebar"
+  },
+  "validation": {
+    "required": "This field is required",
+    "invalidEmail": "Invalid email address",
+    "invalidFormat": "Invalid format",
+    "minimumLength": "Minimum {{minimum}} characters"
+  },
+  "errors": {
+    "pageLoadError": "We're having trouble loading this page. Please try again or return home.",
+    "boundary": "Something went wrong. Please try refreshing the page.",
+    "inspectionWarnings": "Inspection warnings"
+  },
+  "charts": {
+    "events": "Events"
+  },
+  "share": {
+    "previewImage": "Share preview"
+  },
+  "logo": {
+    "alt": "Logo"
+  },
+  "labels": {
+    "notes": "Notes"
   }
 }

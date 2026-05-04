@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useIsAdmin } from '@/hooks/use-is-admin';
 import {
   useAdminFrameSizes,
@@ -43,6 +44,7 @@ const getStatusBadgeVariant = (
 };
 
 const FrameSizeReviewPage: React.FC = () => {
+  const { t } = useTranslation('common');
   const isAdmin = useIsAdmin();
   const { data: frameSizes = [], isLoading, refetch } = useAdminFrameSizes();
   const approveMutation = useApproveFrameSize();
@@ -186,7 +188,7 @@ const FrameSizeReviewPage: React.FC = () => {
                       colSpan={5}
                       className="text-center py-8 text-muted-foreground"
                     >
-                      No frame sizes found
+                      {t('status.empty.noFrameSizes')}
                     </TableCell>
                   </TableRow>
                 ) : (

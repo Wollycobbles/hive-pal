@@ -64,5 +64,13 @@
             "lastInspection": "Последњи преглед",
             "noApiaries": "Није пронађен ниједан пчелињак за овог корисника"
         }
+    },
+    "errors": {
+        "failedToFetch": "Failed to fetch data",
+        "failedToReset": "Failed to reset password",
+        "unexpectedError": "An unexpected error occurred"
+    },
+    "users": {
+        "userSuspended": "User account suspended"
     }
 }

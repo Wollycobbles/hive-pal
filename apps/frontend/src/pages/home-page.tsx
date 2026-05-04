@@ -12,14 +12,16 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Clock } from 'lucide-react';
 import { useApiaries, useHives } from '@/api/hooks';
 import { useApiary } from '@/hooks/use-apiary';
+import { useTranslation } from 'react-i18next';
 
 export const HomePage = () => {
+  const { t } = useTranslation('common');
   const { data, isLoading, refetch } = useHives();
   const { activeApiaryId, apiaries } = useApiary();
   const { pendingMemberships } = useApiaries();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>{t('status.loading')}</div>;
   }
 
   // User has no apiaries but has pending join requests

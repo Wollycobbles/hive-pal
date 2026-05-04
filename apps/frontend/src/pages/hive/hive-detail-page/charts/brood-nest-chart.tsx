@@ -1,5 +1,6 @@
 import { Line, LineChart, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { format, parseISO } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 import {
   ChartTooltip,
   ChartTooltipContent,
@@ -30,12 +31,14 @@ export const BroodNestChart: React.FC<BroodNestChartProps> = ({
   hiveId,
   period,
 }) => {
+  const { t } = useTranslation(['hive', 'common']);
+  
   return (
     <BaseInspectionChart
       hiveId={hiveId}
       period={period}
-      title="Brood Nest Trend"
-      description="Frame counts over time"
+      title={t('hive:charts.broodNestTrend')}
+      description={t('hive:charts.broodNestDescription')}
       config={{
         eggs:    { label: 'Eggs',           color: '#facc15' },
         uncapped:{ label: 'Uncapped Brood', color: '#fb923c' },

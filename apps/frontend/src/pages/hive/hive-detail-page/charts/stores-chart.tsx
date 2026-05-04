@@ -1,5 +1,6 @@
 import { Line, LineChart, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { format, parseISO } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 import {
   ChartTooltip,
   ChartTooltipContent,
@@ -26,12 +27,14 @@ function hasStoresData(inspection: InspectionResponse): boolean {
 }
 
 export const StoresChart: React.FC<StoresChartProps> = ({ hiveId, period }) => {
+  const { t } = useTranslation(['hive', 'common']);
+  
   return (
     <BaseInspectionChart
       hiveId={hiveId}
       period={period}
-      title="Store Trend"
-      description="Pollen, nectar, and honey frame counts over time"
+      title={t('hive:charts.storeTrend')}
+      description={t('hive:charts.storesDescription')}
       config={{
         pollen: { label: 'Pollen', color: '#22c55e' },
         nectar: { label: 'Nectar', color: '#f97316' },

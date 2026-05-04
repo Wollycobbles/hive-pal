@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   BoxTypeEnum,
@@ -39,6 +40,7 @@ export const CompactBoxConfig = ({
   isMainBox,
   frameSizes = [],
 }: CompactBoxConfigProps) => {
+  const { t } = useTranslation(['common']);
   const [showCustomFields, setShowCustomFields] = useState(false);
   const [newFrameSize, setNewFrameSize] = useState({
     name: '',
@@ -383,7 +385,7 @@ export const CompactBoxConfig = ({
               value={box.color || '#CD853F'}
               onChange={e => handleColorChange(e.target.value)}
               className="h-7 w-7 p-0 border-2"
-              title="Custom color"
+              title={t('common.ui.customColor')}
             />
           </div>
         </div>

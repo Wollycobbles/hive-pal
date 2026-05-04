@@ -393,7 +393,7 @@ const renderStrengthCell = (
               })}
             </div>
           ) : (
-            <p className="text-xs text-muted-foreground">No frame data recorded</p>
+            <p className="text-xs text-muted-foreground">{t('status.empty.noFrameData')}</p>
           )}
 
           {obs?.queenCells != null && obs.queenCells > 0 && (

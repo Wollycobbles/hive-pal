@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   useBatchInspections,
   useStartBatchInspection,
@@ -33,6 +34,7 @@ import {
 } from '@/components/ui/dialog';
 
 export const BatchListPage = () => {
+  const { t } = useTranslation(['common']);
   const navigate = useNavigate();
   const { data: batches, isLoading, error } = useBatchInspections();
   const { mutate: startBatch, isPending: isStarting } =
@@ -50,7 +52,7 @@ export const BatchListPage = () => {
       },
       onError: error => {
         console.error('Failed to start batch:', error);
-        toast.error('Failed to start batch inspection');
+        toast.error(t('common.alerts.error.errorOccurred', { defaultValue: 'Failed to start batch inspection' }));
       },
     });
   };
@@ -63,7 +65,7 @@ export const BatchListPage = () => {
       },
       onError: error => {
         console.error('Failed to delete batch:', error);
-        toast.error('Failed to delete batch inspection');
+        toast.error(t('common.alerts.error.errorOccurred', { defaultValue: 'Failed to delete batch inspection' }));
         setDeleteDialogOpen(null);
       },
     });

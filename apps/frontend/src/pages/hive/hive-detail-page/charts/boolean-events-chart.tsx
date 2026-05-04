@@ -1,4 +1,5 @@
 import { format, parseISO } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 import {
   ScatterChart,
   Scatter,
@@ -43,12 +44,14 @@ export const BooleanEventsChart: React.FC<BooleanEventsChartProps> = ({
   hiveId,
   period,
 }) => {
+  const { t } = useTranslation(['hive', 'common']);
+  
   return (
     <BaseInspectionChart
       hiveId={hiveId}
       period={period}
-      title="Events"
-      description="Boolean events recorded per inspection — dots indicate the event was observed"
+      title={t('common.charts.events')}
+      description={t('hive:charts.booleanEventsDescription')}
       config={Object.fromEntries(
         EVENT_ROWS.map(ev => [ev.key, { label: ev.label, color: ev.color }]),
       )}

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Dialog,
   DialogContent,
@@ -48,6 +49,7 @@ export const AddActionDialog = ({
   open: controlledOpen,
   onOpenChange: controlledOnOpenChange,
 }: AddActionDialogProps) => {
+  const { t } = useTranslation(['common']);
   const [internalOpen, setInternalOpen] = useState(false);
   const isControlled = controlledOpen !== undefined;
   const open = isControlled ? controlledOpen : internalOpen;
@@ -69,7 +71,7 @@ export const AddActionDialog = ({
     const selectedDate = values.date;
 
     if (actions.length === 0) {
-      toast.error('Please add at least one action before saving.');
+      toast.error(t('common.alerts.error.errorOccurred'));
       return;
     }
 
@@ -136,13 +138,13 @@ export const AddActionDialog = ({
         await createAction.mutateAsync(data);
       }
 
-      toast.success(`Successfully saved ${actions.length} action(s).`);
+      toast.success(t('common.alerts.success.changesSaved'));
 
       // Reset form and close dialog
       methods.reset();
       setOpen(false);
     } catch {
-      toast.error('There was an error saving the actions. Please try again.');
+      toast.error(t('common.alerts.error.errorOccurred'));
     }
   };
 

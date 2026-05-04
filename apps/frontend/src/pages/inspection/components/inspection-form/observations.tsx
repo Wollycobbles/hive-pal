@@ -126,7 +126,7 @@ const ObservationItem = <TName extends FieldPath<InspectionFormData>>({
   onAcceptSuggestion,
   onDismissSuggestion,
 }: ObservationItemProps<TName>) => {
-  const { t } = useTranslation('inspection');
+  const { t } = useTranslation(['inspection', 'common']);
   const { control } = useFormContext<InspectionFormData>();
 
   return (
@@ -179,7 +179,7 @@ const ObservationItem = <TName extends FieldPath<InspectionFormData>>({
                             e.stopPropagation();
                             field.onChange(Math.max(0, (displayValue ?? 0) - 1));
                           }}
-                          aria-label={`Decrease ${label}`}
+                          aria-label={t('common.actions.decrease', { defaultValue: `Decrease ${label}` })}
                         >
                           <Minus className="h-5 w-5" />
                         </Button>
@@ -210,7 +210,7 @@ const ObservationItem = <TName extends FieldPath<InspectionFormData>>({
                               max == null ? nextValue : Math.min(max, nextValue),
                             );
                           }}
-                          aria-label={`Increase ${label}`}
+                          aria-label={t('common.actions.increase', { defaultValue: `Increase ${label}` })}
                         >
                           <Plus className="h-5 w-5" />
                         </Button>

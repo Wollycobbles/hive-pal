@@ -1,4 +1,5 @@
 import { useActions, useHive } from '@/api/hooks';
+import { useTranslation } from 'react-i18next';
 import { Section } from '@/components/common/section';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -20,6 +21,7 @@ interface FeedingSectionProps {
 }
 
 export const FeedingSection: React.FC<FeedingSectionProps> = ({ hiveId, variant = 'card' }) => {
+  const { t } = useTranslation(['hive', 'common']);
   const { data: actions, isLoading } = useActions(
     hiveId ? { hiveId, type: ActionType.FEEDING } : undefined,
     {
@@ -31,7 +33,7 @@ export const FeedingSection: React.FC<FeedingSectionProps> = ({ hiveId, variant 
 
   if (!hiveId || isLoading) {
     return (
-      <Section title="Feeding">
+      <Section title={t('hive:sections.feeding')}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {[1, 2, 3].map(i => (
             <Card key={i} className="p-4">

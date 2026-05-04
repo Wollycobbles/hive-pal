@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Dialog,
   DialogContent,
@@ -164,6 +165,7 @@ export const EditActionDialog = ({
   open,
   onOpenChange,
 }: EditActionDialogProps) => {
+  const { t } = useTranslation(['common']);
   const updateAction = useUpdateAction();
 
   const methods = useForm<ActionFormData>({
@@ -213,7 +215,7 @@ export const EditActionDialog = ({
     const selectedDate = values.date;
 
     if (actions.length === 0) {
-      toast.error('Please add at least one action before saving.');
+      toast.error(t('common.alerts.error.errorOccurred', { defaultValue: 'Please add at least one action before saving.' }));
       return;
     }
 
@@ -227,10 +229,10 @@ export const EditActionDialog = ({
         data: updateData,
       });
 
-      toast.success('Action updated successfully');
+      toast.success(t('common.alerts.success.changesSaved', { defaultValue: 'Action updated successfully' }));
       onOpenChange(false);
     } catch {
-      toast.error('Failed to update action. Please try again.');
+      toast.error(t('common.alerts.error.errorOccurred', { defaultValue: 'Failed to update action. Please try again.' }));
     }
   };
 

@@ -70,7 +70,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Configuration
-const LOCALES_DIR = path.resolve(__dirname, '../apps/frontend/public/locales');
+const LOCALES_DIR = path.resolve(__dirname, '../../apps/frontend/public/locales');
 const EN_LOCALE = 'en';
 const TARGET_LOCALES = ['da', 'de', 'fr', 'it', 'sk', 'sr'];
 const NAMESPACES = ['admin', 'apiary', 'auth', 'common', 'hive', 'inspection', 'onboarding', 'queen'];

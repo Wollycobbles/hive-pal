@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ArrowRight, Crown, History, Pencil, ArrowLeftRight } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { Button } from '@/components/ui/button';
@@ -19,6 +20,7 @@ import { QueenResponse } from 'shared-schemas';
 import { QUEEN_STATUS_VARIANTS, getQueenColorClass, getQueenDisplayName } from '@/lib/queen-utils';
 
 export const QueenDetailPage = () => {
+  const { t } = useTranslation('common');
   const { queenId } = useParams<{ queenId: string }>();
   const navigate = useNavigate();
   const [transferOpen, setTransferOpen] = useState(false);
@@ -126,10 +128,10 @@ export const QueenDetailPage = () => {
             Movement History
           </CardTitle>
         </CardHeader>
-        <CardContent>
+         <CardContent>
           {queen.movements.length === 0 ? (
             <p className="text-muted-foreground text-sm text-center py-4">
-              No movement history recorded.
+              {t('status.empty.noMovementHistory')}
             </p>
           ) : (
             <Table>

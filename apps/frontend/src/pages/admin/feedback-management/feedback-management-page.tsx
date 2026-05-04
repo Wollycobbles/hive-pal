@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useIsAdmin } from '@/hooks/use-is-admin';
 import {
   useAllFeedback,
@@ -49,6 +50,7 @@ interface FeedbackResponse {
 }
 
 const FeedbackManagementPage: React.FC = () => {
+  const { t } = useTranslation('common');
   const isAdmin = useIsAdmin();
   const [filters, setFilters] = useState({
     type: '',
@@ -203,13 +205,13 @@ const FeedbackManagementPage: React.FC = () => {
                 {isLoading ? (
                   <TableRow>
                     <TableCell colSpan={6} className="text-center py-8">
-                      Loading feedback...
+                      {t('status.loading')}
                     </TableCell>
                   </TableRow>
                 ) : feedbackData?.feedbacks?.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={6} className="text-center py-8">
-                      No feedback found
+                      {t('status.empty.noFeedback')}
                     </TableCell>
                   </TableRow>
                 ) : (

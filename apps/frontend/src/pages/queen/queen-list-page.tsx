@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Crown, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,6 +19,7 @@ const QueenListContent: React.FC<{
   queens?: QueenResponse[];
   isLoading: boolean;
 }> = ({ queens, isLoading }) => {
+  const { t } = useTranslation('common');
   if (isLoading) {
     return (
       <div className="flex h-32 items-center justify-center">
@@ -30,7 +32,7 @@ const QueenListContent: React.FC<{
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
         <Crown className="h-12 w-12 text-muted-foreground mb-4" />
-        <p className="text-muted-foreground">No queens found.</p>
+        <p className="text-muted-foreground">{t('status.empty.noQueens')}</p>
         <Button asChild className="mt-4" size="sm">
           <Link to="/queens/create">Add your first queen</Link>
         </Button>

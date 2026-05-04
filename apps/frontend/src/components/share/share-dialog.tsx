@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Dialog,
   DialogContent,
@@ -24,6 +25,7 @@ export function ShareDialog({
   onOpenChange,
   shareLink,
 }: ShareDialogProps) {
+  const { t } = useTranslation(['common']);
   const [copied, setCopied] = useState(false);
   const revokeShareLink = useRevokeShareLink();
 
@@ -36,10 +38,10 @@ export function ShareDialog({
     try {
       await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
-      toast.success('Link copied to clipboard');
+      toast.success(t('common.alerts.success.changesSaved'));
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      toast.error('Failed to copy link');
+      toast.error(t('common.alerts.error.errorOccurred'));
     }
   };
 
@@ -53,7 +55,7 @@ export function ShareDialog({
       } catch (err) {
         // User cancelled share - ignore
         if ((err as Error).name !== 'AbortError') {
-          toast.error('Failed to share');
+          toast.error(t('common.alerts.error.errorOccurred'));
         }
       }
     } else {
@@ -89,22 +91,22 @@ export function ShareDialog({
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      toast.success('Image downloaded');
-    } catch {
-      toast.error('Failed to download image');
-    }
-  };
+       URL.revokeObjectURL(url);
+       toast.success(t('common.alerts.success.changesSaved'));
+     } catch {
+       toast.error(t('common.alerts.error.errorOccurred'));
+     }
+   };
 
-  const handleRevoke = async () => {
-    try {
-      await revokeShareLink.mutateAsync(shareLink.id);
-      toast.success('Share link revoked');
-      onOpenChange(false);
-    } catch {
-      toast.error('Failed to revoke share link');
-    }
-  };
+   const handleRevoke = async () => {
+     try {
+       await revokeShareLink.mutateAsync(shareLink.id);
+       toast.success(t('common.alerts.success.changesSaved'));
+       onOpenChange(false);
+     } catch {
+       toast.error(t('common.alerts.error.errorOccurred'));
+     }
+   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -120,7 +122,7 @@ export function ShareDialog({
         <div className="rounded-lg overflow-hidden border">
           <img
             src={imageUrl}
-            alt="Share preview"
+            alt={t('common.share.previewImage')}
             className="w-full h-auto"
             loading="lazy"
           />

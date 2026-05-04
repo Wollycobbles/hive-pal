@@ -1,4 +1,5 @@
 import { useParams, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,6 +9,7 @@ import { ShareResourceType } from 'shared-schemas';
 import { format } from 'date-fns';
 
 export function SharedPage() {
+  const { t } = useTranslation(['common']);
   const { token } = useParams<{ token: string }>();
   const { data, isLoading, error } = useSharedResource(token ?? '');
 
@@ -69,7 +71,7 @@ export function SharedPage() {
         <header className="bg-background border-b px-4 py-3">
           <div className="max-w-2xl mx-auto flex items-center justify-between">
             <Link to="/" className="flex items-center gap-2 text-xl font-bold">
-              <img src="/hive-pal-logo.png" alt="Hive Pal" className="w-8 h-8" />
+              <img src="/hive-pal-logo.png" alt={t('common.logo.alt')} className="w-8 h-8" />
               Hive Pal
             </Link>
             <Link to="/register">

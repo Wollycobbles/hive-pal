@@ -32,7 +32,7 @@ export function NotesSection({
   onAcceptSuggestion,
   onDismissSuggestion,
 }: NotesSectionProps) {
-  const { t } = useTranslation('inspection');
+  const { t } = useTranslation(['inspection', 'common']);
   const form = useFormContext<InspectionFormData>();
 
   const notesSuggestion = isAiSuggested?.('notes')
@@ -93,8 +93,8 @@ export function NotesSection({
 
               {notesSuggestion && (
                 <AiSectionPreview
-                  title="Notes"
-                  summary="Review AI-generated notes before applying them."
+                  title={t('common.labels.notes')}
+                  summary={t('common.dialogs.notesPreview')}
                   currentValue={field.value}
                   suggestedValue={suggestedNotesValue}
                   hasConflict={notesSuggestion.hasConflict}

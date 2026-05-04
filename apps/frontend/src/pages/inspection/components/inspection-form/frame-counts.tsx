@@ -24,6 +24,7 @@ const FrameCounter = <TName extends FieldPath<InspectionFormData>>({
   totalFrames,
   pct,
 }: FrameCounterProps<TName>) => {
+  const { t } = useTranslation(['common', 'inspection']);
   const { control } = useFormContext<InspectionFormData>();
   const hasTotalFrames = totalFrames != null && totalFrames > 0;
 
@@ -72,7 +73,7 @@ const FrameCounter = <TName extends FieldPath<InspectionFormData>>({
                     size="icon"
                     className="h-6 w-6 text-muted-foreground hover:text-destructive"
                     onClick={clear}
-                    aria-label="Clear"
+                    aria-label={t('common.actions.clear')}
                   >
                     <X className="h-3 w-3" />
                   </Button>
@@ -82,16 +83,16 @@ const FrameCounter = <TName extends FieldPath<InspectionFormData>>({
               {/* Counter row */}
               <div className="flex items-center gap-3">
                 {/* Minus button */}
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-14 w-14 rounded-xl shrink-0 text-lg"
-                  onClick={decrement}
-                  disabled={currentValue == null || currentValue <= 0}
-                  aria-label={`Decrease ${label}`}
-                >
-                  <Minus className="h-6 w-6" />
-                </Button>
+                 <Button
+                   variant="outline"
+                   size="icon"
+                   className="h-14 w-14 rounded-xl shrink-0 text-lg"
+                   onClick={decrement}
+                   disabled={currentValue == null || currentValue <= 0}
+                   aria-label={t('common.actions.decrease', { defaultValue: `Decrease ${label}` })}
+                 >
+                   <Minus className="h-6 w-6" />
+                 </Button>
 
                 {/* Count display */}
                 <div className="flex-1 flex flex-col items-center gap-0.5">
@@ -106,16 +107,16 @@ const FrameCounter = <TName extends FieldPath<InspectionFormData>>({
                 </div>
 
                 {/* Plus button */}
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-14 w-14 rounded-xl shrink-0 text-lg"
-                  onClick={increment}
-                  disabled={!canIncrement}
-                  aria-label={`Increase ${label}`}
-                >
-                  <Plus className="h-6 w-6" />
-                </Button>
+                 <Button
+                   variant="outline"
+                   size="icon"
+                   className="h-14 w-14 rounded-xl shrink-0 text-lg"
+                   onClick={increment}
+                   disabled={!canIncrement}
+                   aria-label={t('common.actions.increase', { defaultValue: `Increase ${label}` })}
+                 >
+                   <Plus className="h-6 w-6" />
+                 </Button>
               </div>
 
               {/* Composition progress bar — only shown when there is something to compare */}

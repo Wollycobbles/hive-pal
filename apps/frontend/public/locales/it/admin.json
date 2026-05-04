@@ -64,5 +64,13 @@
       "lastInspection": "Ultima Ispezione",
       "noApiaries": "Nessun apiario trovato per questo utente"
     }
+  },
+  "errors": {
+    "failedToFetch": "Failed to fetch data",
+    "failedToReset": "Failed to reset password",
+    "unexpectedError": "An unexpected error occurred"
+  },
+  "users": {
+    "userSuspended": "User account suspended"
   }
 }

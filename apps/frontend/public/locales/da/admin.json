@@ -64,5 +64,13 @@
             "lastInspection": "Seneste inspektion",
             "noApiaries": "Der blev ikke fundet nogle bigårde for denne bruger"
         }
+    },
+    "errors": {
+        "failedToFetch": "Failed to fetch data",
+        "failedToReset": "Failed to reset password",
+        "unexpectedError": "An unexpected error occurred"
+    },
+    "users": {
+        "userSuspended": "User account suspended"
     }
 }
