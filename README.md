@@ -12,7 +12,10 @@ A modern beekeeping management application designed for both mobile and desktop 
 - **Hive Tracking**: Monitor hives, their status, and configuration
 - **Inspection Workflows**: Record detailed inspections with observations and actions
 - **Queen Management**: Track queen lineage and replacement history
+- **Apiary Sharing**: Invite other users to your apiary with Owner, Editor, or Viewer roles
 - **AI-Assisted Inspections**: Transcribe voice recordings to inspection drafts (optional)
+- **Multilingual**: English, German, French, Danish, Dutch, Italian, Slovak, and Serbian — language auto-detected from browser settings
+- **Progressive Web App**: Installable on mobile and desktop, works offline
 - **Mobile-First Design**: Optimised for field use with easy data entry
 
 ## Self-Hosted Setup
@@ -93,13 +96,17 @@ The application will be available at `http://yourdomain.com`.
 
 The `ADMIN_PASSWORD` environment variable **must be a bcrypt hash**. The application uses `bcrypt.compare()` to verify it, so a plain-text password will not work.
 
-Generate a hash using Node.js (no extra dependencies required):
+**Option 1 — Online generator (quickest)**
+
+Go to [https://bcrypt-generator.com](https://bcrypt-generator.com), enter your password, set rounds to **12**, and click *Generate*. Copy the resulting hash directly into your `.env` file.
+
+**Option 2 — Node.js (no extra dependencies required)**
 
 ```bash
 node -e "const bcrypt = require('bcrypt'); bcrypt.hash('your-password-here', 12).then(h => console.log(h));"
 ```
 
-Or using Python:
+**Option 3 — Python**
 
 ```bash
 python3 -c "import bcrypt; print(bcrypt.hashpw(b'your-password-here', bcrypt.gensalt(12)).decode())"
@@ -113,21 +120,82 @@ The resulting string (e.g. `$2a$12$...`) is what you set as `ADMIN_PASSWORD` in 
 
 ### HTTPS with Traefik
 
-For production deployments with automatic TLS (via Let's Encrypt), use the Traefik setup. This is the recommended approach when exposing Hive Pal to the internet.
+Traefik acts as a reverse proxy, handles TLS termination, and automatically obtains and renews certificates from Let's Encrypt. This is the recommended approach for any internet-facing deployment.
 
-**.env**
+#### Step 1 — Point your domain to the server
+
+In your DNS provider's control panel, create an **A record** pointing your chosen hostname to the public IP of your server:
+
+```
+Type  Name               Value
+A     hivepal            203.0.113.10      ← your server's public IP
+```
+
+If you want the app at the root domain (`yourdomain.com`) rather than a subdomain, point the root A record instead. Either way, the `DOMAIN` variable in your `.env` must match exactly what you put in DNS.
+
+DNS changes can take a few minutes to an hour to propagate. You can verify with:
+
+```bash
+dig +short hivepal.yourdomain.com
+# should return your server's IP
+```
+
+Let's Encrypt's HTTP challenge requires that `http://yourdomain.com/.well-known/acme-challenge/...` is reachable from the internet, so **DNS must resolve correctly before you start the stack**.
+
+#### Step 2 — Open firewall ports
+
+Ports **80** and **443** must be reachable from the internet on your server. The exact command depends on your host:
+
+```bash
+# UFW (Ubuntu/Debian)
+ufw allow 80/tcp
+ufw allow 443/tcp
+
+# firewalld (RHEL/CentOS/Fedora)
+firewall-cmd --permanent --add-service=http
+firewall-cmd --permanent --add-service=https
+firewall-cmd --reload
+```
+
+If your server is behind a cloud provider's security group (AWS, Hetzner, DigitalOcean, etc.), also open ports 80 and 443 in that console. Port 80 must remain open even after the certificate is issued — Traefik uses it for automated renewals.
+
+#### Step 3 — Prepare the data directories
+
+Traefik stores the Let's Encrypt account and certificates in `acme.json`. This file must exist before the container starts and must have permissions `600`, otherwise Traefik will refuse to write to it.
+
+```bash
+mkdir -p /data/hive-pal-data/letsencrypt
+mkdir -p /data/hive-pal-data/postgres
+mkdir -p /data/hive-pal-data/uploads
+
+touch /data/hive-pal-data/letsencrypt/acme.json
+chmod 600 /data/hive-pal-data/letsencrypt/acme.json
+```
+
+#### Step 4 — Create your .env file
+
 ```env
+# Your public hostname — must match your DNS A record exactly
 DOMAIN=hivepal.yourdomain.com
+
+# Email address Let's Encrypt will use for expiry notifications
 ACME_EMAIL=admin@yourdomain.com
+
+# Hive Pal admin account
 ADMIN_EMAIL=admin@yourdomain.com
-# Must be a bcrypt hash — see "Setting the Admin Password"
+# Must be a bcrypt hash — see "Setting the Admin Password" above
 ADMIN_PASSWORD=$2a$12$5m1UQcYmWiDRHrXrFFxoqeX4BTGOKQDINfhXX5j9CkUwdJ8F62hIq
+
+# Database — change the password to something strong
 POSTGRES_PASSWORD=change-me-strong-db-password
 DATABASE_URL=postgres://postgres:${POSTGRES_PASSWORD}@postgres:5432/beekeeper
+
+# JWT signing secret — generate with: openssl rand -hex 32
 JWT_SECRET=change-me-long-random-string
 ```
 
-**docker-compose.traefik.yaml**
+#### Step 5 — Create docker-compose.traefik.yaml
+
 ```yaml
 services:
   traefik:
@@ -138,10 +206,12 @@ services:
       - '--providers.docker.exposedbydefault=false'
       - '--entrypoints.web.address=:80'
       - '--entrypoints.websecure.address=:443'
+      # Let's Encrypt HTTP-01 challenge
       - '--certificatesresolvers.letsencrypt.acme.httpchallenge=true'
       - '--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web'
       - '--certificatesresolvers.letsencrypt.acme.email=${ACME_EMAIL}'
       - '--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json'
+      # Redirect all HTTP traffic to HTTPS
       - '--entrypoints.web.http.redirections.entrypoint.to=websecure'
       - '--entrypoints.web.http.redirections.entrypoint.scheme=https'
     ports:
@@ -168,6 +238,12 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    healthcheck:
+      test: ['CMD', 'wget', '-q', '--spider', 'http://localhost:3000/api/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.app.rule=Host(`${DOMAIN}`)'
@@ -193,13 +269,71 @@ services:
     restart: unless-stopped
 ```
 
-Run with:
+#### Step 6 — Start the stack
 
 ```bash
 docker compose -f docker-compose.traefik.yaml up -d
 ```
 
-Ensure ports 80 and 443 are open in your firewall and that your DNS A record points to the server's IP before starting. Traefik will obtain and renew certificates automatically.
+Watch the Traefik logs to confirm the certificate is issued (usually takes under 30 seconds):
+
+```bash
+docker logs hive-pal-traefik -f
+# Look for: "Obtained certificates" or "acme: Obtained SAN certificate"
+```
+
+The application will be available at `https://hivepal.yourdomain.com`.
+
+#### Testing with Let's Encrypt staging
+
+Let's Encrypt enforces [rate limits](https://letsencrypt.org/docs/rate-limits/) (5 duplicate certificates per week per domain). Before pointing a real domain, it is worth running one test against the staging environment to verify your setup without consuming your quota.
+
+Add this extra flag to the Traefik `command` list:
+
+```yaml
+- '--certificatesresolvers.letsencrypt.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory'
+```
+
+Staging certificates are issued by a fake CA and will show a browser warning, but the ACME flow is identical. Once you have confirmed the challenge succeeds, remove that flag and delete `acme.json` so Traefik requests a real certificate:
+
+```bash
+docker compose -f docker-compose.traefik.yaml down
+rm /data/hive-pal-data/letsencrypt/acme.json
+touch /data/hive-pal-data/letsencrypt/acme.json
+chmod 600 /data/hive-pal-data/letsencrypt/acme.json
+docker compose -f docker-compose.traefik.yaml up -d
+```
+
+#### Optional: Traefik dashboard
+
+The Traefik dashboard gives a live view of routers, services, and certificate status. To enable it, add `--api.dashboard=true` to the Traefik `command` list and a router label to the Traefik service itself:
+
+```yaml
+  traefik:
+    ...
+    command:
+      - '--api.dashboard=true'
+      # ... existing flags ...
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.dashboard.rule=Host(`traefik.${DOMAIN}`)'
+      - 'traefik.http.routers.dashboard.service=api@internal'
+      - 'traefik.http.routers.dashboard.entrypoints=websecure'
+      - 'traefik.http.routers.dashboard.tls.certresolver=letsencrypt'
+```
+
+The dashboard will then be available at `https://traefik.yourdomain.com`. It has no authentication by default — restrict access with an IP allowlist or basic auth middleware if your server is publicly reachable.
+
+#### Troubleshooting
+
+| Symptom | Likely cause | Fix |
+|---------|-------------|-----|
+| Certificate never issued, logs show `connection refused` | Port 80 is blocked | Open port 80 in firewall / security group |
+| `acme: error: 403 :: urn:ietf:params:acme:error:unauthorized` | DNS not yet pointing to this server | Wait for propagation, verify with `dig` |
+| Traefik exits immediately | `acme.json` has wrong permissions | `chmod 600 /data/hive-pal-data/letsencrypt/acme.json` |
+| Browser shows certificate warning on first load | Using staging CA, or certificate still pending | Check Traefik logs; remove staging flag for production |
+| App returns 502 Bad Gateway | App container not healthy yet | `docker logs hive-pal-app` — wait for health check to pass |
+| `too many certificates already issued` | Let's Encrypt rate limit hit | Use staging CA to test; wait up to a week |
 
 ---
 
@@ -331,13 +465,13 @@ curl http://your-server:8008/health
 
 Each apiary can be configured to use one of two inspection workflows. The setting is per-apiary and can be changed at any time from the apiary settings screen.
 
-### Data Driven (default)
-
-Inspections record concrete counts and measurements: frames of brood, frames of bees, honey stores, etc. The application uses these values to calculate a hive health score automatically. This mode is best for beekeepers who want structured, comparable data across inspections and hives.
-
-### Subjective
+### Subjective (default)
 
 Inspections use qualitative 0–10 ratings for each observed attribute (brood quality, temper, stores, etc.). There are no frame counts or auto-scoring. This mode suits beekeepers who prefer a quicker, impression-based record without counting individual frames.
+
+### Data Driven
+
+Inspections record concrete counts and measurements: frames of brood, frames of bees, honey stores, etc. The application uses these values to calculate a hive health score automatically. This mode is best for beekeepers who want structured, comparable data across inspections and hives.
 
 ### Switching Inspection Type
 
@@ -370,6 +504,8 @@ Existing inspection records are not affected when you switch — they remain sto
 | `RESEND_API_KEY` | API key for Resend (takes priority over SMTP) |
 | `MAIL_PROVIDER` | Force a specific provider: `resend`, `smtp`, or `none` (auto-selects if unset) |
 | `RESEND_API_KEY` | API key for Resend email provider |
+| `MAIL_PROVIDER` | Force a provider: `resend`, `smtp`, or `none` |
+| `RESEND_API_KEY` | API key for Resend (takes priority over SMTP) |
 | `SMTP_HOST` | SMTP server hostname |
 | `SMTP_PORT` | SMTP server port |
 | `SMTP_USER` | SMTP username |
@@ -400,6 +536,26 @@ Existing inspection records are not affected when you switch — they remain sto
 | `AI_SERVICE_API_KEY` | Shared secret between the app and the AI service |
 | `AI_REQUEST_TIMEOUT_MS` | Timeout for AI requests in milliseconds (default: `300000`) |
 
+### Optional — Networking
+
+| Variable | Description |
+|----------|-------------|
+| `ALLOWED_ORIGINS` | Comma-separated list of origins allowed for CORS (e.g. `https://yourdomain.com`) |
+| `PORT` | Port the backend listens on (default: `3000`) |
+
+### Optional — Logging
+
+| Variable | Description |
+|----------|-------------|
+| `LOG_LEVEL` | Winston log level: `error`, `warn`, `info`, `debug` (default: `info`) |
+| `LOKI_HOST` | URL of a Loki instance for centralised log shipping (e.g. `http://loki:3100`) |
+
+### Optional — Storage (additional)
+
+| Variable | Description |
+|----------|-------------|
+| `AUDIO_MAX_FILE_SIZE` | Maximum size for audio file uploads in bytes (default: `52428800` — 50 MB) |
+
 ### Optional — Monitoring / Error Tracking
 
 | Variable | Description |
@@ -408,6 +564,42 @@ Existing inspection records are not affected when you switch — they remain sto
 | `SENTRY_ENVIRONMENT` | Backend Sentry environment tag |
 | `VITE_SENTRY_DSN` | Frontend Sentry DSN |
 | `VITE_SENTRY_ENVIRONMENT` | Frontend Sentry environment tag |
+
+---
+
+## Translations
+
+The UI is fully internationalised using [i18next](https://www.i18next.com/). Translation strings live in `apps/frontend/public/locales/` as plain JSON files, one folder per language code:
+
+```
+apps/frontend/public/locales/
+  en/   ← source language (English)
+  de/
+  fr/
+  da/
+  nl/
+  it/
+  sk/
+  sr/
+```
+
+Each language folder contains eight namespace files: `admin.json`, `apiary.json`, `auth.json`, `common.json`, `hive.json`, `inspection.json`, `onboarding.json`, and `queen.json`. The language is detected automatically from the browser and can be changed from the user menu.
+
+### Adding or improving a translation manually
+
+1. Copy the `en/` folder and rename it to the [BCP 47 language code](https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry) for your language (e.g. `pt` for Portuguese).
+2. Translate the values in each JSON file. Keys must not be changed — only the values.
+3. Open a pull request.
+
+### Contributing via Weblate
+
+The project has a hosted Weblate instance at **[weblate.hivepal.app](https://weblate.hivepal.app/projects/hive-pal/)**. This is the easiest way to contribute a translation — no Git knowledge required.
+
+1. Create a free account at [weblate.hivepal.app](https://weblate.hivepal.app/projects/hive-pal/).
+2. Browse to the component you want to translate (e.g. *Common*, *Inspection*, *Hive*).
+3. Select your language and start translating. Weblate will open a pull request back to the repository automatically.
+
+To add a language that doesn't exist yet, use the *Start new translation* button on the component page and select your language from the list.
 
 ---
 
