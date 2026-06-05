@@ -13,6 +13,10 @@ echo "Database is ready!"
 echo "Running database migrations..."
 cd /app/apps/backend/
 npx prisma migrate deploy --schema=./prisma/schema.prisma
+
+echo "Bootstrapping pollen reference data..."
+npx ts-node --prefer-ts-exts prisma/bootstrap-pollen.ts
+
 cd /app
 echo "Starting application..."
 exec "$@"

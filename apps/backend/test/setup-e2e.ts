@@ -11,17 +11,10 @@ jest.setTimeout(30000);
 
 // Global setup before all tests
 beforeAll(async () => {
-  // Clean up specific tables if needed
-  await prisma.feedingAction.deleteMany();
-  await prisma.treatmentAction.deleteMany();
-  await prisma.action.deleteMany();
-  await prisma.inspectionNote.deleteMany();
-  await prisma.observation.deleteMany();
-  await prisma.inspection.deleteMany();
-  await prisma.hive.deleteMany();
-  await prisma.apiary.deleteMany();
+  // Clean up pollen reference test data and any leftover users.
+  await prisma.pollenReferenceRegion.deleteMany();
+  await prisma.pollenReference.deleteMany();
   await prisma.user.deleteMany();
-  // Add other tables as needed
 });
 
 // Global teardown after all tests

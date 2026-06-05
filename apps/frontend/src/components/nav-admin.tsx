@@ -4,6 +4,7 @@ import { useAuth } from '../context/auth-context';
 import { decodeJwt } from '../utils/jwt-utils';
 import { cn } from '../lib/utils';
 import { useSidebar } from '@/components/ui/sidebar';
+import { Hexagon } from 'lucide-react';
 
 type NavAdminProps = {
   collapsed?: boolean;
@@ -192,6 +193,25 @@ export function NavAdmin({ collapsed: collapsedProp }: NavAdminProps) {
             <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
           </svg>
           {!collapsed && <span>Media</span>}
+        </Link>
+        <Link
+          to="/admin/pollen-records"
+          onClick={handleMobileClose}
+          className={cn(
+            'flex items-center justify-start w-full rounded-md text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors',
+            collapsed ? 'h-8 w-8 mx-auto p-0' : 'px-3 py-2',
+            {
+              'justify-center': collapsed,
+              'bg-accent': isActive('/admin/pollen-records'),
+            },
+          )}
+        >
+          <Hexagon
+            className={cn('h-4 w-4', {
+              'mr-2': !collapsed,
+            })}
+          />
+          {!collapsed && <span>{t('navigation.pollenRecords')}</span>}
         </Link>
         <Link
           to="/admin/worker-tokens"

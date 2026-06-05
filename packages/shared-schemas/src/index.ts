@@ -25,6 +25,7 @@ export * from './documents';
 export * from './worker-tokens';
 export * from './admin-media';
 export * from './measurements';
+export * from './pollen';
 
 // Export utility functions
 export * from './utils/inspection-type';

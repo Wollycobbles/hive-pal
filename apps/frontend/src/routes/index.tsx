@@ -58,6 +58,9 @@ const WorkerTokensPage = lazyWithRetry(
 const AdminMediaPage = lazyWithRetry(
   () => import('@/pages/admin/media/media-page'),
 );
+const PollenRecordsPage = lazyWithRetry(
+  () => import('@/pages/admin/pollen-records/pollen-records-page'),
+);
 
 // Heavy feature pages (named exports)
 const ReportsPage = lazyWithRetry(() =>
@@ -146,6 +149,11 @@ const SyrupCalculatorPage = lazyWithRetry(() =>
 const BroodTimelinePage = lazyWithRetry(() =>
   import('@/pages/tools/brood-timeline-page').then(m => ({
     default: m.BroodTimelinePage,
+  })),
+);
+const PollenIdentificationPage = lazyWithRetry(() =>
+  import('@/pages/tools/pollen-identification-page').then(m => ({
+    default: m.PollenIdentificationPage,
   })),
 );
 
@@ -374,6 +382,14 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: '/tools/pollen-identification',
+        element: (
+          <LazyPage>
+            <PollenIdentificationPage />
+          </LazyPage>
+        ),
+      },
+      {
         path: '/settings',
         element: <UserSettingsPage />,
       },
@@ -447,6 +463,16 @@ const router = createBrowserRouter([
           <AdminProtectedRoute>
             <LazyPage>
               <AdminMediaPage />
+            </LazyPage>
+          </AdminProtectedRoute>
+        ),
+      },
+      {
+        path: '/admin/pollen-records',
+        element: (
+          <AdminProtectedRoute>
+            <LazyPage>
+              <PollenRecordsPage />
             </LazyPage>
           </AdminProtectedRoute>
         ),

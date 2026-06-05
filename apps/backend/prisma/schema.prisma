@@ -11,33 +11,33 @@ datasource db {
 }
 
 model User {
-  id                     String                 @id @default(uuid())
-  email                  String                 @unique
+  id                     String               @id @default(uuid())
+  email                  String               @unique
   password               String
   name                   String?
-  createdAt              DateTime               @default(now())
-  updatedAt              DateTime               @updatedAt
+  createdAt              DateTime             @default(now())
+  updatedAt              DateTime             @updatedAt
   lastLoginAt            DateTime?
   apiaries               Apiary[]
-  role                   Role                   @default(USER)
-  passwordChangeRequired Boolean                @default(false)
+  role                   Role                 @default(USER)
+  passwordChangeRequired Boolean              @default(false)
   equipmentItems         EquipmentItem[]
   equipmentMultiplier    EquipmentMultiplier?
-  preferences            Json?                  // JSON field for user preferences
+  preferences            Json? // JSON field for user preferences
   feedbacks              Feedback[]
   frameSizes             FrameSize[]
   passwordResetTokens    PasswordResetToken[]
   shareLinks             ShareLink[]
   apiaryMemberships      ApiaryMember[]
-  createdInspections     Inspection[]           @relation("InspectionCreator")
-  createdActions         Action[]               @relation("ActionCreator")
-  createdQuickChecks     QuickCheck[]           @relation("QuickCheckCreator")
-  createdWorkerTokens    WorkerToken[]          @relation("WorkerTokenCreator")
+  createdInspections     Inspection[]         @relation("InspectionCreator")
+  createdActions         Action[]             @relation("ActionCreator")
+  createdQuickChecks     QuickCheck[]         @relation("QuickCheckCreator")
+  createdWorkerTokens    WorkerToken[]        @relation("WorkerTokenCreator")
 
   // GDPR consent fields
-  privacyPolicyConsent   Boolean                @default(false)
-  privacyConsentTimestamp DateTime?
-  newsletterConsent      Boolean                @default(false)
+  privacyPolicyConsent       Boolean   @default(false)
+  privacyConsentTimestamp    DateTime?
+  newsletterConsent          Boolean   @default(false)
   newsletterConsentTimestamp DateTime?
 }
 
@@ -59,61 +59,61 @@ enum MembershipStatus {
 }
 
 model Apiary {
-  id               String            @id @default(uuid())
-  name             String
-  location         String?
-  latitude         Float?
-  longitude        Float?
-  notes            String?
-  hives                 Hive[]
-  harvests              Harvest[]
-  user                  User                    @relation(fields: [userId], references: [id])
-  userId                String
-  weather               Weather[]
+  id                     String                  @id @default(uuid())
+  name                   String
+  location               String?
+  latitude               Float?
+  longitude              Float?
+  notes                  String?
+  hives                  Hive[]
+  harvests               Harvest[]
+  user                   User                    @relation(fields: [userId], references: [id])
+  userId                 String
+  weather                Weather[]
   weatherHourlyForecasts WeatherHourlyForecast[]
-  weatherForecasts      WeatherForecast[]
-  batchInspections      BatchInspection[]
-  quickChecks           QuickCheck[]
-  photos                Photo[]
-  documents             Document[]
-  featurePhotoId        String?             @unique
-  featurePhoto          Photo?              @relation("ApiaryFeaturePhoto", fields: [featurePhotoId], references: [id], onDelete: SetNull)
-  members               ApiaryMember[]
-  invites               ApiaryInvite[]
-  settings              Json?
-  apiKeys               ApiaryApiKey[]
+  weatherForecasts       WeatherForecast[]
+  batchInspections       BatchInspection[]
+  quickChecks            QuickCheck[]
+  photos                 Photo[]
+  documents              Document[]
+  featurePhotoId         String?                 @unique
+  featurePhoto           Photo?                  @relation("ApiaryFeaturePhoto", fields: [featurePhotoId], references: [id], onDelete: SetNull)
+  members                ApiaryMember[]
+  invites                ApiaryInvite[]
+  settings               Json?
+  apiKeys                ApiaryApiKey[]
 
   // Create index for quick lookup by userId - used in authorization checks
   @@index([userId])
 }
 
 model Hive {
-  id               String       @id @default(uuid())
-  name             String
-  notes            String?
-  apiaryId         String?
-  apiary           Apiary?      @relation(fields: [apiaryId], references: [id])
-  status           HiveStatus   @default(ACTIVE)
-  installationDate DateTime?
-  positionRow      Int?         // Row position in apiary layout (0-based)
-  positionCol      Int?         // Column position within row (0-based)
-  settings         Json?        // JSON field for hive-specific settings (feeding, inspection frequency, etc.)
-  createdAt        DateTime     @default(now())
-  updatedAt        DateTime     @updatedAt @default(now())
-  queens           Queen[]
-  boxes            Box[]
-  inspections      Inspection[]
-  actions          Action[]
-  harvestHives     HarvestHive[]
-  alerts           Alert[]
+  id                   String                @id @default(uuid())
+  name                 String
+  notes                String?
+  apiaryId             String?
+  apiary               Apiary?               @relation(fields: [apiaryId], references: [id])
+  status               HiveStatus            @default(ACTIVE)
+  installationDate     DateTime?
+  positionRow          Int? // Row position in apiary layout (0-based)
+  positionCol          Int? // Column position within row (0-based)
+  settings             Json? // JSON field for hive-specific settings (feeding, inspection frequency, etc.)
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @default(now()) @updatedAt
+  queens               Queen[]
+  boxes                Box[]
+  inspections          Inspection[]
+  actions              Action[]
+  harvestHives         HarvestHive[]
+  alerts               Alert[]
   batchInspectionHives BatchInspectionHive[]
   quickChecks          QuickCheck[]
-  queenMovementsFrom   QueenMovement[] @relation("MovementFromHive")
-  queenMovementsTo     QueenMovement[] @relation("MovementToHive")
+  queenMovementsFrom   QueenMovement[]       @relation("MovementFromHive")
+  queenMovementsTo     QueenMovement[]       @relation("MovementToHive")
   photos               Photo[]
   documents            Document[]
-  featurePhotoId       String?      @unique
-  featurePhoto         Photo?       @relation("HiveFeaturePhoto", fields: [featurePhotoId], references: [id], onDelete: SetNull)
+  featurePhotoId       String?               @unique
+  featurePhoto         Photo?                @relation("HiveFeaturePhoto", fields: [featurePhotoId], references: [id], onDelete: SetNull)
   measurements         Measurement[]
 
   // Create index for quick lookup by apiaryId - used in authorization checks
@@ -173,15 +173,15 @@ model Box {
 }
 
 model Queen {
-  id          String      @id @default(uuid())
+  id          String          @id @default(uuid())
   hiveId      String?
-  hive        Hive?       @relation(fields: [hiveId], references: [id])
+  hive        Hive?           @relation(fields: [hiveId], references: [id])
   name        String?
   marking     String?
   color       String?
   year        Int?
   source      String?
-  status      QueenStatus @default(ACTIVE)
+  status      QueenStatus     @default(ACTIVE)
   installedAt DateTime?
   replacedAt  DateTime?
   movements   QueenMovement[]
@@ -191,17 +191,17 @@ model Queen {
 }
 
 model QueenMovement {
-  id         String    @id @default(uuid())
+  id         String   @id @default(uuid())
   queenId    String
-  queen      Queen     @relation(fields: [queenId], references: [id], onDelete: Cascade)
+  queen      Queen    @relation(fields: [queenId], references: [id], onDelete: Cascade)
   fromHiveId String?
-  fromHive   Hive?     @relation("MovementFromHive", fields: [fromHiveId], references: [id])
+  fromHive   Hive?    @relation("MovementFromHive", fields: [fromHiveId], references: [id])
   toHiveId   String?
-  toHive     Hive?     @relation("MovementToHive", fields: [toHiveId], references: [id])
-  movedAt    DateTime  @default(now())
+  toHive     Hive?    @relation("MovementToHive", fields: [toHiveId], references: [id])
+  movedAt    DateTime @default(now())
   reason     String?
   notes      String?
-  createdAt  DateTime  @default(now())
+  createdAt  DateTime @default(now())
 
   @@index([queenId])
   @@index([fromHiveId])
@@ -209,30 +209,30 @@ model QueenMovement {
 }
 
 model Inspection {
-  id                String             @id @default(uuid())
-  hiveId            String
-  hive              Hive               @relation(fields: [hiveId], references: [id])
-  date              DateTime
-  isAllDay          Boolean            @default(true)
-  notes             InspectionNote[]
-  temperature       Float?
-  weatherConditions String?
-  observations      Observation[]
-  actions           Action[]
-  status            InspectionStatus @default(COMPLETED)
+  id                  String               @id @default(uuid())
+  hiveId              String
+  hive                Hive                 @relation(fields: [hiveId], references: [id])
+  date                DateTime
+  isAllDay            Boolean              @default(true)
+  notes               InspectionNote[]
+  temperature         Float?
+  weatherConditions   String?
+  observations        Observation[]
+  actions             Action[]
+  status              InspectionStatus     @default(COMPLETED)
   batchInspectionHive BatchInspectionHive?
-  audioRecordings   InspectionAudio[]
-  photos            Photo[]
-  createdByUserId   String?
-  createdByUser     User?            @relation("InspectionCreator", fields: [createdByUserId], references: [id], onDelete: SetNull)
+  audioRecordings     InspectionAudio[]
+  photos              Photo[]
+  createdByUserId     String?
+  createdByUser       User?                @relation("InspectionCreator", fields: [createdByUserId], references: [id], onDelete: SetNull)
 
   // Persisted scores (calculated from observations, or user-overridden)
-  overallScore      Float?
-  populationScore   Float?
-  storesScore       Float?
-  queenScore        Float?
-  scoreWarnings     String?
-  scoreConfidence   Float?
+  overallScore    Float?
+  populationScore Float?
+  storesScore     Float?
+  queenScore      Float?
+  scoreWarnings   String?
+  scoreConfidence Float?
 
   // Create index for quick lookup by hiveId - used in authorization checks
   @@index([hiveId])
@@ -258,16 +258,16 @@ model InspectionNote {
 
 // Audio recordings attached to inspections for voice notes during hive visits
 model InspectionAudio {
-  id            String              @id @default(uuid())
-  inspectionId  String
-  inspection    Inspection          @relation(fields: [inspectionId], references: [id], onDelete: Cascade)
+  id           String     @id @default(uuid())
+  inspectionId String
+  inspection   Inspection @relation(fields: [inspectionId], references: [id], onDelete: Cascade)
 
   // Storage metadata
-  storageKey    String              // S3 key: "audio/{inspectionId}/{id}.webm"
-  fileName      String              // Original filename for display
-  mimeType      String              // "audio/webm", "audio/mp3"
-  fileSize      Int                 // Size in bytes
-  duration      Float?              // Duration in seconds (optional)
+  storageKey String // S3 key: "audio/{inspectionId}/{id}.webm"
+  fileName   String // Original filename for display
+  mimeType   String // "audio/webm", "audio/mp3"
+  fileSize   Int // Size in bytes
+  duration   Float? // Duration in seconds (optional)
 
   // Transcription stage (audio -> text)
   transcription              String?             @db.Text
@@ -288,7 +288,7 @@ model InspectionAudio {
   analysisWorkerTokenId String?
   analysisRetries       Int                 @default(0)
 
-  createdAt     DateTime            @default(now())
+  createdAt DateTime @default(now())
 
   @@index([inspectionId])
   @@index([transcriptionStatus])
@@ -296,11 +296,11 @@ model InspectionAudio {
 }
 
 enum TranscriptionStatus {
-  NONE        // No transcription requested
-  PENDING     // Queued for transcription
-  PROCESSING  // Currently being transcribed
-  COMPLETED   // Transcription available
-  FAILED      // Transcription failed
+  NONE // No transcription requested
+  PENDING // Queued for transcription
+  PROCESSING // Currently being transcribed
+  COMPLETED // Transcription available
+  FAILED // Transcription failed
 }
 
 model Observation {
@@ -318,25 +318,25 @@ model Observation {
 }
 
 model Action {
-  id           String     @id @default(uuid())
+  id           String      @id @default(uuid())
   hiveId       String?
-  hive         Hive?      @relation(fields: [hiveId], references: [id])
+  hive         Hive?       @relation(fields: [hiveId], references: [id])
   inspectionId String?
   inspection   Inspection? @relation(fields: [inspectionId], references: [id])
-  harvestId    String?    // Link to harvest if action from harvest
-  harvest      Harvest?   @relation(fields: [harvestId], references: [id])
+  harvestId    String? // Link to harvest if action from harvest
+  harvest      Harvest?    @relation(fields: [harvestId], references: [id])
   type         ActionType // FEEDING, TREATMENT, HARVEST etc.
   notes        String? // Description of the action taken
-  date         DateTime   @default(now()) // Date when action was performed
+  date         DateTime    @default(now()) // Date when action was performed
 
-  feedingAction   FeedingAction?
-  treatmentAction TreatmentAction?
-  frameAction     FrameAction?
-  harvestAction   HarvestAction?
+  feedingAction          FeedingAction?
+  treatmentAction        TreatmentAction?
+  frameAction            FrameAction?
+  harvestAction          HarvestAction?
   boxConfigurationAction BoxConfigurationAction?
-  maintenanceAction MaintenanceAction?
-  createdByUserId String?
-  createdByUser   User?      @relation("ActionCreator", fields: [createdByUserId], references: [id], onDelete: SetNull)
+  maintenanceAction      MaintenanceAction?
+  createdByUserId        String?
+  createdByUser          User?                   @relation("ActionCreator", fields: [createdByUserId], references: [id], onDelete: SetNull)
 
   @@index([hiveId])
   @@index([inspectionId])
@@ -379,7 +379,7 @@ model HarvestAction {
   id       String @id @default(uuid())
   actionId String @unique
   action   Action @relation(fields: [actionId], references: [id], onDelete: Cascade)
-  amount   Float  // kg of honey harvested from this hive
+  amount   Float // kg of honey harvested from this hive
   unit     String @default("kg") // Unit of measurement
 }
 
@@ -392,9 +392,9 @@ model BoxConfigurationAction {
   boxesRemoved  Int    @default(0) // Number of boxes removed
   framesAdded   Int    @default(0) // Total number of frames added
   framesRemoved Int    @default(0) // Total number of frames removed
-  totalBoxes    Int    // Total boxes after the change
-  totalFrames   Int    // Total frames after the change
-  boxes         Json?  // Per-box summary: [{type, frameCount}]
+  totalBoxes    Int // Total boxes after the change
+  totalFrames   Int // Total frames after the change
+  boxes         Json? // Per-box summary: [{type, frameCount}]
 }
 
 model MaintenanceAction {
@@ -407,18 +407,18 @@ model MaintenanceAction {
 
 // Harvest tracking
 model Harvest {
-  id              String         @id @default(uuid())
+  id              String        @id @default(uuid())
   apiaryId        String
-  apiary          Apiary         @relation(fields: [apiaryId], references: [id])
+  apiary          Apiary        @relation(fields: [apiaryId], references: [id])
   date            DateTime
-  status          HarvestStatus  @default(DRAFT)
-  totalWeight     Float?         // amount of honey extracted
-  totalWeightUnit String         @default("kg") // Unit for totalWeight
+  status          HarvestStatus @default(DRAFT)
+  totalWeight     Float? // amount of honey extracted
+  totalWeightUnit String        @default("kg") // Unit for totalWeight
   notes           String?
   harvestHives    HarvestHive[]
-  actions         Action[]       // Actions created when harvest is finalized
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  actions         Action[] // Actions created when harvest is finalized
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 
   @@index([apiaryId])
   @@index([date])
@@ -426,19 +426,53 @@ model Harvest {
 }
 
 model HarvestHive {
-  id               String   @id @default(uuid())
-  harvestId        String
-  harvest          Harvest  @relation(fields: [harvestId], references: [id], onDelete: Cascade)
-  hiveId           String
-  hive             Hive     @relation(fields: [hiveId], references: [id])
-  framesTaken      Int      // Number of frames harvested from this hive
-  honeyAmount      Float?   // Calculated amount after weight entry
-  honeyAmountUnit  String   @default("kg") // Unit for honeyAmount
-  honeyPercentage  Float?   // Percentage of total harvest
+  id              String  @id @default(uuid())
+  harvestId       String
+  harvest         Harvest @relation(fields: [harvestId], references: [id], onDelete: Cascade)
+  hiveId          String
+  hive            Hive    @relation(fields: [hiveId], references: [id])
+  framesTaken     Int // Number of frames harvested from this hive
+  honeyAmount     Float? // Calculated amount after weight entry
+  honeyAmountUnit String  @default("kg") // Unit for honeyAmount
+  honeyPercentage Float? // Percentage of total harvest
 
   @@unique([harvestId, hiveId]) // Prevent duplicate hive entries in same harvest
   @@index([harvestId])
   @@index([hiveId])
+}
+
+model PollenReference {
+  id                     String                  @id @default(uuid())
+  plantName              String
+  scientificName         String?
+  colorLabel             String
+  colorGroup             String
+  hexColor               String
+  notes                  String?
+  active                 Boolean                 @default(true)
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
+  pollenReferenceRegions PollenReferenceRegion[]
+
+  @@index([plantName])
+  @@index([scientificName])
+  @@index([colorGroup])
+  @@index([active])
+}
+
+model PollenReferenceRegion {
+  id                String          @id @default(uuid())
+  pollenReferenceId String
+  pollenReference   PollenReference @relation(fields: [pollenReferenceId], references: [id], onDelete: Cascade)
+  region            PollenRegion
+  seasons           PollenSeason[]
+  notes             String?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@unique([pollenReferenceId, region])
+  @@index([pollenReferenceId])
+  @@index([region])
 }
 
 enum HiveStatus {
@@ -489,9 +523,9 @@ enum ActionType {
 }
 
 enum HarvestStatus {
-  DRAFT       // Initial state - selecting hives/frames
+  DRAFT // Initial state - selecting hives/frames
   IN_PROGRESS // Extraction ongoing - can set weight
-  COMPLETED   // Finalized - actions created, read-only
+  COMPLETED // Finalized - actions created, read-only
 }
 
 // Weather condition simplified categories
@@ -507,17 +541,17 @@ enum WeatherCondition {
 
 // Historical weather data for apiaries (stored hourly)
 model Weather {
-  id          String            @id @default(uuid())
+  id          String           @id @default(uuid())
   apiaryId    String
-  apiary      Apiary            @relation(fields: [apiaryId], references: [id], onDelete: Cascade)
-  timestamp   DateTime          // When the weather data is for (hourly)
-  fetchedAt   DateTime          @default(now()) // When we fetched this data
+  apiary      Apiary           @relation(fields: [apiaryId], references: [id], onDelete: Cascade)
+  timestamp   DateTime // When the weather data is for (hourly)
+  fetchedAt   DateTime         @default(now()) // When we fetched this data
   condition   WeatherCondition
-  temperature Float             // in Celsius
-  feelsLike   Float             // in Celsius
-  humidity    Int               // percentage
-  windSpeed   Float             // in km/h
-  
+  temperature Float // in Celsius
+  feelsLike   Float // in Celsius
+  humidity    Int // percentage
+  windSpeed   Float // in km/h
+
   @@unique([apiaryId, timestamp]) // Prevent duplicate entries for same apiary and time
   @@index([apiaryId])
   @@index([timestamp])
@@ -526,17 +560,17 @@ model Weather {
 
 // Hourly weather forecast for the next 5 hours
 model WeatherHourlyForecast {
-  id          String            @id @default(uuid())
+  id          String           @id @default(uuid())
   apiaryId    String
-  apiary      Apiary            @relation(fields: [apiaryId], references: [id], onDelete: Cascade)
-  timestamp   DateTime          // The hour this forecast is for
-  fetchedAt   DateTime          @default(now()) // When we fetched this data
+  apiary      Apiary           @relation(fields: [apiaryId], references: [id], onDelete: Cascade)
+  timestamp   DateTime // The hour this forecast is for
+  fetchedAt   DateTime         @default(now()) // When we fetched this data
   condition   WeatherCondition
-  temperature Float             // in Celsius
-  feelsLike   Float             // in Celsius
-  humidity    Int               // percentage
-  windSpeed   Float             // in km/h
-  
+  temperature Float // in Celsius
+  feelsLike   Float // in Celsius
+  humidity    Int // percentage
+  windSpeed   Float // in km/h
+
   @@unique([apiaryId, timestamp]) // Prevent duplicate entries for same apiary and time
   @@index([apiaryId])
   @@index([timestamp])
@@ -545,17 +579,17 @@ model WeatherHourlyForecast {
 
 // Daily weather forecast for the next 5 days
 model WeatherForecast {
-  id             String            @id @default(uuid())
+  id             String           @id @default(uuid())
   apiaryId       String
-  apiary         Apiary            @relation(fields: [apiaryId], references: [id], onDelete: Cascade)
-  date           DateTime          // The date this forecast is for
-  fetchedAt      DateTime          @default(now()) // When we fetched this data
+  apiary         Apiary           @relation(fields: [apiaryId], references: [id], onDelete: Cascade)
+  date           DateTime // The date this forecast is for
+  fetchedAt      DateTime         @default(now()) // When we fetched this data
   condition      WeatherCondition
-  temperatureMin Float             // in Celsius
-  temperatureMax Float             // in Celsius
-  humidity       Int               // percentage
-  windSpeed      Float             // in km/h
-  
+  temperatureMin Float // in Celsius
+  temperatureMax Float // in Celsius
+  humidity       Int // percentage
+  windSpeed      Float // in km/h
+
   @@unique([apiaryId, date]) // Prevent duplicate entries for same apiary and date
   @@index([apiaryId])
   @@index([date])
@@ -565,8 +599,8 @@ model WeatherForecast {
 // Log of weather API fetches (used for admin metrics)
 model WeatherFetchLog {
   id        String   @id @default(uuid())
-  endpoint  String   // 'hourly' or 'daily'
-  outcome   String   // 'success' or 'error'
+  endpoint  String // 'hourly' or 'daily'
+  outcome   String // 'success' or 'error'
   createdAt DateTime @default(now())
 
   @@index([createdAt])
@@ -575,13 +609,13 @@ model WeatherFetchLog {
 // Alert system for hive management notifications
 model Alert {
   id        String        @id @default(uuid())
-  hiveId    String?       // Optional - alerts can be hive-specific or general
+  hiveId    String? // Optional - alerts can be hive-specific or general
   hive      Hive?         @relation(fields: [hiveId], references: [id], onDelete: Cascade)
-  type      String        // e.g., "inspection_overdue", "feeding_required", etc.
-  message   String        // Human-readable alert message
+  type      String // e.g., "inspection_overdue", "feeding_required", etc.
+  message   String // Human-readable alert message
   severity  AlertSeverity // LOW, MEDIUM, HIGH
   status    AlertStatus   @default(ACTIVE) // ACTIVE, DISMISSED, RESOLVED, SUPERSEDED
-  metadata  Json?         // Additional checker-specific data
+  metadata  Json? // Additional checker-specific data
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
 
@@ -600,34 +634,53 @@ enum AlertSeverity {
 }
 
 enum AlertStatus {
-  ACTIVE      // Alert is currently relevant
-  DISMISSED   // User has dismissed the alert
-  RESOLVED    // Issue has been resolved
-  SUPERSEDED  // Alert replaced by newer alert with different priority
+  ACTIVE // Alert is currently relevant
+  DISMISSED // User has dismissed the alert
+  RESOLVED // Issue has been resolved
+  SUPERSEDED // Alert replaced by newer alert with different priority
+}
+
+enum PollenRegion {
+  UK_AND_IRELAND
+  EUROPE
+  NORTH_AMERICA
+  AUSTRALIA_AND_NEW_ZEALAND
+  SOUTH_AMERICA
+  ASIA
+  AFRICA
+}
+
+enum PollenSeason {
+  EARLY_SPRING
+  SPRING
+  LATE_SPRING
+  SUMMER
+  LATE_SUMMER
+  AUTUMN
 }
 
 // Equipment item configuration for each user
 model EquipmentItem {
-  id                String              @id @default(uuid())
-  userId            String
-  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-  itemId            String              // e.g., "DEEP_BOX", "SHALLOW_BOX", "FRAMES", "SUGAR", custom IDs
-  name              String?             // Display name (optional for custom items)
-  enabled           Boolean             @default(true)
-  perHive           Float               @default(0) // Amount per hive (for standard calculations)
-  extra             Float               @default(0) // Extra inventory on hand (storage)
-  inExtraction      Float               @default(0) // Supers currently in extraction
-  damaged           Float               @default(0) // Damaged items out of service
-  neededOverride    Float?              // Manual override for needed amount (null = use calculation)
-  category          EquipmentCategory
-  scope             EquipmentScope      @default(PER_HIVE)
-  unit              String              @default("pieces") // "pieces", "kg", "liters", etc.
-  isCustom          Boolean             @default(false) // Whether this is a custom item
-  displayOrder      Int                 @default(999)
-  
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
-  
+  id             String            @id @default(uuid())
+  userId         String
+  user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  itemId         String // e.g., "DEEP_BOX", "SHALLOW_BOX", "FRAMES", "SUGAR", custom IDs
+  name           String? // Display name (optional for custom items)
+  enabled        Boolean           @default(true)
+  perHive        Float             @default(0) // Amount per hive (for standard calculations)
+  extra          Float             @default(0) // Extra inventory on hand (storage)
+  inExtraction   Float             @default(0) // Supers currently in extraction
+  damaged        Float             @default(0) // Damaged items out of service
+  neededOverride Float? // Manual override for needed amount (null = use calculation)
+  category       EquipmentCategory
+  scope          EquipmentScope    @default(PER_HIVE)
+  unit           String            @default("pieces") // "pieces", "kg", "liters", etc.
+  isCustom       Boolean           @default(false) // Whether this is a custom item
+  displayOrder   Int               @default(999)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@unique([userId, itemId])
   @@index([userId])
   @@index([userId, category])
@@ -635,40 +688,40 @@ model EquipmentItem {
 
 // Planning multiplier for equipment calculations
 model EquipmentMultiplier {
-  id                String              @id @default(uuid())
-  userId            String              @unique
-  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-  targetHives       Int                 @default(0) // Target number of hives to plan for (0 = use current)
+  id          String @id @default(uuid())
+  userId      String @unique
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  targetHives Int    @default(0) // Target number of hives to plan for (0 = use current)
 
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum EquipmentCategory {
-  BOXES           // Deep boxes, shallow boxes
-  HIVE_PARTS      // Bottoms, covers, excluders
-  FRAMES          // All frame types
-  FEEDING         // Feeders, sugar, syrup
-  CONSUMABLES     // Treatment, foundation, etc.
-  TOOLS           // Hive tools, smokers, etc.
-  PROTECTIVE      // Suits, gloves, veils
-  EXTRACTION      // Extractors, uncapping tools
-  CUSTOM          // User-defined categories
+  BOXES // Deep boxes, shallow boxes
+  HIVE_PARTS // Bottoms, covers, excluders
+  FRAMES // All frame types
+  FEEDING // Feeders, sugar, syrup
+  CONSUMABLES // Treatment, foundation, etc.
+  TOOLS // Hive tools, smokers, etc.
+  PROTECTIVE // Suits, gloves, veils
+  EXTRACTION // Extractors, uncapping tools
+  CUSTOM // User-defined categories
 }
 
 enum EquipmentScope {
-  PER_HIVE  // Scales with hive count
-  SHARED    // Fixed regardless of hive count
+  PER_HIVE // Scales with hive count
+  SHARED // Fixed regardless of hive count
 }
 
 // Frame size catalog (shared across all users)
 model FrameSize {
   id              String          @id @default(uuid())
   name            String          @unique
-  width           Float           // mm
-  height          Float           // mm
-  depth           Float           // mm
-  isBuiltIn       Boolean         @default(false)  // true = system preset
+  width           Float // mm
+  height          Float // mm
+  depth           Float // mm
+  isBuiltIn       Boolean         @default(false) // true = system preset
   status          FrameSizeStatus @default(PENDING)
   createdByUserId String?
   createdByUser   User?           @relation(fields: [createdByUserId], references: [id], onDelete: SetNull)
@@ -681,23 +734,23 @@ model FrameSize {
 }
 
 enum FrameSizeStatus {
-  PENDING   // User-contributed, awaiting admin approval
-  APPROVED  // Visible to all users
-  REJECTED  // Admin rejected
+  PENDING // User-contributed, awaiting admin approval
+  APPROVED // Visible to all users
+  REJECTED // Admin rejected
 }
 
 // Feedback system for user suggestions, bug reports, etc.
 model Feedback {
-  id          String         @id @default(uuid())
-  userId      String?        // Optional - allows anonymous feedback
-  user        User?          @relation(fields: [userId], references: [id])
-  email       String?        // Optional email for contact
-  type        FeedbackType   // BUG, SUGGESTION, OTHER
-  subject     String
-  message     String         @db.Text
-  status      FeedbackStatus @default(NEW)
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  id        String         @id @default(uuid())
+  userId    String? // Optional - allows anonymous feedback
+  user      User?          @relation(fields: [userId], references: [id])
+  email     String? // Optional email for contact
+  type      FeedbackType // BUG, SUGGESTION, OTHER
+  subject   String
+  message   String         @db.Text
+  status    FeedbackStatus @default(NEW)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
 
   @@index([userId])
   @@index([type])
@@ -721,8 +774,8 @@ enum FeedbackStatus {
 model PasswordResetToken {
   id        String   @id @default(uuid())
   token     String   @unique // Unique token for password reset
-  email     String   // Email address for the reset request
-  userId    String?  // Optional link to user (for registered users)
+  email     String // Email address for the reset request
+  userId    String? // Optional link to user (for registered users)
   user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   expiresAt DateTime // Token expiration time
   used      Boolean  @default(false) // Whether the token has been used
@@ -736,15 +789,15 @@ model PasswordResetToken {
 
 // Batch inspection management
 model BatchInspection {
-  id          String                 @id @default(uuid())
-  name        String                 // e.g., "Spring 2025 Inspection"
+  id          String                @id @default(uuid())
+  name        String // e.g., "Spring 2025 Inspection"
   apiaryId    String
-  apiary      Apiary                 @relation(fields: [apiaryId], references: [id], onDelete: Cascade)
-  status      BatchInspectionStatus  @default(DRAFT)
-  startedAt   DateTime?              // When batch inspection was started
-  completedAt DateTime?              // When batch inspection was completed
-  createdAt   DateTime               @default(now())
-  updatedAt   DateTime               @updatedAt
+  apiary      Apiary                @relation(fields: [apiaryId], references: [id], onDelete: Cascade)
+  status      BatchInspectionStatus @default(DRAFT)
+  startedAt   DateTime? // When batch inspection was started
+  completedAt DateTime? // When batch inspection was completed
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
   hives       BatchInspectionHive[]
 
   @@index([apiaryId])
@@ -754,17 +807,17 @@ model BatchInspection {
 
 // Individual hive entries within a batch inspection
 model BatchInspectionHive {
-  id                 String           @id @default(uuid())
-  batchInspectionId  String
-  batchInspection    BatchInspection  @relation(fields: [batchInspectionId], references: [id], onDelete: Cascade)
-  hiveId             String
-  hive               Hive             @relation(fields: [hiveId], references: [id], onDelete: Cascade)
-  order              Int              // Position in inspection queue (0-based)
-  status             BatchHiveStatus  @default(PENDING)
-  inspectionId       String?          @unique
-  inspection         Inspection?      @relation(fields: [inspectionId], references: [id])
-  completedAt        DateTime?        // When this hive's inspection was completed
-  skippedCount       Int              @default(0) // Number of times this hive was skipped
+  id                String          @id @default(uuid())
+  batchInspectionId String
+  batchInspection   BatchInspection @relation(fields: [batchInspectionId], references: [id], onDelete: Cascade)
+  hiveId            String
+  hive              Hive            @relation(fields: [hiveId], references: [id], onDelete: Cascade)
+  order             Int // Position in inspection queue (0-based)
+  status            BatchHiveStatus @default(PENDING)
+  inspectionId      String?         @unique
+  inspection        Inspection?     @relation(fields: [inspectionId], references: [id])
+  completedAt       DateTime? // When this hive's inspection was completed
+  skippedCount      Int             @default(0) // Number of times this hive was skipped
 
   @@unique([batchInspectionId, hiveId]) // Can't add same hive twice to a batch
   @@index([batchInspectionId])
@@ -773,33 +826,33 @@ model BatchInspectionHive {
 }
 
 enum BatchInspectionStatus {
-  DRAFT        // Initial state - hives can be added/removed/reordered
-  IN_PROGRESS  // Batch inspection is active
-  COMPLETED    // All hives inspected
-  CANCELLED    // Batch cancelled
+  DRAFT // Initial state - hives can be added/removed/reordered
+  IN_PROGRESS // Batch inspection is active
+  COMPLETED // All hives inspected
+  CANCELLED // Batch cancelled
 }
 
 enum BatchHiveStatus {
-  PENDING    // Not yet inspected
-  COMPLETED  // Inspection completed
-  CANCELLED  // Hive removed from batch
+  PENDING // Not yet inspected
+  COMPLETED // Inspection completed
+  CANCELLED // Hive removed from batch
 }
 
 // Quick check - lightweight structured observation for a hive or apiary
 model QuickCheck {
-  id        String           @id @default(uuid())
-  hiveId    String?
-  hive      Hive?            @relation(fields: [hiveId], references: [id], onDelete: Cascade)
-  apiaryId  String
-  apiary    Apiary           @relation(fields: [apiaryId], references: [id], onDelete: Cascade)
-  date      DateTime         @default(now())
-  note      String?          @db.Text
-  tags      String[]         // reuses additionalObservation + reminderObservation values
+  id              String            @id @default(uuid())
+  hiveId          String?
+  hive            Hive?             @relation(fields: [hiveId], references: [id], onDelete: Cascade)
+  apiaryId        String
+  apiary          Apiary            @relation(fields: [apiaryId], references: [id], onDelete: Cascade)
+  date            DateTime          @default(now())
+  note            String?           @db.Text
+  tags            String[] // reuses additionalObservation + reminderObservation values
   photos          QuickCheckPhoto[]
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
   createdByUserId String?
-  createdByUser   User?            @relation("QuickCheckCreator", fields: [createdByUserId], references: [id], onDelete: SetNull)
+  createdByUser   User?             @relation("QuickCheckCreator", fields: [createdByUserId], references: [id], onDelete: SetNull)
 
   @@index([hiveId])
   @@index([apiaryId])
@@ -824,7 +877,7 @@ model QuickCheckPhoto {
 model ShareLink {
   id           String    @id @default(uuid())
   token        String    @unique
-  resourceType String    // "HARVEST" or "INSPECTION"
+  resourceType String // "HARVEST" or "INSPECTION"
   resourceId   String
   userId       String
   user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -887,14 +940,14 @@ model Document {
 
 // Apiary sharing - membership for collaborative access
 model ApiaryMember {
-  id        String           @id @default(uuid())
-  apiaryId  String
-  apiary    Apiary           @relation(fields: [apiaryId], references: [id], onDelete: Cascade)
-  userId    String
-  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  role      ApiaryRole
-  status    MembershipStatus @default(PENDING)
-  joinedAt  DateTime         @default(now())
+  id       String           @id @default(uuid())
+  apiaryId String
+  apiary   Apiary           @relation(fields: [apiaryId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role     ApiaryRole
+  status   MembershipStatus @default(PENDING)
+  joinedAt DateTime         @default(now())
 
   @@unique([apiaryId, userId])
   @@index([userId])
@@ -908,7 +961,7 @@ model ApiaryInvite {
   apiaryId  String
   apiary    Apiary     @relation(fields: [apiaryId], references: [id], onDelete: Cascade)
   role      ApiaryRole // EDITOR or VIEWER
-  createdBy String     // userId of the owner who created this invite
+  createdBy String // userId of the owner who created this invite
   expiresAt DateTime?
   active    Boolean    @default(true)
   createdAt DateTime   @default(now())
@@ -934,21 +987,21 @@ model WorkerToken {
 
 // Platform metrics snapshot for admin observability
 model PlatformMetricsSnapshot {
-  id                  String   @id @default(uuid())
-  date                DateTime @unique // One snapshot per day
-  totalUsers          Int
-  totalApiaries       Int
-  totalHives          Int
-  totalInspections    Int
-  totalActions        Int
-  totalQueens         Int
-  totalHarvests       Int
-  totalEquipmentItems Int
-  activeUsers7Days    Int      // Users with activity in last 7 days
-  activeUsers30Days   Int      // Users with activity in last 30 days
-  weatherFetches24h      Int @default(0) // Weather API fetches in last 24h
-  weatherFetchErrors24h  Int @default(0) // Weather fetch errors in last 24h
-  createdAt           DateTime @default(now())
+  id                    String   @id @default(uuid())
+  date                  DateTime @unique // One snapshot per day
+  totalUsers            Int
+  totalApiaries         Int
+  totalHives            Int
+  totalInspections      Int
+  totalActions          Int
+  totalQueens           Int
+  totalHarvests         Int
+  totalEquipmentItems   Int
+  activeUsers7Days      Int // Users with activity in last 7 days
+  activeUsers30Days     Int // Users with activity in last 30 days
+  weatherFetches24h     Int      @default(0) // Weather API fetches in last 24h
+  weatherFetchErrors24h Int      @default(0) // Weather fetch errors in last 24h
+  createdAt             DateTime @default(now())
 
   @@index([date])
 }

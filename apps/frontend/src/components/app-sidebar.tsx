@@ -155,6 +155,12 @@ const getNavData = (t: TFunction<'common'>) => ({
           }),
           url: '/tools/brood-timeline',
         },
+        {
+          title: t('navigation.pollenIdentification', {
+            defaultValue: 'Pollen Identification',
+          }),
+          url: '/tools/pollen-identification',
+        },
       ],
     },
     {

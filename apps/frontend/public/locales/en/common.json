@@ -30,7 +30,9 @@
     "actions": "Actions",
     "tools": "Tools",
     "syrupCalculator": "Syrup Calculator",
-    "broodTimeline": "Brood Timeline"
+    "broodTimeline": "Brood Timeline",
+    "pollenIdentification": "Pollen Identification",
+    "pollenRecords": "Pollen Records"
   },
   "actions": {
     "save": "Save",
@@ -281,6 +283,129 @@
     },
     "audioDeleteTitle": "Delete audio recording?",
     "audioDeleted": "Audio deleted"
+  },
+  "pollenIdentification": {
+    "title": "Pollen Identification",
+    "description": "Browse likely pollen sources by broad region, season, and pollen colour.",
+    "textOnlyNotice": "Text-only results. No images or detailed plant drill-downs in v1.",
+    "expectedTimeOfYear": "Expected time of year",
+    "filters": {
+      "title": "Filters",
+      "description": "Use touch-friendly filters to narrow the pollen list for the selected scope.",
+      "scope": "Geographic scope",
+      "scopePlaceholder": "Select a scope",
+      "search": "Plant search",
+      "searchPlaceholder": "Search plant names",
+      "colorGroup": "Colour group",
+      "colorGroupPlaceholder": "Any colour group",
+      "seasons": "Season",
+      "clear": "Clear filters"
+    },
+    "results": {
+      "title": "Results",
+      "loading": "Loading pollen references...",
+      "emptyTitle": "No pollen references yet",
+      "emptyDescription": "There are no active pollen references for this scope.",
+      "noResultsTitle": "No matching pollen references",
+      "noResultsDescription": "Try clearing filters or choosing a different scope."
+    },
+    "scope": {
+      "UK_AND_IRELAND": "UK & Ireland",
+      "EUROPE": "Europe",
+      "NORTH_AMERICA": "North America",
+      "ASIA": "Asia",
+      "AFRICA": "Africa",
+      "AUSTRALIA_AND_NEW_ZEALAND": "Australia & New Zealand",
+      "SOUTH_AMERICA": "South America"
+    },
+    "seasons": {
+      "earlySpring": "Early spring",
+      "spring": "Spring",
+      "lateSpring": "Late spring",
+      "summer": "Summer",
+      "lateSummer": "Late summer",
+      "autumn": "Autumn"
+    },
+    "colorGroups": {
+      "black": "Black",
+      "blue": "Blue",
+      "brown": "Brown",
+      "cream": "Cream",
+      "green": "Green",
+      "grey": "Grey",
+      "orange": "Orange",
+      "red": "Red",
+      "yellow": "Yellow"
+    }
+  },
+  "adminPollenRecords": {
+    "title": "Pollen Record Management",
+    "description": "Create, edit, activate, deactivate, and delete pollen references using manual entry.",
+    "create": "Create record",
+    "table": {
+      "plant": "Plant",
+      "colour": "Colour",
+      "regions": "Regions",
+      "status": "Status",
+      "updated": "Updated",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "messages": {
+      "loading": "Loading pollen records...",
+      "empty": "No pollen records found",
+      "error": "Failed to load pollen records"
+    },
+    "toasts": {
+      "created": "Pollen record created",
+      "createFailed": "Failed to create pollen record",
+      "updated": "Pollen record updated",
+      "updateFailed": "Failed to update pollen record",
+      "deleted": "Pollen record deleted",
+      "deleteFailed": "Failed to delete pollen record",
+      "activated": "Pollen record activated",
+      "activateFailed": "Failed to activate pollen record",
+      "deactivated": "Pollen record deactivated",
+      "deactivateFailed": "Failed to deactivate pollen record"
+    },
+    "actions": {
+      "activate": "Activate",
+      "deactivate": "Deactivate"
+    },
+    "dialogs": {
+      "deleteTitle": "Delete pollen record?",
+      "deleteDescription": "This will permanently delete {{plantName}}.",
+      "activateTitle": "Activate pollen record?",
+      "activateDescription": "This will make {{plantName}} visible to users.",
+      "activateConfirm": "Activate",
+      "deactivateTitle": "Deactivate pollen record?",
+      "deactivateDescription": "This will hide {{plantName}} from the user-facing tool.",
+      "deactivateConfirm": "Deactivate"
+    },
+    "form": {
+      "createTitle": "Create pollen record",
+      "editTitle": "Edit pollen record",
+      "description": "Manual entry only. Add the plant details, colour information, active state, and region mappings.",
+      "regionsDescription": "Add one or more regions and the seasons that apply to each region.",
+      "regionNotes": "Region notes"
+    },
+    "fields": {
+      "plantName": "Plant name",
+      "scientificName": "Scientific name",
+      "colorLabel": "Colour label",
+      "colorGroup": "Colour group",
+      "hexColor": "Hex colour value",
+      "notes": "Notes",
+      "active": "Active",
+      "activeDescription": "Inactive records stay in the admin list but are hidden from users.",
+      "regions": "Region-season mappings",
+      "region": "Region",
+      "seasons": "Seasons",
+      "regionNotes": "Region notes"
+    }
   },
   "quickCheck": {
     "title": "Quick Check",

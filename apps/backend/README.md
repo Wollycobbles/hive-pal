@@ -17,8 +17,11 @@ pnpm db:up
 # Run migrations
 pnpm prisma migrate dev
 
-# Seed database (optional)
+# Seed database (optional, dev/test only)
 pnpm seed
+
+# Bootstrap pollen reference data (production-safe, idempotent)
+pnpm bootstrap:pollen
 
 # Start development server
 pnpm dev
@@ -91,14 +94,34 @@ docker compose up -d minio
 ## Commands
 
 ```bash
-pnpm dev              # Start development server
-pnpm build            # Build for production
-pnpm start:prod       # Start production server
-pnpm test:e2e         # Run E2E tests
-pnpm prisma:generate  # Generate Prisma client
-pnpm db:up            # Start PostgreSQL container
-pnpm seed             # Seed database
+pnpm dev                # Start development server
+pnpm build              # Build for production
+pnpm start:prod         # Start production server
+pnpm test:e2e           # Run E2E tests
+pnpm prisma:generate    # Generate Prisma client
+pnpm db:up              # Start PostgreSQL container
+pnpm seed               # Seed database (dev/test data)
+pnpm bootstrap:pollen   # Bootstrap pollen reference data (idempotent)
 ```
+
+## Pollen Reference Data
+
+The pollen identification tool requires a reference dataset of 100 common honeybee pollen plants.
+
+**Automatic Bootstrap (Production):**
+- The `docker-entrypoint.sh` automatically bootstraps pollen data on first deployment
+- Safe to run multiple times - checks if data exists first
+- No manual intervention needed
+
+**Manual Bootstrap:**
+```bash
+pnpm bootstrap:pollen
+```
+
+This is useful for:
+- Local development after clearing the database
+- Restoring pollen data if accidentally deleted
+- Testing the bootstrap process
 
 ## API Documentation
 
