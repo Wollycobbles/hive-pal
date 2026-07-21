@@ -18,3 +18,4 @@ export const getArtificialSwarmWarnings = buildGetWarnings(
 
 // Re-export types consumed by the page wrapper and tests
 export type { SwarmCheckpointTemplate as ArtificialSwarmCheckpointTemplate } from './swarm-planner-factory';
+export type { CheckpointPlan as ArtificialSwarmCheckpointPlan } from './swarm-method-page-layout';
