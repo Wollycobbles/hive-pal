@@ -11,16 +11,26 @@ import srCommon from '../../../../public/locales/sr/common.json';
 import { PAGDEN_CHECKPOINTS } from '../pagden-planner';
 import { ARTIFICIAL_SWARM_CHECKPOINTS } from '../artificial-swarm-planner';
 
+// Cast locale data to a loosely-typed record so dynamic property access
+// in tests does not require @ts-expect-error suppressions.
+type LocaleData = Record<string, unknown>;
+const asLocale = (data: unknown): LocaleData => data as LocaleData;
+const get = (obj: unknown, ...keys: string[]): unknown =>
+  keys.reduce(
+    (acc, key) => (acc != null ? (acc as LocaleData)[key] : undefined),
+    obj,
+  );
+
 describe('Swarm Management i18n Keys', () => {
   const nonEnglishLocales = [
-    { name: 'de', data: deCommon },
-    { name: 'fr', data: frCommon },
-    { name: 'es', data: esCommon },
-    { name: 'it', data: itCommon },
-    { name: 'nl', data: nlCommon },
-    { name: 'da', data: daCommon },
-    { name: 'sk', data: skCommon },
-    { name: 'sr', data: srCommon },
+    { name: 'de', data: asLocale(deCommon) },
+    { name: 'fr', data: asLocale(frCommon) },
+    { name: 'es', data: asLocale(esCommon) },
+    { name: 'it', data: asLocale(itCommon) },
+    { name: 'nl', data: asLocale(nlCommon) },
+    { name: 'da', data: asLocale(daCommon) },
+    { name: 'sk', data: asLocale(skCommon) },
+    { name: 'sr', data: asLocale(srCommon) },
   ];
 
   describe('Pagden i18n keys', () => {
@@ -39,15 +49,15 @@ describe('Swarm Management i18n Keys', () => {
     });
 
     it('has all Pagden planner checkpoint keys in English locale', () => {
+      const checkpoints = asLocale(
+        enCommon.swarmManagement.pagden.planner.checkpoints,
+      );
       PAGDEN_CHECKPOINTS.forEach(checkpoint => {
-        // @ts-expect-error - dynamic path access
-        expect(enCommon.swarmManagement.pagden.planner.checkpoints[checkpoint.id]).toBeDefined();
-        // @ts-expect-error - dynamic path access
-        expect(enCommon.swarmManagement.pagden.planner.checkpoints[checkpoint.id].title).toBeTruthy();
-        // @ts-expect-error - dynamic path access
-        expect(enCommon.swarmManagement.pagden.planner.checkpoints[checkpoint.id].summary).toBeTruthy();
-        // @ts-expect-error - dynamic path access
-        expect(enCommon.swarmManagement.pagden.planner.checkpoints[checkpoint.id].checklist).toHaveLength(3);
+        const cp = asLocale(checkpoints[checkpoint.id]);
+        expect(cp).toBeDefined();
+        expect(cp['title']).toBeTruthy();
+        expect(cp['summary']).toBeTruthy();
+        expect(cp['checklist']).toHaveLength(3);
       });
     });
 
@@ -63,14 +73,13 @@ describe('Swarm Management i18n Keys', () => {
 
     it('has Pagden keys as empty strings in non-English locales', () => {
       nonEnglishLocales.forEach(locale => {
-        // @ts-expect-error - dynamic locale access
-        expect(locale.data.swarmManagement.pagden).toBeDefined();
-        // @ts-expect-error - dynamic locale access
-        expect(locale.data.swarmManagement.pagden.title).toBe('');
-        // @ts-expect-error - dynamic locale access
-        expect(locale.data.swarmManagement.pagden.description).toBe('');
-        // @ts-expect-error - dynamic locale access
-        expect(locale.data.swarmManagement.pagden.planner.checkpointPrefix).toBe('');
+        const pagden = asLocale(get(locale.data, 'swarmManagement', 'pagden'));
+        expect(pagden).toBeDefined();
+        expect(pagden['title']).toBe('');
+        expect(pagden['description']).toBe('');
+        expect(
+          get(locale.data, 'swarmManagement', 'pagden', 'planner', 'checkpointPrefix'),
+        ).toBe('');
       });
     });
   });
@@ -91,15 +100,15 @@ describe('Swarm Management i18n Keys', () => {
     });
 
     it('has all Artificial Swarm planner checkpoint keys in English locale', () => {
+      const checkpoints = asLocale(
+        enCommon.swarmManagement.artificialSwarm.planner.checkpoints,
+      );
       ARTIFICIAL_SWARM_CHECKPOINTS.forEach(checkpoint => {
-        // @ts-expect-error - dynamic path access
-        expect(enCommon.swarmManagement.artificialSwarm.planner.checkpoints[checkpoint.id]).toBeDefined();
-        // @ts-expect-error - dynamic path access
-        expect(enCommon.swarmManagement.artificialSwarm.planner.checkpoints[checkpoint.id].title).toBeTruthy();
-        // @ts-expect-error - dynamic path access
-        expect(enCommon.swarmManagement.artificialSwarm.planner.checkpoints[checkpoint.id].summary).toBeTruthy();
-        // @ts-expect-error - dynamic path access
-        expect(enCommon.swarmManagement.artificialSwarm.planner.checkpoints[checkpoint.id].checklist).toHaveLength(3);
+        const cp = asLocale(checkpoints[checkpoint.id]);
+        expect(cp).toBeDefined();
+        expect(cp['title']).toBeTruthy();
+        expect(cp['summary']).toBeTruthy();
+        expect(cp['checklist']).toHaveLength(3);
       });
     });
 
@@ -115,14 +124,21 @@ describe('Swarm Management i18n Keys', () => {
 
     it('has Artificial Swarm keys as empty strings in non-English locales', () => {
       nonEnglishLocales.forEach(locale => {
-        // @ts-expect-error - dynamic locale access
-        expect(locale.data.swarmManagement.artificialSwarm).toBeDefined();
-        // @ts-expect-error - dynamic locale access
-        expect(locale.data.swarmManagement.artificialSwarm.title).toBe('');
-        // @ts-expect-error - dynamic locale access
-        expect(locale.data.swarmManagement.artificialSwarm.description).toBe('');
-        // @ts-expect-error - dynamic locale access
-        expect(locale.data.swarmManagement.artificialSwarm.planner.checkpointPrefix).toBe('');
+        const as = asLocale(
+          get(locale.data, 'swarmManagement', 'artificialSwarm'),
+        );
+        expect(as).toBeDefined();
+        expect(as['title']).toBe('');
+        expect(as['description']).toBe('');
+        expect(
+          get(
+            locale.data,
+            'swarmManagement',
+            'artificialSwarm',
+            'planner',
+            'checkpointPrefix',
+          ),
+        ).toBe('');
       });
     });
   });
@@ -149,46 +165,56 @@ describe('Swarm Management i18n Keys', () => {
 
     it('has Dave Cushman attribution keys as empty strings in non-English locales', () => {
       nonEnglishLocales.forEach(locale => {
-        // @ts-expect-error - dynamic locale access
-        expect(locale.data.swarmManagement.cushmanCredit.text).toBe('');
-        // @ts-expect-error - dynamic locale access
-        expect(locale.data.swarmManagement.cushmanCredit.linkLabel).toBe('');
+        expect(
+          get(locale.data, 'swarmManagement', 'cushmanCredit', 'text'),
+        ).toBe('');
+        expect(
+          get(locale.data, 'swarmManagement', 'cushmanCredit', 'linkLabel'),
+        ).toBe('');
       });
     });
   });
 
   describe('Content verification', () => {
     it('Pagden overview mentions queen moved to new hive on original stand', () => {
-      const overviewText = JSON.stringify(enCommon.swarmManagement.pagden.overviewPoints).toLowerCase();
+      const overviewText = JSON.stringify(
+        enCommon.swarmManagement.pagden.overviewPoints,
+      ).toLowerCase();
       expect(overviewText).toContain('queen');
       expect(overviewText).toContain('original stand');
     });
 
     it('Pagden Day 0 checklist mentions relocating queen', () => {
-      const setupChecklist = enCommon.swarmManagement.pagden.planner.checkpoints.setup.checklist;
+      const setupChecklist =
+        enCommon.swarmManagement.pagden.planner.checkpoints.setup.checklist;
       const checklistText = setupChecklist.join(' ').toLowerCase();
       expect(checklistText).toContain('queen');
       expect(checklistText).toContain('original stand');
     });
 
     it('Artificial Swarm overview mentions queen NOT moved', () => {
-      const overviewText = JSON.stringify(enCommon.swarmManagement.artificialSwarm.overviewPoints).toLowerCase();
+      const overviewText = JSON.stringify(
+        enCommon.swarmManagement.artificialSwarm.overviewPoints,
+      ).toLowerCase();
       expect(overviewText).toContain('queen');
       expect(overviewText).toContain('parent');
     });
 
     it('Artificial Swarm Day 0 checklist mentions moving frame with queen cell', () => {
-      const setupChecklist = enCommon.swarmManagement.artificialSwarm.planner.checkpoints.setup.checklist;
+      const setupChecklist =
+        enCommon.swarmManagement.artificialSwarm.planner.checkpoints.setup
+          .checklist;
       const checklistText = setupChecklist.join(' ').toLowerCase();
       expect(checklistText).toContain('queen cell');
       expect(checklistText).toContain('frame');
     });
 
     it('Artificial Swarm description mentions queen cannot be found use case', () => {
-      const description = enCommon.swarmManagement.artificialSwarm.description.toLowerCase();
-      const intro = enCommon.swarmManagement.artificialSwarm.intro.toLowerCase();
-      const combined = description + ' ' + intro;
-      expect(combined).toContain('queen');
+      const description =
+        enCommon.swarmManagement.artificialSwarm.description.toLowerCase();
+      const intro =
+        enCommon.swarmManagement.artificialSwarm.intro.toLowerCase();
+      expect(description + ' ' + intro).toContain('queen');
     });
   });
 });
