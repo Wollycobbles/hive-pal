@@ -40,9 +40,6 @@ describe('Swarm Management i18n Keys', () => {
 
     it('has all Pagden planner checkpoint keys in English locale', () => {
       PAGDEN_CHECKPOINTS.forEach(checkpoint => {
-        const titlePath = checkpoint.titleKey.replace('swarmManagement.pagden.planner.checkpoints.', '');
-        const summaryPath = checkpoint.summaryKey.replace('swarmManagement.pagden.planner.checkpoints.', '');
-        
         // @ts-expect-error - dynamic path access
         expect(enCommon.swarmManagement.pagden.planner.checkpoints[checkpoint.id]).toBeDefined();
         // @ts-expect-error - dynamic path access
